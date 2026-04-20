@@ -60,6 +60,7 @@ public class PlayerController : MonoBehaviour
     private PlayerCombat playerCombat;
     private float defaultGravity; // Lưu lại trọng lực gốc (ví dụ: 3)
 
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -161,15 +162,23 @@ public class PlayerController : MonoBehaviour
         {
             comboStep = 0;
         }
-        if (Input.GetKeyDown(KeyCode.J) && Time.time >= lastAttackTime + attackCooldown && !IsWalled())
+        if (Input.GetKeyDown(KeyCode.J) && Time.time >= lastAttackTime + attackCooldown && (!IsWalled() || IsGrounded()))
         {
-            lastAttackTime = Time.time;
-            comboStep++;
-            if (comboStep > 2)
+            if (EquipmentManager.instance != null && EquipmentManager.instance.currentWeapon != null)
             {
-                comboStep = 1;
+                lastAttackTime = Time.time;
+                comboStep++;
+                if (comboStep > 2)
+                {
+                    comboStep = 1;
+                }
+                playerCombat.Attack(comboStep);
             }
-            playerCombat.Attack(comboStep);
+            else
+            {
+                // Báo lỗi nếu không có vũ khí (bạn có thể thay bằng âm thanh hoặc thông báo UI)
+                Debug.Log("Không có vũ khí! Hãy mở túi đồ (E) và trang bị vũ khí trước khi tấn công.");
+            }
         }
     }
 
@@ -229,7 +238,7 @@ public class PlayerController : MonoBehaviour
 
     private void PlayerWallSlide()
     {
-        if (IsWalled() && !IsGrounded() && rb.linearVelocity.y <= 0f)
+        if (EquipmentManager.instance.HasMechanic("WallSlide") && IsWalled() && !IsGrounded() && rb.linearVelocity.y <= 0f)
         {
             isWallSliding = true;
             rb.linearVelocity = new Vector2(0f, Mathf.Clamp(rb.linearVelocity.y, -wallSlidingSpeed, float.MaxValue));
@@ -247,7 +256,7 @@ public class PlayerController : MonoBehaviour
             wallJumpDirection = -transform.localScale.x;
         }
 
-        if (Input.GetButtonDown("Jump") && IsWalled() && !IsGrounded())
+        if (EquipmentManager.instance.HasMechanic("WallSlide") && Input.GetButtonDown("Jump") && IsWalled() && !IsGrounded())
         {
             isWallJumping = true;
             rb.linearVelocity = new Vector2(wallJumpDirection * wallJumpPower.x, wallJumpPower.y);
@@ -264,7 +273,7 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator PlayerDash()
     {
-        if (!IsWalled())
+        if (!IsWalled() && EquipmentManager.instance.HasMechanic("Dash"))
         {
             canDash = false;
             isDashing = true;
