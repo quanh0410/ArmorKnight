@@ -2,8 +2,20 @@
 
 public class ItemPickup : MonoBehaviour
 {
+    [Header("Định danh (Bắt buộc cho đồ rớt trên map)")]
+    public string itemID;
+
     public ItemData itemInfo;
     private bool canPickup = false;
+
+    private void Start()
+    {
+        // Vừa vào map, hỏi SaveManager xem đồ này đã bị nhặt ở quá khứ chưa?
+        if (SaveManager.instance != null && SaveManager.instance.IsObjectInteracted(itemID))
+        {
+            Destroy(gameObject); // Đã nhặt rồi thì hủy luôn
+        }
+    }
 
     private void Update()
     {
@@ -18,9 +30,6 @@ public class ItemPickup : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             canPickup = true;
-
-            // --- SỬA Ở ĐÂY: Gọi UI dùng chung hiện lên ---
-            // Nối thêm tên vật phẩm cho chuyên nghiệp: "[S] Nhặt Kiếm Sắt"
             InteractionUI.instance.Show(transform, "[S] Nhặt " + itemInfo.itemName);
         }
     }
@@ -30,8 +39,6 @@ public class ItemPickup : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             canPickup = false;
-
-            // --- SỬA Ở ĐÂY: Gọi UI dùng chung ẩn đi ---
             InteractionUI.instance.Hide();
         }
     }
@@ -39,9 +46,13 @@ public class ItemPickup : MonoBehaviour
     private void PickUpItem()
     {
         InventoryManager.instance.AddItem(itemInfo);
-
-        // Ẩn UI đi trước khi xóa vật phẩm (để tránh lỗi chữ bị kẹt lại)
         InteractionUI.instance.Hide();
+
+        // Ghi vào sổ: Vật phẩm nhặt xong là mất vĩnh viễn (true)
+        if (SaveManager.instance != null && !string.IsNullOrEmpty(itemID))
+        {
+            SaveManager.instance.SaveObjectState(itemID, true);
+        }
 
         Destroy(gameObject);
     }

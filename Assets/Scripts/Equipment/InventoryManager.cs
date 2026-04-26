@@ -42,4 +42,14 @@ public class InventoryManager : MonoBehaviour
             Debug.Log("Đã tiêu thụ: " + itemToRemove.itemName);
         }
     }
+    // Trong InventoryManager.cs
+    public void LoadData(List<string> itemNames)
+    {
+        items.Clear();
+        foreach (string name in itemNames)
+        {
+            ItemData data = SaveManager.instance.GetItemFromResources(name);
+            if (data != null) items.Add(data);
+        }
+    }
 }

@@ -60,7 +60,12 @@ public class PlayerController : MonoBehaviour
     private PlayerCombat playerCombat;
     private float defaultGravity; // Lưu lại trọng lực gốc (ví dụ: 3)
 
+    [HideInInspector] public bool isInputLocked = false; // --- THÊM BIẾN NÀY ---
+    [HideInInspector] public bool isResting = false;
 
+    [Header("Rest Settings")]
+    public GameObject restEffectPrefab; // Kéo thả Prefab Effect lúc ngồi vào đây
+    private GameObject currentRestEffect; // Biến để theo dõi và tắt Effect khi đứng dậy
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -71,6 +76,29 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // THÊM ĐOẠN NÀY ĐỂ ĐỨNG DẬY
+        if (isResting)
+        {
+            // Bấm Phím Nhảy hoặc Phím Lên để đứng dậy
+            if (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                isResting = false;
+                isInputLocked = false;
+                GetComponent<PlayerAnimator>().SetRestingAnimation(false);
+                GetComponent<Animator>().Play("Idle", 0, 0f);
+                // --- THÊM LOGIC TẮT EFFECT Ở ĐÂY ---
+                if (currentRestEffect != null)
+                {
+                    Destroy(currentRestEffect);
+                }
+                // -----------------------------------
+                // Nếu túi đồ đang mở thì đóng lại luôn
+                if (InventoryUIManager.instance.mainInventoryPanel.activeSelf)
+                    InventoryUIManager.instance.ToggleInventory();
+            }
+            return; // Chặn các thao tác khác (lướt, chém...) khi đang ngồi
+        }
+        if (isInputLocked) return;
         // 1. Leo tường luôn được ưu tiên (trừ khi đang lướt)
         if (!isDashing && !isWallClimbing)
         {
@@ -84,11 +112,15 @@ public class PlayerController : MonoBehaviour
             PlayerWallJump();
         }
 
-        // 3. Các hành động tấn công, di chuyển và LƯỚT
-        if (!isDashing && !isWallClimbing && !isAttackLocked)
+        // 3. Ưu tiên xử lý lệnh Tấn công (Chỉ bị chặn khi đang lướt hoặc leo tường)
+        if (!isDashing && !isWallClimbing)
         {
             HandleAttackInput();
+        }
 
+        // 4. Xử lý Di chuyển và Lướt (SẼ BỊ KHÓA THÊM NẾU ĐANG BỊ GIẬT LÙI isAttackLocked)
+        if (!isDashing && !isWallClimbing && !isAttackLocked)
+        {
             if (!isWallJumping)
             {
                 PlayerMovement();
@@ -102,7 +134,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // 4. Hiệu ứng chạm đất (Giữ nguyên)
+        // 5. Hiệu ứng chạm đất (Giữ nguyên)
         bool isGrounded = IsGrounded();
         if (!wasGrounded && isGrounded && rb.linearVelocity.y <= 0f)
         {
@@ -327,6 +359,72 @@ public class PlayerController : MonoBehaviour
         GetComponent<Animator>().SetBool("IsDashing", false);
     }
 
+    public IEnumerator WalkToBenchAndRest(Transform benchTransform, string benchID)
+    {
+        isInputLocked = true;
+        rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+
+        // Tạm thời tắt PlayerAnimator để nó không đè thông số Speed về 0
+        GetComponent<PlayerAnimator>().enabled = false;
+
+        // Gọi thẳng vào Animator gốc của Unity (ĐÃ FIX LỖI CS1061)
+        Animator anim = GetComponent<Animator>();
+
+        float targetX = benchTransform.position.x;
+        float distance = Mathf.Abs(transform.position.x - targetX);
+
+        // 1. TỰ ĐỘNG ĐI BỘ ĐẾN GIỮA GHẾ
+        while (distance > 0.05f)
+        {
+            float direction = Mathf.Sign(targetX - transform.position.x);
+            rb.linearVelocity = new Vector2(direction * moveSpeed * 0.5f, rb.linearVelocity.y);
+
+            transform.localScale = new Vector3(direction, 1, 1);
+
+            // Dùng anim thay vì GetComponent<PlayerAnimator>()
+            anim.SetFloat("Speed", Mathf.Abs(rb.linearVelocity.x));
+
+            yield return null;
+            distance = Mathf.Abs(transform.position.x - targetX);
+        }
+
+        // 2. TỚI NƠI -> ĐỨNG LẠI & NGỒI XUỐNG
+        rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+        transform.position = new Vector2(targetX, transform.position.y);
+
+        // Ép tốc độ về 0
+        anim.SetFloat("Speed", 0f);
+
+        // Bật lại PlayerAnimator để nó tiếp quản hiệu ứng Nghỉ ngơi
+        GetComponent<PlayerAnimator>().enabled = true;
+        isResting = true;
+        GetComponent<PlayerAnimator>().SetRestingAnimation(true);
+
+        // --- THÊM LOGIC BẬT EFFECT Ở ĐÂY ---
+        if (restEffectPrefab != null)
+        {
+            // Sinh ra Effect từ Object Pool
+            currentRestEffect = ObjectPoolManager.Instance.Spawn(restEffectPrefab, transform.position, Quaternion.identity);
+
+            // Ép Effect dính chặt vào Player
+            StickyEffect2D sticky = currentRestEffect.GetComponent<StickyEffect2D>();
+            if (sticky != null)
+            {
+                sticky.SetTarget(transform);
+            }
+            else
+            {
+                currentRestEffect.transform.SetParent(transform, true);
+            }
+        }
+
+        // 3. LƯU GAME VÀ HỒI MÁU
+        SaveManager.instance.UpdateCheckpoint(benchTransform.gameObject.scene.name, benchID);
+        GetComponent<PlayerHealth>()?.FullHeal();
+
+        Debug.Log("Đã ngồi vào ghế. Bây giờ có thể ấn E để mở túi đồ!");
+    }
+
     private void OnDrawGizmosSelected()
     {
         if (groundCheckPoint != null)
@@ -341,5 +439,38 @@ public class PlayerController : MonoBehaviour
         }
 
         if (wallClimbCheckPoint != null) { Gizmos.color = Color.yellow; Gizmos.DrawWireCube(wallClimbCheckPoint.position, wallClimbCheckSize); }
+    }
+
+    // HÀM MỚI: Ép nhân vật ngồi ngay lập tức khi hồi sinh
+    public void SnapToRest()
+    {
+        isInputLocked = true;
+        isResting = true;
+        rb.linearVelocity = Vector2.zero;
+
+        Animator anim = GetComponent<Animator>();
+        anim.SetFloat("Speed", 0f);
+
+        GetComponent<PlayerAnimator>().enabled = true;
+        GetComponent<PlayerAnimator>().SetRestingAnimation(true);
+
+        // Ép chạy ngay Animation ngồi để tránh bị giật hình (Thay "Rest" bằng tên state ngồi của bạn nếu khác)
+        anim.Play("Rest", 0, 0f);
+
+        // Bật Effect vòng sáng dưới chân
+        if (restEffectPrefab != null && currentRestEffect == null)
+        {
+            currentRestEffect = ObjectPoolManager.Instance.Spawn(restEffectPrefab, transform.position, Quaternion.identity);
+
+            StickyEffect2D sticky = currentRestEffect.GetComponent<StickyEffect2D>();
+            if (sticky != null)
+            {
+                sticky.SetTarget(transform);
+            }
+            else
+            {
+                currentRestEffect.transform.SetParent(transform, true);
+            }
+        }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems; // Bắt buộc phải có thư viện này
+using UnityEngine.EventSystems;
+using TMPro;
 
-// Khai báo 3 Interface Kéo, Đang Kéo, và Thả
 public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
     public ItemData itemData;
@@ -10,137 +10,141 @@ public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     [Header("Thành phần UI")]
     public Image iconImage;
     public Image borderImage;
+    public TextMeshProUGUI quantityText;
 
-    [HideInInspector] public Transform originalParent; // Nhớ nhà để quay về nếu thả trượt
-    private CanvasGroup canvasGroup; // Dùng để làm xuyên thấu UI
+    [HideInInspector] public Transform originalParent;
+    [HideInInspector] public bool isDropped = false; // --- CỜ AN TOÀN MỚI ---
+
+    private CanvasGroup canvasGroup;
 
     private void Awake()
     {
-        // Tự động thêm CanvasGroup nếu bạn quên gắn ngoài Unity
         canvasGroup = GetComponent<CanvasGroup>();
         if (canvasGroup == null) canvasGroup = gameObject.AddComponent<CanvasGroup>();
     }
 
-    public void SetupItem(ItemData data)
+    public void SetupItem(ItemData data, int amount = 1)
     {
         itemData = data;
-
-        // Cài đặt Icon vũ khí / ngọc
         if (iconImage != null) iconImage.sprite = data.itemIcon;
 
-        // --- CÀI ĐẶT VIỀN (BORDER) ---
         if (borderImage != null)
         {
-            // BẮT BUỘC: Reset màu nền về trắng. Nếu để màu đỏ, ảnh viền xám đắp lên sẽ biến thành màu đỏ xám!
             borderImage.color = Color.white;
-
-            // Nếu là Vũ Khí -> Lấy viền xám
-            if (data.equipType == EquipmentType.Weapon)
+            if (data is EquipmentData equipData)
             {
-                borderImage.sprite = InventoryUIManager.instance.weaponGrayBorder;
-            }
-            // Nếu là Ngọc/Kỹ năng -> Lấy viền theo màu
-            else
-            {
-                switch (data.itemColor)
+                if (equipData.equipType == EquipmentType.Weapon) borderImage.sprite = InventoryUIManager.instance.weaponGrayBorder;
+                else
                 {
-                    case ItemColor.Red:
-                        borderImage.sprite = InventoryUIManager.instance.redGemBorder;
-                        break;
-                    case ItemColor.Blue:
-                        borderImage.sprite = InventoryUIManager.instance.blueGemBorder;
-                        break;
-                    case ItemColor.Yellow:
-                        borderImage.sprite = InventoryUIManager.instance.yellowGemBorder;
-                        break;
+                    switch (equipData.itemColor)
+                    {
+                        case ItemColor.Red: borderImage.sprite = InventoryUIManager.instance.redGemBorder; break;
+                        case ItemColor.Blue: borderImage.sprite = InventoryUIManager.instance.blueGemBorder; break;
+                        case ItemColor.Yellow: borderImage.sprite = InventoryUIManager.instance.yellowGemBorder; break;
+                    }
                 }
             }
+            else borderImage.sprite = InventoryUIManager.instance.noneBorder;
+        }
+
+        if (quantityText != null)
+        {
+            if (amount > 1) { quantityText.text = "x" + amount.ToString(); quantityText.gameObject.SetActive(true); }
+            else quantityText.gameObject.SetActive(false);
         }
     }
 
-    // 1. KHI VỪA NHẤP CHUỘT VÀ KÉO
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (!(itemData is EquipmentData)) return;
+
+        isDropped = false;
         originalParent = transform.parent;
 
-        transform.SetParent(transform.root);
+        // --- ĐÃ SỬA: Ép nó nằm trong Canvas, tuyệt đối không dùng transform.root ---
+        Canvas mainCanvas = GetComponentInParent<Canvas>();
+        if (mainCanvas != null)
+        {
+            transform.SetParent(mainCanvas.transform);
+        }
+        else
+        {
+            // Dự phòng nếu không tìm thấy Canvas
+            transform.SetParent(InventoryUIManager.instance.mainInventoryPanel.transform);
+        }
+
         transform.SetAsLastSibling();
 
         canvasGroup.blocksRaycasts = false;
 
-        // Hiện nguyên hình icon
         if (iconImage != null) iconImage.enabled = true;
         if (borderImage != null) borderImage.enabled = true;
 
         RectTransform rect = GetComponent<RectTransform>();
         rect.anchorMin = new Vector2(0.5f, 0.5f);
         rect.anchorMax = new Vector2(0.5f, 0.5f);
-        rect.sizeDelta = new Vector2(100, 100); // Kích thước icon khi cầm trên chuột
-
-        // --- BỔ SUNG: TẠM ẨN THANH KIẾM TO NẾU ĐANG NHẤC RA TỪ Ô TRANG BỊ ---
-        if (originalParent.GetComponent<EquipmentSlotUI>() != null)
-        {
-            InventoryUIManager uiManager = FindObjectOfType<InventoryUIManager>();
-            if (uiManager != null && uiManager.weaponImage != null)
-            {
-                uiManager.weaponImage.enabled = false;
-            }
-        }
+        rect.sizeDelta = new Vector2(100, 100);
     }
 
-    // 2. TRONG LÚC ĐANG KÉO (Cập nhật vị trí liên tục)
     public void OnDrag(PointerEventData eventData)
     {
-        transform.position = Input.mousePosition; // Đi theo con trỏ chuột
+        if (!(itemData is EquipmentData)) return;
+        transform.position = Input.mousePosition;
     }
 
-    // 3. KHI BUÔNG CHUỘT RA
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (!(itemData is EquipmentData equipData)) return;
+        if (isDropped) return; // Đã thả trúng ô Ngọc thì dừng lại
+
         canvasGroup.blocksRaycasts = true;
 
-        if (transform.parent == transform.root)
+        // KIỂM TRA: Có phải đang kéo đồ TỪ TRÊN NGƯỜI ném ra ngoài không?
+        bool isUnequipping = false;
+
+        if (EquipmentManager.instance.currentWeapon != null)
         {
-            transform.SetParent(originalParent);
-
-            EquipmentSlotUI equipSlot = originalParent.GetComponent<EquipmentSlotUI>();
-            if (equipSlot != null)
+            // 1. Kiểm tra tháo Vũ Khí
+            if (equipData.weaponStats != null && equipData.weaponStats == EquipmentManager.instance.currentWeapon)
             {
-                // Biến lại thành bóng ma tàng hình
-                RectTransform rect = GetComponent<RectTransform>();
-                rect.anchorMin = Vector2.zero;
-                rect.anchorMax = Vector2.one;
-                rect.offsetMin = Vector2.zero;
-                rect.offsetMax = Vector2.zero;
-                rect.localScale = Vector3.one;
-
-                if (iconImage != null) iconImage.enabled = false;
-                if (borderImage != null) borderImage.enabled = false;
-
-                // --- BỔ SUNG: BẬT LẠI THANH KIẾM TO VÌ BẠN ĐÃ THẢ TRƯỢT ---
-                InventoryUIManager uiManager = FindObjectOfType<InventoryUIManager>();
-                if (uiManager != null && uiManager.weaponImage != null)
-                {
-                    uiManager.weaponImage.enabled = true;
-                }
+                EquipmentManager.instance.UnequipWeapon();
+                isUnequipping = true;
             }
+            // 2. Kiểm tra tháo Ngọc
             else
             {
-                // Trả về kho đồ
-                GetComponent<RectTransform>().localPosition = Vector3.zero;
+                foreach (var slot in EquipmentManager.instance.currentWeapon.slots)
+                {
+                    if (slot.isOccupied && slot.equippedItem == equipData)
+                    {
+                        slot.equippedItem = null;
+                        slot.isOccupied = false;
+                        isUnequipping = true;
+                        break;
+                    }
+                }
             }
         }
+
+        // --- ĐÃ SỬA CHUẨN: HỦY LUÔN ICON NÀY VÀ VẼ LẠI TOÀN BỘ UI ---
+        // Bất kể là bạn tháo đồ thành công hay ném trượt, việc hủy Icon đang kéo
+        // và gọi Refresh sẽ đảm bảo UI luôn đồng bộ 100% với Dữ liệu gốc trong túi đồ.
+        Destroy(gameObject);
+        InventoryUIManager.instance.DelayedRefresh();
+
+        if (isUnequipping)
+        {
+            Debug.Log("<color=yellow>Đã tháo đồ về túi thành công!</color>");
+        }
     }
+
     public void OnPointerClick(PointerEventData eventData)
     {
-        // Chỉ hiện thông tin khi người chơi bấm Chuột Trái
-        if (eventData.button == PointerEventData.InputButton.Left)
+        if (eventData.button == PointerEventData.InputButton.Left) InventoryUIManager.instance.ShowItemInfo(itemData);
+        else if (eventData.button == PointerEventData.InputButton.Right)
         {
-            // Vì ở bài trước ta đã tạo biến instance (Singleton) cho InventoryUIManager
-            // Nên giờ ta có thể gọi thẳng hàm ShowItemInfo cực kỳ dễ dàng!
-            InventoryUIManager.instance.ShowItemInfo(itemData);
-
-            Debug.Log("Đã xem thông tin: " + itemData.itemName);
+            bool isConsumed = itemData.UseItem();
+            if (isConsumed) { InventoryManager.instance.RemoveItem(itemData); InventoryUIManager.instance.RefreshInventoryUI(); }
         }
     }
 }

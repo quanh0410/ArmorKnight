@@ -112,12 +112,12 @@ TextureImporter:
       name: spr_torch_0
       rect:
         serializedVersion: 2
-        x: 6
-        y: 6
-        width: 9
-        height: 17
+        x: 0
+        y: 0
+        width: 21
+        height: 27
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -134,12 +134,12 @@ TextureImporter:
       name: spr_torch_1
       rect:
         serializedVersion: 2
-        x: 27
-        y: 6
-        width: 9
-        height: 16
+        x: 21
+        y: 0
+        width: 21
+        height: 27
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -156,12 +156,12 @@ TextureImporter:
       name: spr_torch_2
       rect:
         serializedVersion: 2
-        x: 48
-        y: 6
-        width: 9
-        height: 17
+        x: 42
+        y: 0
+        width: 21
+        height: 27
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -178,12 +178,12 @@ TextureImporter:
       name: spr_torch_3
       rect:
         serializedVersion: 2
-        x: 69
-        y: 6
-        width: 9
-        height: 18
+        x: 63
+        y: 0
+        width: 21
+        height: 27
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -200,7 +200,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: c73dcabfad5707e409ab0dc6f18cfed4
     internalID: 0
     vertices: []
     indices: 
@@ -208,7 +208,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":1.0},"gridSpriteSize":{"x":21.0,"y":27.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       spr_torch_0: -2041049398770351245
       spr_torch_1: 6669048238204813977

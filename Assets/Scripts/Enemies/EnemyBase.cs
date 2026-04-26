@@ -35,6 +35,14 @@ public abstract class EnemyBase : MonoBehaviour //
 
     protected virtual void Update() //
     {
+        if (player == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null) player = playerObj.transform;
+
+            // Nếu vẫn chưa thấy (do player đang tàng hình lúc chuyển map) thì bỏ qua không làm gì cả
+            if (player == null) return;
+        }
         if (health != null && health.isDead) //
         {
             // --- KÍCH HOẠT RỚT TIỀN 1 LẦN DUY NHẤT ---
@@ -78,7 +86,7 @@ public abstract class EnemyBase : MonoBehaviour //
         for (int i = 0; i < coinCount; i++)
         {
             // Sinh ra đồng xu ngay tại bụng con quái
-            GameObject coin = Instantiate(coinPrefab, transform.position, Quaternion.identity);
+            GameObject coin = ObjectPoolManager.Instance.Spawn(coinPrefab, transform.position, Quaternion.identity);
 
             // Lấy Rigidbody2D của đồng xu để tác dụng lực
             Rigidbody2D coinRb = coin.GetComponent<Rigidbody2D>();

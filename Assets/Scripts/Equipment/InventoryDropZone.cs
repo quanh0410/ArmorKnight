@@ -6,7 +6,7 @@ public class InventoryDropZone : MonoBehaviour, IDropHandler
     public void OnDrop(PointerEventData eventData)
     {
         InventoryItemUI draggedItem = eventData.pointerDrag.GetComponent<InventoryItemUI>();
-        if (draggedItem == null) return;
+        if (draggedItem == null || draggedItem.originalParent == null) return;
 
         InventoryUIManager uiManager = FindObjectOfType<InventoryUIManager>();
 

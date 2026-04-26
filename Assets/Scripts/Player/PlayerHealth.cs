@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System; // Bắt buộc phải thêm thư viện này để dùng Action
+using System;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -8,7 +9,6 @@ public class PlayerHealth : MonoBehaviour
     public int maxHealth = 5;
     public int currentHealth { get; private set; }
 
-    // --- TẠO SỰ KIỆN (Trạm phát thanh) ---
     public static event Action<int, int> OnHealthChanged;
 
     [Header("Hit Stop Settings")]
@@ -25,11 +25,11 @@ public class PlayerHealth : MonoBehaviour
     public float knockbackDuration = 0.2f;
 
     [Header("Trap Respawn Settings")]
-    public float safePositionDelay = 0.2f; // Thời gian phải đứng trên đất để được tính là an toàn
-    public LayerMask noSaveLayer; // --- 1. THÊM BIẾN NÀY ---
-    public LayerMask trapLayer; // --- THÊM DÒNG NÀY (Để nhận diện Layer bẫy) ---
-    private Vector2 lastSafePosition; // Tọa độ an toàn cuối cùng
-    private float groundedTimer; // Bộ đếm thời gian
+    public float safePositionDelay = 0.2f;
+    public LayerMask noSaveLayer;
+    public LayerMask trapLayer;
+    private Vector2 lastSafePosition;
+    private float groundedTimer;
 
     private Rigidbody2D rb;
     private PlayerAnimator playerAnimator;
@@ -44,7 +44,6 @@ public class PlayerHealth : MonoBehaviour
         playerController = GetComponent<PlayerController>();
         sr = GetComponent<SpriteRenderer>();
 
-        // --- PHÁT TÍN HIỆU lần đầu khi game bắt đầu ---
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
@@ -53,7 +52,6 @@ public class PlayerHealth : MonoBehaviour
         if (playerController == null) return;
 
         bool isNearTrap = Physics2D.OverlapCircle(transform.position, 2.5f, trapLayer);
-
         bool inNoSaveZone = Physics2D.OverlapCircle(transform.position, 0.5f, noSaveLayer);
 
         if (playerController.IsGrounded() && !playerController.IsWalled() && !isInvincible && !isNearTrap && !inNoSaveZone)
@@ -81,15 +79,12 @@ public class PlayerHealth : MonoBehaviour
         }
 
         currentHealth -= damageAmount;
-        Debug.Log("Player bị quái chạm! Máu còn: " + currentHealth);
-
-        // --- PHÁT TÍN HIỆU khi bị mất máu ---
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
 
-        CinemachineShake.Instance.ShakeCamera(0.2f); // Rung mạnh
+        CinemachineShake.Instance.ShakeCamera(0.2f);
 
         PlayerEnergy energyObj = GetComponent<PlayerEnergy>();
-        if (energyObj != null) energyObj.CancelHeal(true); // true = Bị ngắt do ăn đòn
+        if (energyObj != null) energyObj.CancelHeal(true);
 
         if (currentHealth > 0)
         {
@@ -117,9 +112,7 @@ public class PlayerHealth : MonoBehaviour
         transform.localScale = new Vector3(faceDirection, 1f, 1f);
 
         Time.timeScale = 0f;
-
         yield return new WaitForSecondsRealtime(hitStopDuration);
-
         Time.timeScale = 1f;
 
         float pushDirection = -faceDirection;
@@ -143,7 +136,22 @@ public class PlayerHealth : MonoBehaviour
         isInvincible = false;
     }
 
-    // Thay thế hàm Die() cũ
+    public void Heal(int healAmount)
+    {
+        if (currentHealth >= maxHealth || currentHealth <= 0) return;
+
+        currentHealth += healAmount;
+        if (currentHealth > maxHealth) currentHealth = maxHealth;
+
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
+    public void FullHeal()
+    {
+        currentHealth = maxHealth;
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
     private void Die()
     {
         StartCoroutine(DieRoutine());
@@ -152,39 +160,75 @@ public class PlayerHealth : MonoBehaviour
     private IEnumerator DieRoutine()
     {
         isInvincible = true;
-        playerController.enabled = false; //
+        playerController.enabled = false;
 
-        // 1. Dừng hình một chút (Hit Stop) để cảm nhận độ nặng của đòn chí mạng
         Time.timeScale = 0f;
         yield return new WaitForSecondsRealtime(hitStopDuration);
         Time.timeScale = 1f;
 
-        // 2. Chuyển sang hoạt ảnh Die một cách dứt khoát (không bị đè bởi lệnh Hit nữa)
-        playerAnimator.PlayDieAnimation(); //
-
-        // 3. Xử lý Vật lý của cái xác
- 
+        playerAnimator.PlayDieAnimation();
         rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
-
-        // Đảm bảo không dùng Kinematic nữa (Xóa dòng Kinematic cũ của bạn)
         rb.bodyType = RigidbodyType2D.Dynamic;
 
-        Debug.Log("GAME OVER!"); //
-    }
+        yield return new WaitForSeconds(2f);
 
-    public void Heal(int healAmount)
-    {
-        if (currentHealth >= maxHealth || currentHealth <= 0) return;
+        if (FadeManager.instance != null) yield return StartCoroutine(FadeManager.instance.FadeOut(1f));
 
-        currentHealth += healAmount;
-
-        if (currentHealth > maxHealth)
+        if (SaveManager.instance != null)
         {
-            currentHealth = maxHealth;
+            // Lấy ID dạng String
+            string targetScene = SaveManager.instance.currentSaveData.respawnSceneName;
+            string targetBench = SaveManager.instance.currentSaveData.respawnBenchID;
+
+            SaveManager.instance.ResetNormalEnemies();
+
+            string currentMapScene = SceneManager.GetActiveScene().name;
+            if (currentMapScene != "Core_Scene")
+            {
+                AsyncOperation unload = SceneManager.UnloadSceneAsync(currentMapScene);
+                while (!unload.isDone) yield return null;
+            }
+
+            AsyncOperation load = SceneManager.LoadSceneAsync(targetScene, LoadSceneMode.Additive);
+            while (!load.isDone) yield return null;
+
+            Scene loadedScene = SceneManager.GetSceneByName(targetScene);
+            SceneManager.SetActiveScene(loadedScene);
+
+            // Tìm kiếm cô lập Checkpoint
+            bool foundBench = false;
+            GameObject[] rootObjects = loadedScene.GetRootGameObjects();
+
+            foreach (GameObject root in rootObjects)
+            {
+                Checkpoint[] benchesInScene = root.GetComponentsInChildren<Checkpoint>(true);
+                foreach (Checkpoint bench in benchesInScene)
+                {
+                    if (bench.benchID == targetBench)
+                    {
+                        transform.position = bench.transform.position;
+                        foundBench = true;
+                        break;
+                    }
+                }
+                if (foundBench) break;
+            }
         }
 
-        // --- PHÁT TÍN HIỆU khi được hồi máu ---
-        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        FullHeal();
+
+        // Bật lại script điều khiển trước
+        playerController.enabled = true;
+
+        // GỌI HÀM ÉP NGỒI TRỰC TIẾP LÊN GHẾ
+        playerController.SnapToRest();
+
+        isInvincible = false;
+        sr.color = new Color(1f, 1f, 1f, 1f);
+
+        if (FadeManager.instance != null) yield return StartCoroutine(FadeManager.instance.FadeIn(1f));
+
+        Debug.Log("ĐÃ HỒI SINH TẠI CHECKPOINT!");
     }
 
     private void OnTriggerStay2D(Collider2D collider)
@@ -195,17 +239,13 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    // Cơ chế xử lý khi chạm bẫy
-    // --- CẬP NHẬT TRONG PLAYERHEALTH.CS ---
-
     public void TakeTrapDamage(int damageAmount)
     {
-        if (isInvincible || currentHealth <= 0) return; //
+        if (isInvincible || currentHealth <= 0) return;
+        if (playerController != null) playerController.InterruptDashAndActions();
 
-        if (playerController != null) playerController.InterruptDashAndActions(); //
-
-        currentHealth -= damageAmount; //
-        OnHealthChanged?.Invoke(currentHealth, maxHealth); //
+        currentHealth -= damageAmount;
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
         CinemachineShake.Instance.ShakeCamera(0.3f);
 
         if (hitEffectPrefab != null && playerController != null)
@@ -221,21 +261,20 @@ public class PlayerHealth : MonoBehaviour
         }
         else
         {
-            Die(); //
+            Die();
         }
     }
 
     private IEnumerator TrapRespawnRoutine()
     {
         isInvincible = true;
-        playerController.enabled = false; // Khóa điều khiển
+        playerController.enabled = false;
 
-        // Đảm bảo đứng im hoàn toàn tại chỗ trúng bẫy
         rb.linearVelocity = Vector2.zero;
-        rb.simulated = false; // Tạm thời tắt vật lý để tránh bị bẫy đẩy đi tiếp
+        rb.simulated = false;
 
         Time.timeScale = 0f;
-        yield return new WaitForSecondsRealtime(hitStopDuration); // Dừng hình
+        yield return new WaitForSecondsRealtime(hitStopDuration);
         Time.timeScale = 1f;
 
         yield return new WaitForSeconds(0.2f);

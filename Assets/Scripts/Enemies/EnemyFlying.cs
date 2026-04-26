@@ -45,6 +45,10 @@ public class EnemyFlying : EnemyBase
 
     protected override void Update()
     {
+        if (player != null && targetHealth == null)
+        {
+            targetHealth = player.GetComponent<PlayerHealth>();
+        }
         if (health != null && health.isKnockedBack) 
         {
             if (currentState == FlyState.Telegraph || currentState == FlyState.Dive || currentState == FlyState.Recover) 
@@ -57,6 +61,7 @@ public class EnemyFlying : EnemyBase
 
     protected override void ExecuteAI()
     {
+        if (player == null) return;
         float distanceToPlayer = player != null ? Vector2.Distance(transform.position, player.position) : 999f; 
 
         if (targetHealth != null && targetHealth.currentHealth <= 0) 

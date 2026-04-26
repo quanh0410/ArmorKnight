@@ -22,7 +22,7 @@ public class PlayerAnimator : MonoBehaviour
     private static readonly int IsHealingParam = Animator.StringToHash("IsHealing");
     private static readonly int IsAttackingParam = Animator.StringToHash("IsAttacking");
     private static readonly int TurnAroundTrigger = Animator.StringToHash("TurnAround");
-
+    private static readonly int IsRestingParam = Animator.StringToHash("IsResting");
 
     void Start()
     {
@@ -45,9 +45,21 @@ public class PlayerAnimator : MonoBehaviour
         // Chỉ cần chặn khi đang bị khóa đòn chém (isAttackLocked - nếu bạn có thêm vào)
         if (!playerController.enabled) return;
 
+        // --- CẬP NHẬT MỚI: CHẶN ANIMATION KHI BỊ KHÓA ---
+        if (playerController.isInputLocked)
+        {
+            // Ép mọi thông số về tư thế Đứng yên (Idle)
+            anim.SetFloat(SpeedParam, 0f);
+            anim.SetFloat(YVelocityParam, 0f);
+            anim.SetBool(IsGroundedParam, true);
+            anim.SetBool(IsDashingParam, false);
+            anim.SetBool(IsWallSlidingParam, false);
+
+            return; // Lệnh return này sẽ ngắt ngay tại đây, không cho đọc phím bấm phía dưới nữa!
+        }
+
         float moveInput = Input.GetAxisRaw("Horizontal");
         anim.SetFloat(SpeedParam, Mathf.Abs(moveInput));
-
         anim.SetFloat(YVelocityParam, rb.linearVelocity.y);
         anim.SetBool(IsGroundedParam, playerController.IsGrounded());
         anim.SetBool(IsDashingParam, playerController.isDashing);
@@ -105,5 +117,10 @@ public class PlayerAnimator : MonoBehaviour
     public void PlayTurnAnimation()
     {
         anim.SetTrigger(TurnAroundTrigger);
+    }
+
+    public void SetRestingAnimation(bool isResting)
+    {
+        anim.SetBool(IsRestingParam, isResting);
     }
 }

@@ -1,9 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.Events; // Thư viện cực mạnh để tạo Event trong Unity
+using UnityEngine.Events;
 
 public class EnemyHealth : MonoBehaviour
 {
+    [Header("Lưu Trạng Thái (Save/Load)")]
+    [Tooltip("Tích chọn nếu đây là Boss (Giết là mất vĩnh viễn). Bỏ tích nếu là quái thường (Sẽ hồi sinh khi ngồi ghế).")]
+    public bool isBossOrUnique = false;
+    public string enemyID;
+
     [Header("Health Settings")]
     public int maxHealth = 30;
 
@@ -20,6 +25,14 @@ public class EnemyHealth : MonoBehaviour
 
     void Start()
     {
+        // KHI VỪA SINH RA: Hỏi SaveManager xem con quái này có trong danh sách chết chưa?
+        // (SaveManager sẽ tự động check cả danh sách Vĩnh viễn lẫn Tạm thời)
+        if (SaveManager.instance != null && !string.IsNullOrEmpty(enemyID) && SaveManager.instance.IsObjectInteracted(enemyID))
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         currentHealth = maxHealth;
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
@@ -48,7 +61,7 @@ public class EnemyHealth : MonoBehaviour
 
     private IEnumerator ApplyKnockback(Transform attacker)
     {
-        isKnockedBack = true; 
+        isKnockedBack = true;
 
         float direction = attacker.position.x < transform.position.x ? 1f : -1f;
 
@@ -60,7 +73,7 @@ public class EnemyHealth : MonoBehaviour
         if (!isDead)
         {
             rb.linearVelocity = Vector2.zero;
-            isKnockedBack = false; 
+            isKnockedBack = false;
         }
     }
 
@@ -68,6 +81,13 @@ public class EnemyHealth : MonoBehaviour
     {
         isDead = true;
         isKnockedBack = false;
+
+        // KHI CHẾT: Báo cho SaveManager biết. 
+        // Nó sẽ tự biết nhét vào danh sách nào dựa trên biến isBossOrUnique
+        if (SaveManager.instance != null && !string.IsNullOrEmpty(enemyID))
+        {
+            SaveManager.instance.SaveObjectState(enemyID, isBossOrUnique);
+        }
 
         if (anim != null) anim.SetTrigger("Die");
 
@@ -79,7 +99,6 @@ public class EnemyHealth : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
             rb.bodyType = RigidbodyType2D.Kinematic;
         }
-
     }
 
     public void Die()

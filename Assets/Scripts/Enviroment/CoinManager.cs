@@ -32,4 +32,12 @@ public class CoinManager : MonoBehaviour
 
         Debug.Log("Tổng tiền hiện tại: " + totalCoins);
     }
+
+    // Trong CoinManager.cs
+    public void LoadData(int amount)
+    {
+        totalCoins = amount;
+        // Cần gọi Invoke để UI cập nhật lại con số từ file Save
+        OnCoinCollected?.Invoke(totalCoins);
+    }
 }
