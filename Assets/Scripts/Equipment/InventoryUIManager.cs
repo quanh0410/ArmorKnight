@@ -161,11 +161,14 @@ public class InventoryUIManager : MonoBehaviour
     private void ClearRow(Transform row)
     {
         if (row == null) return;
-        foreach (Transform child in row)
+
+        // Bắt buộc phải lặp ngược từ dưới lên trên khi xóa Object trong Unity UI
+        for (int i = row.childCount - 1; i >= 0; i--)
         {
-            // Tắt hiển thị ngay lập tức để ngắt kết nối khỏi hệ thống Layout
-            child.gameObject.SetActive(false);
-            Destroy(child.gameObject);
+            GameObject child = row.GetChild(i).gameObject;
+            // Rút ống thở khỏi cha ngay lập tức để hệ thống Layout không bị kẹt
+            child.transform.SetParent(null);
+            Destroy(child);
         }
     }
 

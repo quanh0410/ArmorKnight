@@ -10,14 +10,16 @@ public class EquipmentSlotUI : MonoBehaviour, IDropHandler
         InventoryItemUI draggedItem = eventData.pointerDrag.GetComponent<InventoryItemUI>();
         if (draggedItem != null && draggedItem.itemData is EquipmentData equipData)
         {
-            // Chống lỗi thả lại vũ khí vào chính nó
+            // 1. Chống lỗi thả lại vũ khí vào chính nó (ĐÃ FIX LỖI BÓNG MA)
             if (EquipmentManager.instance.currentWeapon == equipData.weaponStats)
             {
                 draggedItem.isDropped = true;
+                Destroy(draggedItem.gameObject); // Phải tiêu diệt icon đang cầm!
                 InventoryUIManager.instance.DelayedRefresh();
                 return;
             }
 
+            // 2. Lắp vũ khí mới
             if (equipData.equipType == acceptedType && equipData.weaponStats != null)
             {
                 draggedItem.isDropped = true;

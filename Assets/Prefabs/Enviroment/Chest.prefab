@@ -174,11 +174,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4cc4566a7f249046a41f4da129992d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  chestID: 7c798171-2ce9-40e5-afc9-c83a17fedff0
+  chestID: 
   requiredKey: {fileID: 11400000, guid: 278405fff5dc8ff498c9bcfcfc03a5da, type: 2}
   keysNeeded: 1
-  itemsInside:
-  - {fileID: 11400000, guid: cb6594b924d7ffe47a19d425a04e4a5b, type: 2}
-  itemPickupPrefab: {fileID: 3239990247458762178, guid: 2543ca912fdddd044a04e4fec329a3eb, type: 3}
+  itemsInside: []
+  itemPickupPrefab: {fileID: 0}
   popForce: 5
   openedChestSprite: {fileID: 8985439187258846068, guid: ba6710b91aff2a744ab4041bbe24e358, type: 3}

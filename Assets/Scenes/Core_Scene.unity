@@ -156,7 +156,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: 0000000095a22d4eed4cf935fd484cf75b95ef2ed558a513371ea7181fd95726
+  m_ApplyToSortingLayers: 95a22d4eed4cf935fd484cf75b95ef2ed558a513371ea7181fd957260000000043d0ec51
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -1257,7 +1257,7 @@ Transform:
   m_GameObject: {fileID: 443643443}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.1899986, y: 1.8799999, z: -10}
+  m_LocalPosition: {x: 156.42, y: -15.69, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3761,6 +3761,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   moveSpeed: 5
+  platformVelocity: {x: 0, y: 0}
   jumpForce: 12
   jumpCutMultiplier: 0.24
   jumpEffectPrefab: {fileID: 9055669322725740120, guid: 5fba21e3852a45c4ca06c017690e35d0, type: 3}
@@ -3971,7 +3972,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -145995523
-  m_SortingLayer: 3
+  m_SortingLayer: -5
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 3204480812468917802, guid: dc92ea6567810a54b83b1cc0e06e4a25, type: 3}
@@ -3993,7 +3994,7 @@ Transform:
   m_GameObject: {fileID: 1258006894}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -26.3, y: 1.1, z: 0}
+  m_LocalPosition: {x: 131.31, y: -16.47, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6771,7 +6772,7 @@ Transform:
   m_GameObject: {fileID: 2103201974}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -26.3, y: 2.1, z: -10}
+  m_LocalPosition: {x: 131.31, y: -15.469999, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -46,7 +46,7 @@ public class AutoIDGeneratorTool
             }
         }
 
-        // 4. --- NÂNG CẤP: Quét toàn bộ GHẾ ĐÁ (Checkpoint) ---
+        // 4. Quét toàn bộ GHẾ ĐÁ (Checkpoint)
         Checkpoint[] benches = Object.FindObjectsOfType<Checkpoint>();
         foreach (var bench in benches)
         {
@@ -54,6 +54,18 @@ public class AutoIDGeneratorTool
             {
                 bench.benchID = System.Guid.NewGuid().ToString();
                 EditorUtility.SetDirty(bench);
+                count++;
+            }
+        }
+
+        // 5. --- MỚI: Quét toàn bộ CỬA CÓ KHÓA (LockedDoorTeleporter) ---
+        LockedDoorTeleporter[] lockedDoors = Object.FindObjectsOfType<LockedDoorTeleporter>();
+        foreach (var door in lockedDoors)
+        {
+            if (string.IsNullOrEmpty(door.doorID))
+            {
+                door.doorID = System.Guid.NewGuid().ToString();
+                EditorUtility.SetDirty(door);
                 count++;
             }
         }

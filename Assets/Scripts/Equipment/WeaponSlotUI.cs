@@ -11,10 +11,15 @@ public class WeaponSlotUI : MonoBehaviour, IDropHandler
         InventoryItemUI draggedItem = eventData.pointerDrag.GetComponent<InventoryItemUI>();
         if (draggedItem != null && draggedItem.itemData is EquipmentData equipData)
         {
-            // 1. CHỐNG LỖI KÉO THẢ TẠI CHỖ (Cầm ngọc trong ô và lỡ tay thả lại vào chính ô đó)
-            if (EquipmentManager.instance.currentWeapon.slots[slotIndex].equippedItem == equipData)
+            // 0. CHẶN ĐỨNG VŨ KHÍ: Không cho chui vào ô khảm ngọc
+            if (equipData.equipType == EquipmentType.Weapon) return;
+
+            // 1. CHỐNG LỖI KÉO THẢ TẠI CHỖ (ĐÃ FIX LỖI BÓNG MA)
+            if (EquipmentManager.instance.currentWeapon != null &&
+                EquipmentManager.instance.currentWeapon.slots[slotIndex].equippedItem == equipData)
             {
-                draggedItem.isDropped = true; // Cắm cờ an toàn
+                draggedItem.isDropped = true;
+                Destroy(draggedItem.gameObject); // Phải tiêu diệt icon đang cầm!
                 InventoryUIManager.instance.DelayedRefresh();
                 return;
             }
@@ -25,14 +30,10 @@ public class WeaponSlotUI : MonoBehaviour, IDropHandler
                 bool success = EquipmentManager.instance.TryEquipItem(equipData, slotIndex);
                 if (success)
                 {
-                    draggedItem.isDropped = true; // Cắm cờ an toàn
+                    draggedItem.isDropped = true;
                     Destroy(draggedItem.gameObject);
                     InventoryUIManager.instance.DelayedRefresh();
-                    Debug.Log($"<color=green>Đã lắp {equipData.itemName} vào ô số {slotIndex} thành công!</color>");
-                }
-                else
-                {
-                    Debug.LogError($"<color=red>Lỗi Logic:</color> Ô số {slotIndex} báo bận! (Occupied: {EquipmentManager.instance.currentWeapon.slots[slotIndex].isOccupied})");
+                    Debug.Log($"<color=green>Đã lắp {equipData.itemName} vào ô {slotIndex}!</color>");
                 }
             }
         }

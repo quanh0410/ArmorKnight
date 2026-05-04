@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: febdada2fa340224b8afe1a93aeb5f11, type: 3}
   m_Name: Sword_Item
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentData
   itemID: Sword_Item
@@ -23,4 +23,4 @@ MonoBehaviour:
   itemColor: 0
   mechanicToUnlock: Attack
   equipType: 1
-  weaponStats: {fileID: 11400000, guid: f32c9892a15778247a2d0abd61859a33, type: 2}
+  weaponStats: {fileID: 11400000, guid: c7b909f908c454f4c90f2862b6774ffc, type: 2}
