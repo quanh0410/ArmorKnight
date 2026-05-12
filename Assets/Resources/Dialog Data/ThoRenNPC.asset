@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2d9d1d2b876e2240a892b9c23041b9e, type: 3}
+  m_Name: ThoRenNPC
+  m_EditorClassIdentifier: Assembly-CSharp::DialogData
+  firstTimeLines:
+  - speakerName: "Th\u1EE3 r\xE8n"
+    sentence: "B\u1ED9 gi\xE1p nh\xECn tuy\u1EC7t \u0111\u1EA5y."
+  - speakerName: "Th\u1EE3 r\xE8n"
+    sentence: Hahahahahah
+  - speakerName: "Th\u1EE3 r\xE8n"
+    sentence: "Nh\u01B0ng n\xF3 l\u1EA1i kh\xF4ng ph\xF9 h\u1EE3p trong ho\xE0n c\u1EA3nh
+      hi\u1EC7n t\u1EA1i ch\xFAt n\xE0o. "
+  - speakerName: "Th\u1EE3 r\xE8n"
+    sentence: "Ta c\xF3 th\u1EC3 t\u1EA1o ra m\u1ED9t th\u1EE9 r\u1EA5t h\u1EEFu
+      d\u1EE5ng v\u1EDBi ng\u01B0\u01A1i l\xFAc n\xE0y \u0111\u1EA5y. "
+  - speakerName: "Th\u1EE3 r\xE8n"
+    sentence: "Tuy nhi\xEAn ta \u0111ang thi\u1EBFu m\u1EA5t nguy\xEAn li\u1EC7u
+      ch\u1EBF t\xE1c. "
+  - speakerName: "Th\u1EE3 r\xE8n"
+    sentence: "Ng\u01B0\u01A1i c\xF3 th\u1EC3 \u0111i ki\u1EBFm gi\xFAp ta kh\xF4ng."
+  - speakerName: "Th\u1EE3 r\xE8n"
+    sentence: "Y\xEAn t\xE2m ta s\u1EBD l\u1EA5y gi\xE1 r\u1EBB h\u01A1n cho."
+  - speakerName: "Th\u1EE3 r\xE8n"
+    sentence: "Y\xEAu c\u1EA7u {current}/{target} H\u1ED9 Th\u1EA1ch."
+  defaultLines:
+  - speakerName: "Th\u1EE3 r\xE8n"
+    sentence: "T\u1ED1t l\u1EAFm, th\u1EE9 n\xE0y d\xE0nh cho ng\u01B0\u01A1i."
+  - speakerName: "Th\u1EE3 r\xE8n"
+    sentence: "Ch\xFAc may m\u1EAFn !!!"

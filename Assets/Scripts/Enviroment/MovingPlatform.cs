@@ -8,7 +8,6 @@ public class MovingPlatform : MonoBehaviour
     [SerializeField] private float speed = 2f;
     private Vector3 targetPosition;
 
-    // --- ĐÃ NÂNG CẤP: Dùng trực tiếp PlayerController thay vì Transform ---
     private PlayerController playerController;
 
     private bool isSwitchActivated = false;
@@ -17,7 +16,6 @@ public class MovingPlatform : MonoBehaviour
 
     private void Start()
     {
-        // Bắt đầu di chuyển đến điểm A
         targetPosition = pointA.position;
     }
 
@@ -25,33 +23,39 @@ public class MovingPlatform : MonoBehaviour
     {
         if (isStoppedAtC)
         {
-            // Reset vận tốc nếu bệ đỡ dừng lại
             if (playerController != null) playerController.platformVelocity = Vector2.zero;
             return;
         }
 
-        // Khi switch được kích hoạt, chuyển hướng đến C (một lần duy nhất)
         if (isSwitchActivated && !reachedC)
         {
             targetPosition = pointC.position;
         }
 
-        // 1. Tính toán vị trí mới
-        Vector3 newPos = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+        // 1. Tính toán khoảng cách (delta) và vị trí mới
+        Vector3 deltaPos = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime) - transform.position;
+        Vector3 newPos = transform.position + deltaPos;
 
-        // 2. Tính ra vận tốc của bệ đỡ trong Frame này
-        Vector2 currentVelocity = (newPos - transform.position) / Time.deltaTime;
+        // 2. Tính vận tốc (cho trục X)
+        Vector2 currentVelocity = deltaPos / Time.deltaTime;
 
-        // 3. Di chuyển bệ đỡ
+        // 3. Di chuyển Platform
         transform.position = newPos;
 
-        // 4. TRUYỀN VẬN TỐC SANG CHO NHÂN VẬT
+        // 4. TRUYỀN VẬN TỐC & KHẮC PHỤC LỖI RƠI XUỐNG
         if (playerController != null)
         {
+            // Trục X: Vẫn truyền vận tốc để Player đi bộ mượt mà
             playerController.platformVelocity = currentVelocity;
+
+            // Trục Y: NẾU PLATFORM ĐI XUỐNG, ép Player kéo xuống theo bằng đúng khoảng cách đó
+            // Điều này xóa bỏ hoàn toàn khe hở gây ra do trọng lực chậm chạp
+            if (deltaPos.y < 0)
+            {
+                playerController.transform.position += new Vector3(0, deltaPos.y, 0);
+            }
         }
 
-        // Đảo chiều di chuyển hoặc dừng lại khi tới đích
         if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
         {
             if (isSwitchActivated)
@@ -66,20 +70,15 @@ public class MovingPlatform : MonoBehaviour
             }
             else
             {
-                // Di chuyển qua lại giữa A và B
                 targetPosition = (targetPosition == pointA.position) ? pointB.position : pointA.position;
             }
         }
     }
 
-    // ==========================================
-    // NHẬN DIỆN NGƯỜI CHƠI
-    // ==========================================
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            // Kết nối với Script thay vì dùng SetParent
             playerController = collision.gameObject.GetComponent<PlayerController>();
         }
     }
@@ -90,7 +89,6 @@ public class MovingPlatform : MonoBehaviour
         {
             if (playerController != null)
             {
-                // XÓA sạch vận tốc của bệ đỡ trên người Player khi họ nhảy ra ngoài
                 playerController.platformVelocity = Vector2.zero;
                 playerController = null;
             }
@@ -110,7 +108,6 @@ public class MovingPlatform : MonoBehaviour
         reachedC = false;
         isStoppedAtC = false;
 
-        // Tiếp tục di chuyển về phía A hoặc B tùy vị trí hiện tại
         targetPosition = (Vector3.Distance(transform.position, pointA.position) < Vector3.Distance(transform.position, pointB.position))
             ? pointB.position : pointA.position;
     }

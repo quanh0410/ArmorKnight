@@ -86,6 +86,16 @@ public class PlayerHealth : MonoBehaviour
         PlayerEnergy energyObj = GetComponent<PlayerEnergy>();
         if (energyObj != null) energyObj.CancelHeal(true);
 
+        // KÍCH HOẠT ITEM CHUYỂN SÁT THƯƠNG THÀNH NĂNG LƯỢNG
+        if (EquipmentManager.instance != null && EquipmentManager.instance.HasMechanic("DamageToEnergy"))
+        {
+            if (energyObj != null)
+            {
+                // Gọi hàm đã gộp và truyền 20 năng lượng cho mỗi 1 máu mất đi
+                energyObj.AddEnergy(damageAmount * 20);
+            }
+        }
+
         if (currentHealth > 0)
         {
             playerAnimator.PlayHitAnimation();
@@ -247,6 +257,17 @@ public class PlayerHealth : MonoBehaviour
         currentHealth -= damageAmount;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
         CinemachineShake.Instance.ShakeCamera(0.3f);
+
+        // KÍCH HOẠT ITEM CHUYỂN SÁT THƯƠNG THÀNH NĂNG LƯỢNG
+        if (EquipmentManager.instance != null && EquipmentManager.instance.HasMechanic("DamageToEnergy"))
+        {
+            PlayerEnergy energyObj = GetComponent<PlayerEnergy>();
+            if (energyObj != null)
+            {
+                // Gọi hàm đã gộp và truyền 20 năng lượng cho mỗi 1 máu mất đi
+                energyObj.AddEnergy(damageAmount * 20);
+            }
+        }
 
         if (hitEffectPrefab != null && playerController != null)
         {

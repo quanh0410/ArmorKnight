@@ -112,6 +112,20 @@ public class PlayerController : MonoBehaviour
         if (!isDashing && !isWallClimbing)
         {
             HandleAttackInput();
+            // --- MỚI: KỸ NĂNG CHÉM XA (Phím U) ---
+            if (EquipmentManager.instance.HasMechanic("RangedSlash") && Input.GetKeyDown(KeyCode.U) && Time.time >= lastAttackTime + attackCooldown && (!IsWalled() || IsGrounded()))
+            {
+                // Kiểm tra và trừ 33 năng lượng
+                if (GetComponent<PlayerEnergy>().SpendEnergy(0))
+                {
+                    lastAttackTime = Time.time;
+                    GetComponent<PlayerCombat>().CastRangedSlash(); // Gọi hàm chém xa ở PlayerCombat
+                }
+                else
+                {
+                    Debug.Log("Không đủ 33 năng lượng để phóng kiếm khí!");
+                }
+            }
         }
 
         if (!isDashing && !isWallClimbing && !isAttackLocked)

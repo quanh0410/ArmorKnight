@@ -13,14 +13,22 @@ public class PlayerCombat : MonoBehaviour
 
     [Header("Visual Effects Settings")]
     public GameObject hitEffectPrefab;
+    public GameObject stunEffectPrefab;
     public Vector2 effectOffset = Vector2.zero;
+
+    [Header("Ranged Slash Settings")]
+    public GameObject rangedSlashPrefab;
+    public Vector2 rangedSlashOffset = new Vector2(0.5f, 0f); // --- MỚI: Vị trí sinh ra so với nhân vật ---
+    public float rangedSlashSpeed = 15f;                    // --- MỚI: Tốc độ bay có thể chỉnh ở đây ---
+    public float rangedSlashLifetime = 1f;                  // --- MỚI: Thời gian tồn tại ---
+    public int rangedSlashDamage = 20;
 
     [Header("References")]
     [SerializeField] private Transform attackPoint;
 
     private PlayerController playerController;
     private PlayerAnimator playerAnimator;
-    private PlayerEnergy playerEnergy; // Khai báo biến mới
+    private PlayerEnergy playerEnergy;
 
     void Start()
     {
@@ -37,7 +45,33 @@ public class PlayerCombat : MonoBehaviour
         Collider2D[] hitEnviroments = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enviromentLayer);
 
         bool hasHit = false;
-        bool hasGainedEnergy = false; // Biến đánh dấu xem nhát chém này đã hút năng lượng chưa
+        bool hasGainedEnergy = false;
+
+        // ==========================================
+        // CÁCH SỬA CHUẨN: LẤY MECHANIC TỪ EQUIPMENT DATA
+        // ==========================================
+        bool isStunWeapon = false;
+        if (EquipmentManager.instance != null && EquipmentManager.instance.currentWeapon != null)
+        {
+            string currentWeaponID = EquipmentManager.instance.currentWeapon.itemID;
+
+            // Lục tìm món vũ khí đó trong túi đồ để đọc thông số Mechanic
+            if (InventoryManager.instance != null)
+            {
+                foreach (ItemData item in InventoryManager.instance.items)
+                {
+                    // Nếu là Trang bị VÀ có ID trùng với vũ khí đang cầm
+                    if (item is EquipmentData equip && equip.itemID == currentWeaponID)
+                    {
+                        if (equip.mechanicToUnlock == "Stun")
+                        {
+                            isStunWeapon = true;
+                        }
+                        break; // Tìm thấy rồi thì thoát vòng lặp cho nhẹ máy
+                    }
+                }
+            }
+        }
 
         foreach (Collider2D enemy in hitEnemies)
         {
@@ -46,15 +80,28 @@ public class PlayerCombat : MonoBehaviour
             if (playerEnergy != null && !hasGainedEnergy)
             {
                 playerEnergy.AddEnergy();
-                hasGainedEnergy = true; // Khóa lại, các con quái khác bị trúng nhát này sẽ không cho thêm năng lượng nữa
+                hasGainedEnergy = true;
             }
 
             if (health != null)
             {
-                health.TakeDamage(10, transform);
-                CinemachineShake.Instance.ShakeCamera(0.05f); // Rung nhẹ
+                CinemachineShake.Instance.ShakeCamera(0.05f);
                 Vector2 spawnPos = new Vector2(enemy.transform.position.x + effectOffset.x, enemy.transform.position.y + effectOffset.y);
-                ObjectPoolManager.Instance.Spawn(hitEffectPrefab, spawnPos, Quaternion.identity);
+
+                if (isStunWeapon)
+                {
+                    // SIÊU NGẮN GỌN: Chỉ việc chuyền cái Mẫu Effect (Prefab) sang cho quái tự lo liệu!
+                    health.TakeStun(1.5f, transform, stunEffectPrefab);
+                }
+                else
+                {
+                    // Vũ khí Kiếm -> Gây sát thương bình thường
+                    health.TakeDamage(10, transform);
+
+                    // Chạy Effect Chém
+                    if (hitEffectPrefab != null)
+                        ObjectPoolManager.Instance.Spawn(hitEffectPrefab, spawnPos, Quaternion.identity);
+                }
 
                 hasHit = true;
             }
@@ -69,10 +116,15 @@ public class PlayerCombat : MonoBehaviour
             {
                 bomb.Deflect(transform);
                 CinemachineShake.Instance.ShakeCamera(0.05f);
-                //Vector2 spawnPos = new Vector2(enemy.transform.position.x + effectOffset.x, enemy.transform.position.y + effectOffset.y);
-                //if (hitEffectPrefab != null) Instantiate(hitEffectPrefab, spawnPos, Quaternion.identity);
-
                 hasHit = true;
+            }
+
+            // --- THÊM MỚI: Tương tác với Dây Leo ---
+            VineInteraction vine = env.GetComponent<VineInteraction>();
+            if (vine != null)
+            {
+                vine.TakeMeleeHit(); // Gọi hàm Rung lắc
+                hasHit = true;       // Kích hoạt khựng hình (Hit Stop) cho có cảm giác chém trúng vật thể
             }
         }
 
@@ -95,6 +147,31 @@ public class PlayerCombat : MonoBehaviour
         {
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+        }
+    }
+
+    public void CastRangedSlash()
+    {
+        playerAnimator.PlayAttackAnimation(2);
+
+        if (rangedSlashPrefab != null && attackPoint != null)
+        {
+            // --- TÍNH TOÁN VỊ TRÍ SINH RA DỰA TRÊN OFFSET VÀ HƯỚNG MẶT ---
+            float facingDir = transform.localScale.x;
+            Vector3 spawnPos = new Vector3(
+                transform.position.x + (rangedSlashOffset.x * facingDir),
+                transform.position.y + rangedSlashOffset.y,
+                0f
+            );
+
+            GameObject slash = ObjectPoolManager.Instance.Spawn(rangedSlashPrefab, spawnPos, Quaternion.identity);
+
+            RangedSlash projectile = slash.GetComponent<RangedSlash>();
+            if (projectile != null)
+            {
+                // CHUYỀN THÊM: Tốc độ và Thời gian tồn tại vào hàm Setup
+                projectile.Setup(facingDir, rangedSlashSpeed, rangedSlashDamage, rangedSlashLifetime);
+            }
         }
     }
 }

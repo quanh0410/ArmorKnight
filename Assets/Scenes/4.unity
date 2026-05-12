@@ -635,6 +635,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 320128621107005804, guid: 310f0fa765681804597c2c99244c9160, type: 3}
+      propertyPath: enemyID
+      value: d14d23fe-ce42-4e17-84eb-2d1f07a4a9fb
+      objectReference: {fileID: 0}
     - target: {fileID: 1394667379295653180, guid: 310f0fa765681804597c2c99244c9160, type: 3}
       propertyPath: m_Name
       value: EnemySlime
@@ -926,6 +930,10 @@ PrefabInstance:
     - target: {fileID: 6860864457739541158, guid: 5648b565599f6614e9fa3bb3b98b34db, type: 3}
       propertyPath: m_Name
       value: EnemyBat
+      objectReference: {fileID: 0}
+    - target: {fileID: 8788305867915262195, guid: 5648b565599f6614e9fa3bb3b98b34db, type: 3}
+      propertyPath: enemyID
+      value: 4d55dc65-4bd5-48bc-834d-d00db04dd556
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -21385,6 +21393,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 320128621107005804, guid: 310f0fa765681804597c2c99244c9160, type: 3}
+      propertyPath: enemyID
+      value: aaf28aa7-2df4-4199-872e-d5fac0fbcf8f
+      objectReference: {fileID: 0}
     - target: {fileID: 1394667379295653180, guid: 310f0fa765681804597c2c99244c9160, type: 3}
       propertyPath: m_Name
       value: EnemySlime (1)
@@ -24838,6 +24850,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyWorm
       objectReference: {fileID: 0}
+    - target: {fileID: 7837526251365221185, guid: 7aa8e18c526ada243a60aaafae60ba97, type: 3}
+      propertyPath: enemyID
+      value: 7874a3bb-f135-4324-8186-2681bf9e7a2a
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -25016,6 +25032,10 @@ PrefabInstance:
     - target: {fileID: 6860864457739541158, guid: 5648b565599f6614e9fa3bb3b98b34db, type: 3}
       propertyPath: m_Name
       value: EnemyBat (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8788305867915262195, guid: 5648b565599f6614e9fa3bb3b98b34db, type: 3}
+      propertyPath: enemyID
+      value: 3a109a14-8636-4722-8252-b98016597638
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

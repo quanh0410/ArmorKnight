@@ -58,10 +58,7 @@ public class LockedDoorTeleporter : MonoBehaviour
         if (keyCount >= keysNeeded)
         {
             // 1. Tiêu thụ chìa khóa
-            for (int i = 0; i < keysNeeded; i++)
-            {
-                InventoryManager.instance.RemoveItem(requiredKey);
-            }
+            InventoryManager.instance.RemoveItem(requiredKey, keysNeeded);
 
             // 2. Mở khóa và Lưu trạng thái
             isLocked = false;

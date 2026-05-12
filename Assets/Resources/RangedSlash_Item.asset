@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: febdada2fa340224b8afe1a93aeb5f11, type: 3}
+  m_Name: RangedSlash_Item
+  m_EditorClassIdentifier: Assembly-CSharp::EquipmentData
+  itemID: RangedSlash_Item
+  itemName: "Ki\u1EBFm kh\xED"
+  itemDescription: "Sau khi trang b\u1ECB ki\u1EBFm kh\xED, nh\u1EA5n ph\xEDm [U]
+    ti\xEAu hao n\u0103ng l\u01B0\u1EE3ng v\xE0 tung ra \u0111\xF2n ch\xE9m xa g\xE2y
+    s\xE1t th\u01B0\u01A1ng cho k\u1EBB th\xF9."
+  itemIcon: {fileID: 21300000, guid: e5275bd0b6a4a8547810afc0440ecbd1, type: 3}
+  category: 0
+  isStackable: 0
+  maxStackSize: 99
+  itemColor: 3
+  mechanicToUnlock: RangedSlash
+  equipType: 0
+  weaponStats: {fileID: 0}

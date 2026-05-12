@@ -89,7 +89,7 @@ public class BossArenaManager : MonoBehaviour
         if (bossLogic != null)
         {
             bossLogic.SetArenaBounds(bossRoomBounds);
-            bossLogic.WakeUpBoss();
+            //bossLogic.WakeUpBoss();
             Debug.Log("Kết thúc Động đất! Boss bắt đầu tấn công.");
         }
     }

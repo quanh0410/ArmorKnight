@@ -52,15 +52,23 @@ public class PlayerEnergy : MonoBehaviour
         }
     }
 
-    public void AddEnergy()
+    // ==========================================
+    // GỘP: HÀM CỘNG NĂNG LƯỢNG ĐA NĂNG
+    // ==========================================
+    // - Nếu gọi AddEnergy() -> Tự cộng 11 (dùng cho chém quái)
+    // - Nếu gọi AddEnergy(20) -> Cộng 20 (dùng cho Item lấy máu đổi năng lượng)
+    public void AddEnergy(int amount = 0)
     {
-        currentEnergy += energyPerHit;
+        // Nếu truyền vào số > 0 thì dùng số đó, nếu không thì dùng mặc định energyPerHit (11)
+        int finalGain = (amount > 0) ? amount : energyPerHit;
+
+        currentEnergy += finalGain;
         if (currentEnergy > maxEnergy) currentEnergy = maxEnergy;
 
-        Debug.Log("Hút Năng Lượng! Hiện tại: " + currentEnergy + "/" + maxEnergy);
-
-        // --- 3. PHÁT TÍN HIỆU KHI CHÉM TRÚNG QUÁI ---
+        // Phát tín hiệu cho UI cập nhật (Thanh năng lượng sẽ nháy sáng)
         OnEnergyChanged?.Invoke(currentEnergy, maxEnergy);
+
+        Debug.Log($"[Năng Lượng] +{finalGain}. Hiện tại: {currentEnergy}/{maxEnergy}");
     }
 
     private IEnumerator HealRoutine()
@@ -135,5 +143,19 @@ public class PlayerEnergy : MonoBehaviour
             // --- 5. PHÁT TÍN HIỆU KHI MẤT NĂNG LƯỢNG DO BỊ ĐÁNH ---
             OnEnergyChanged?.Invoke(currentEnergy, maxEnergy);
         }
+    }
+
+    // --- MỚI: Hàm trừ năng lượng đa dụng cho các kỹ năng ---
+    public bool SpendEnergy(int amount)
+    {
+        if (currentEnergy >= amount)
+        {
+            currentEnergy -= amount;
+            // Phát tín hiệu cho UI cập nhật ngay lập tức
+            OnEnergyChanged?.Invoke(currentEnergy, maxEnergy);
+            Debug.Log("Đã dùng kỹ năng! Năng lượng còn: " + currentEnergy);
+            return true;
+        }
+        return false; // Không đủ năng lượng
     }
 }

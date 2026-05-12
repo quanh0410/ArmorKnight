@@ -6,8 +6,7 @@ public class CoinManager : MonoBehaviour
     // Singleton để truy cập từ bất kỳ đâu
     public static CoinManager Instance { get; private set; }
 
-    public int totalCoins { get; private set; }
-
+    [field: SerializeField] public int totalCoins { get; private set; }
     // Sự kiện phát loa thông báo mỗi khi nhặt được tiền
     public static event Action<int> OnCoinCollected;
 
@@ -39,5 +38,22 @@ public class CoinManager : MonoBehaviour
         totalCoins = amount;
         // Cần gọi Invoke để UI cập nhật lại con số từ file Save
         OnCoinCollected?.Invoke(totalCoins);
+    }
+
+    public bool SpendCoins(int amount)
+    {
+        if (totalCoins >= amount)
+        {
+            totalCoins -= amount;
+            // Phát tín hiệu để UI Tiền trên màn hình cập nhật lại con số
+            OnCoinCollected?.Invoke(totalCoins);
+            Debug.Log("Đã tiêu: " + amount + ". Còn lại: " + totalCoins);
+            return true; // Giao dịch thành công
+        }
+        else
+        {
+            Debug.Log("Không đủ tiền!");
+            return false; // Giao dịch thất bại
+        }
     }
 }

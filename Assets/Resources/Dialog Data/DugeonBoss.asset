@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2d9d1d2b876e2240a892b9c23041b9e, type: 3}
+  m_Name: DugeonBoss
+  m_EditorClassIdentifier: Assembly-CSharp::DialogData
+  firstTimeLines:
+  - speakerName: "Qu\u1EA3n ng\u1EE5c"
+    sentence: '!!!?!?'
+  - speakerName: "Qu\u1EA3n ng\u1EE5c"
+    sentence: "B\u1ED9 gi\xE1p n\xE0y, kh\xF4ng th\u1EC3 n\xE0o..."
+  - speakerName: "Qu\u1EA3n ng\u1EE5c"
+    sentence: "T\u1EA1i sao ng\u01B0\u01A1i v\u1EABn c\xF2n s\u1ED1ng ch\u1EE9 ???"
+  - speakerName: "Qu\u1EA3n ng\u1EE5c"
+    sentence: "Kh\xF4ng sao c\u1EA3, d\xF9 ng\u01B0\u01A1i c\xF3 h\u1ED3i sinh bao
+      nhi\xEAu l\u1EA7n ta c\u0169ng s\u1EBD ti\xEAu di\u1EC7t ng\u01B0\u01A1i,"
+  - speakerName: "Qu\u1EA3n ng\u1EE5c"
+    sentence: "TI\u1EBEP CHI\xCAU !!!"
+  defaultLines:
+  - speakerName: "Qu\u1EA3n ng\u1EE5c"
+    sentence: "TI\u1EBEP CHI\xCAU !!!"

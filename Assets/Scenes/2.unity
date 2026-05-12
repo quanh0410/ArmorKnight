@@ -5760,6 +5760,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 320128621107005804, guid: 310f0fa765681804597c2c99244c9160, type: 3}
+      propertyPath: enemyID
+      value: fbe2bd62-6e24-4b77-bf04-ea7ad6f81421
+      objectReference: {fileID: 0}
     - target: {fileID: 1394667379295653180, guid: 310f0fa765681804597c2c99244c9160, type: 3}
       propertyPath: m_Name
       value: EnemySlime
@@ -5817,6 +5821,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 320128621107005804, guid: 310f0fa765681804597c2c99244c9160, type: 3}
+      propertyPath: enemyID
+      value: b328c5fd-d9eb-4c6f-9cb0-9468c3a7f77f
+      objectReference: {fileID: 0}
     - target: {fileID: 1394667379295653180, guid: 310f0fa765681804597c2c99244c9160, type: 3}
       propertyPath: m_Name
       value: EnemySlime (1)
@@ -19935,6 +19943,10 @@ PrefabInstance:
     - target: {fileID: 6869246259438294139, guid: 7aa8e18c526ada243a60aaafae60ba97, type: 3}
       propertyPath: m_Name
       value: EnemyWorm
+      objectReference: {fileID: 0}
+    - target: {fileID: 7837526251365221185, guid: 7aa8e18c526ada243a60aaafae60ba97, type: 3}
+      propertyPath: enemyID
+      value: 8edbb772-a422-4a17-9d9b-e73c06ee6cb2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

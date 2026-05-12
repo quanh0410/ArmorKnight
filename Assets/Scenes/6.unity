@@ -381,6 +381,51 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &236113377
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 236113379}
+  - component: {fileID: 236113378}
+  m_Layer: 0
+  m_Name: SpawnPoint (3)
+  m_TagString: Untagged
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &236113378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 236113377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0b93b6fea9514e43b005d75c9aaeb3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  spawnPointID: 2
+--- !u!4 &236113379
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 236113377}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 133.89, y: -17.55, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &393885265
 GameObject:
   m_ObjectHideFlags: 0
@@ -6798,7 +6843,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4004ef15c95aa841a1e796b391ad2ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  doorID: 
+  doorID: 8ce334f6-bc6b-4415-b11b-e665baa7d8ea
   isLocked: 1
   requiredKey: {fileID: 11400000, guid: 278405fff5dc8ff498c9bcfcfc03a5da, type: 2}
   keysNeeded: 1
@@ -7477,3 +7522,4 @@ SceneRoots:
   - {fileID: 518385147}
   - {fileID: 1859201137}
   - {fileID: 2005957759}
+  - {fileID: 236113379}

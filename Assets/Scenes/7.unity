@@ -1280,6 +1280,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7895385704601664504, guid: f550f5e6a1d9ccb4c98c73f110c8a55e, type: 3}
+      propertyPath: itemID
+      value: 9edd9ae1-711c-4505-bb8d-ed195b388ebf
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1435,6 +1439,7 @@ GameObject:
   - component: {fileID: 853964886}
   - component: {fileID: 853964888}
   - component: {fileID: 853964889}
+  - component: {fileID: 853964890}
   m_Layer: 0
   m_Name: 'BossManager '
   m_TagString: Untagged
@@ -1536,6 +1541,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27d6ad06ed2f67c45a8e32aaa921f73d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CinemachineShake
+--- !u!114 &853964890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853964884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 217a1255250389043a2e0bd881523847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCDialog
+  autoTriggerOnEnter: 1
+  npcData: {fileID: 11400000, guid: 94ba63a16b2160c42bf803d401a180b8, type: 2}
+  onFirstDialogComplete:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 937738965}
+        m_TargetAssemblyTypeName: DungeonBoss, Assembly-CSharp
+        m_MethodName: WakeUpBoss
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDefaultDialogComplete:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 937738965}
+        m_TargetAssemblyTypeName: DungeonBoss, Assembly-CSharp
+        m_MethodName: WakeUpBoss
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &890429057
 GameObject:
   m_ObjectHideFlags: 0
@@ -1575,7 +1624,7 @@ Transform:
   m_GameObject: {fileID: 890429057}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 101.22, y: -17.550001, z: 0}
+  m_LocalPosition: {x: 101.22, y: -20.71, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2174,7 +2223,7 @@ Transform:
   m_GameObject: {fileID: 1665359630}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 80.27, y: -16.59, z: 0}
+  m_LocalPosition: {x: 80.38, y: -16.59, z: 0}
   m_LocalScale: {x: 0.69043, y: 0.69361395, z: 0.6007396}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13103,22 +13152,6 @@ CompositeCollider2D:
         Y: 70000000
       - X: 550000000
         Y: 70000000
-    - - X: 470000000
-        Y: 120000000
-      - X: 460000000
-        Y: 120000000
-      - X: 460000000
-        Y: 110000000
-      - X: 470000000
-        Y: 110000000
-    - - X: 510000000
-        Y: 110000000
-      - X: 480000000
-        Y: 110000000
-      - X: 480000000
-        Y: 100000000
-      - X: 510000000
-        Y: 100000000
   m_CompositePaths:
     m_Paths:
     - - {x: 54.99997, y: 7}
@@ -13165,14 +13198,6 @@ CompositeCollider2D:
       - {x: 12.00003, y: 8}
       - {x: 41, y: 7.9999704}
       - {x: 41.00003, y: 7}
-    - - {x: 46.999973, y: 11}
-      - {x: 46.999973, y: 12}
-      - {x: 46, y: 11.99997}
-      - {x: 46.00003, y: 11}
-    - - {x: 50.999973, y: 10}
-      - {x: 50.999973, y: 11}
-      - {x: 48, y: 10.99997}
-      - {x: 48.00003, y: 10}
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0.00005
   m_UseDelaunayMesh: 0
@@ -14529,36 +14554,6 @@ Tilemap:
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
-  - first: {x: 48, y: 10, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 22
-      m_TileSpriteIndex: 33
-      m_TileMatrixIndex: 0
-      m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
-      dummyAlignment: 0
-      m_AllTileFlags: 1073741826
-  - first: {x: 49, y: 10, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 22
-      m_TileSpriteIndex: 33
-      m_TileMatrixIndex: 0
-      m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
-      dummyAlignment: 0
-      m_AllTileFlags: 1073741826
-  - first: {x: 50, y: 10, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 22
-      m_TileSpriteIndex: 33
-      m_TileMatrixIndex: 0
-      m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
-      dummyAlignment: 0
-      m_AllTileFlags: 1073741826
   - first: {x: 12, y: 11, z: 0}
     second:
       serializedVersion: 2
@@ -14889,16 +14884,6 @@ Tilemap:
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
-  - first: {x: 46, y: 11, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 22
-      m_TileSpriteIndex: 33
-      m_TileMatrixIndex: 0
-      m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
-      dummyAlignment: 0
-      m_AllTileFlags: 1073741826
   - first: {x: 12, y: 12, z: 0}
     second:
       serializedVersion: 2
@@ -17235,7 +17220,7 @@ Tilemap:
     m_Data: {fileID: 11400000, guid: 7a9d194911204c74ea0ff5e2406e6ca6, type: 2}
   - m_RefCount: 84
     m_Data: {fileID: 11400000, guid: 3c0840d386380e8429cbd233423d5c5b, type: 2}
-  - m_RefCount: 297
+  - m_RefCount: 293
     m_Data: {fileID: 11400000, guid: 06c038cd5bc7d4044a7d26d026d0a9ba, type: 2}
   - m_RefCount: 4
     m_Data: {fileID: 11400000, guid: 5b4fac4094dacf54a81663ca69c050f2, type: 2}
@@ -17306,14 +17291,14 @@ Tilemap:
     m_Data: {fileID: -155341161, guid: d0e9acf1b4fb5af46912c4881f59f0b1, type: 3}
   - m_RefCount: 1
     m_Data: {fileID: -1416429538, guid: d0e9acf1b4fb5af46912c4881f59f0b1, type: 3}
-  - m_RefCount: 135
+  - m_RefCount: 131
     m_Data: {fileID: -1998688402, guid: d0e9acf1b4fb5af46912c4881f59f0b1, type: 3}
   - m_RefCount: 55
     m_Data: {fileID: -1715953186, guid: d0e9acf1b4fb5af46912c4881f59f0b1, type: 3}
   - m_RefCount: 4
     m_Data: {fileID: 570627489, guid: d0e9acf1b4fb5af46912c4881f59f0b1, type: 3}
   m_TileMatrixArray:
-  - m_RefCount: 392
+  - m_RefCount: 388
     m_Data:
       e00: 1
       e01: 0
@@ -17368,7 +17353,7 @@ Tilemap:
       e32: 8.35e-43
       e33: 8.31e-43
   m_TileColorArray:
-  - m_RefCount: 392
+  - m_RefCount: 388
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   - m_RefCount: 0
     m_Data: {r: 0, g: 0, b: 0, a: 0}
@@ -17404,6 +17389,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6569842583149381553, guid: 1d19d0b410cdc93409a00415c286d522, type: 3}
+      propertyPath: enemyID
+      value: 9b79b39e-d7d0-412b-a892-581c4d9cc056
+      objectReference: {fileID: 0}
     - target: {fileID: 7978424219731848270, guid: 1d19d0b410cdc93409a00415c286d522, type: 3}
       propertyPath: m_FlipX
       value: 0

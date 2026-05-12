@@ -58,6 +58,16 @@ public abstract class EnemyBase : MonoBehaviour //
 
         if (health != null && health.isKnockedBack) return; //
 
+        // ==========================================
+        // DÒNG MỚI ĐƯỢC CẬP NHẬT Ở ĐÂY
+        // ==========================================
+        // Nếu quái đang bị đẩy lùi HOẶC bị choáng, dừng ngay mọi suy nghĩ (AI) lại!
+        if (health != null && health.isStunned)
+        {
+            StopMovement(); // Ép nó dừng lại (bổ sung thêm để triệt tiêu đà trượt)
+            return;
+        }
+
         ExecuteAI(); //
     }
 
@@ -75,15 +85,27 @@ public abstract class EnemyBase : MonoBehaviour //
     }
 
     // --- HÀM TẠO HIỆU ỨNG BUNG TIỀN ---
+    // --- HÀM TẠO HIỆU ỨNG BUNG TIỀN (ĐÃ NÂNG CẤP X2) ---
     protected virtual void SpawnCoins()
     {
         // Nếu không có prefab đồng xu thì bỏ qua (dành cho quái không rớt tiền)
         if (coinPrefab == null) return;
 
-        // Random số lượng tiền sẽ rớt ra
-        int coinCount = Random.Range(minCoins, maxCoins + 1);
+        // 1. Tính toán số tiền cơ bản ban đầu
+        int baseCoinCount = Random.Range(minCoins, maxCoins + 1);
+        int multiplier = 1;
 
-        for (int i = 0; i < coinCount; i++)
+        // 2. KIỂM TRA ITEM: Xem người chơi có đang trang bị đồ x2 Vàng không?
+        if (EquipmentManager.instance != null && EquipmentManager.instance.HasMechanic("DoubleGold"))
+        {
+            multiplier = 2; // Kích hoạt nhân đôi!
+            // Bạn có thể đổi số 2 thành bất kỳ hệ số nào (ví dụ 3, 4) nếu muốn x3, x4
+        }
+
+        // 3. Tính tổng số xu cuối cùng sẽ rớt ra
+        int finalCoinCount = baseCoinCount * multiplier;
+
+        for (int i = 0; i < finalCoinCount; i++)
         {
             // Sinh ra đồng xu ngay tại bụng con quái
             GameObject coin = ObjectPoolManager.Instance.Spawn(coinPrefab, transform.position, Quaternion.identity);
@@ -94,7 +116,7 @@ public abstract class EnemyBase : MonoBehaviour //
             {
                 // Tạo lực đẩy random: X văng sang trái/phải, Y luôn bốc lên trên
                 float randomX = Random.Range(-burstForceX, burstForceX);
-                float randomY = Random.Range(burstForceY * 0.5f, burstForceY); // Nảy cao ngẫu nhiên từ 50% đến 100% lực
+                float randomY = Random.Range(burstForceY * 0.5f, burstForceY);
 
                 // Gắn thẳng lực văng vào đồng xu
                 coinRb.linearVelocity = new Vector2(randomX, randomY);
