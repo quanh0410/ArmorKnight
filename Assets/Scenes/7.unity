@@ -325,7 +325,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1311613589
-  m_SortingLayer: -7
+  m_SortingLayer: -8
   m_SortingOrder: 9
   m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
@@ -1352,7 +1352,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1311613589
-  m_SortingLayer: -7
+  m_SortingLayer: -8
   m_SortingOrder: 10
   m_MaskInteraction: 0
   m_Sprite: {fileID: -6569806465234852393, guid: 8a4706a1c34c8d044a49ae6ea4d6c042, type: 3}
@@ -1585,6 +1585,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  isManagedByQuest: 0
 --- !u!1 &890429057
 GameObject:
   m_ObjectHideFlags: 0
@@ -1716,7 +1717,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1311613589
-  m_SortingLayer: -7
+  m_SortingLayer: -8
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 9104989692197467228, guid: d6189170c167fea449a21294f5a987a2, type: 3}
@@ -2109,7 +2110,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1311613589
-  m_SortingLayer: -7
+  m_SortingLayer: -8
   m_SortingOrder: 11
   m_MaskInteraction: 0
   m_Sprite: {fileID: -555677254378717148, guid: 8a4706a1c34c8d044a49ae6ea4d6c042, type: 3}
@@ -2201,7 +2202,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1311613589
-  m_SortingLayer: -7
+  m_SortingLayer: -8
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 9104989692197467228, guid: d6189170c167fea449a21294f5a987a2, type: 3}
@@ -2462,7 +2463,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1311613589
-  m_SortingLayer: -7
+  m_SortingLayer: -8
   m_SortingOrder: -10
   m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
@@ -17389,6 +17390,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6237964753663863662, guid: 1d19d0b410cdc93409a00415c286d522, type: 3}
+      propertyPath: meleeAttackRange
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6237964753663863662, guid: 1d19d0b410cdc93409a00415c286d522, type: 3}
+      propertyPath: baseAttackCooldown
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 6569842583149381553, guid: 1d19d0b410cdc93409a00415c286d522, type: 3}
       propertyPath: enemyID
       value: 9b79b39e-d7d0-412b-a892-581c4d9cc056
@@ -17457,8 +17466,8 @@ SceneRoots:
   - {fileID: 1498569226}
   - {fileID: 845768837}
   - {fileID: 853964887}
-  - {fileID: 1788927881}
   - {fileID: 238197780}
+  - {fileID: 1788927881}
   - {fileID: 1703723819}
   - {fileID: 1261889004}
   - {fileID: 971919429}

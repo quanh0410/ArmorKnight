@@ -18,7 +18,9 @@ public class BossArenaManager : MonoBehaviour
 
     [Header("--- THEO DÕI BOSS ---")]
     public EnemyHealth bossHealth;
-    public DungeonBoss bossLogic;
+
+    [Tooltip("Kéo thả GameObject của BẤT KỲ con Boss nào vào đây")]
+    public GameObject bossObject; // --- SỬA Ở ĐÂY: Dùng GameObject chung ---
 
     private bool isBattleActive = false;
     private Collider2D triggerCollider;
@@ -72,24 +74,26 @@ public class BossArenaManager : MonoBehaviour
         }
 
         // BƯỚC 2: TẠO MỘT NHỊP DỪNG NGẮN ĐỂ TĂNG SỰ CĂNG THẲNG
-        // Người chơi nghe tiếng cửa sập và nhận ra mình đã bị nhốt
         yield return new WaitForSeconds(delayBeforeEarthquake);
 
         // BƯỚC 3: KÍCH HOẠT ĐỘNG ĐẤT
         if (CinemachineShake.Instance != null)
         {
-            // Thay vì gọi ShakeCamera, ta gọi ShakeCameraContinuous và truyền vào thời gian
             CinemachineShake.Instance.ShakeCameraContinuous(shakeIntensity, earthquakeDuration);
         }
 
         // BƯỚC 4: CHỜ ĐỘNG ĐẤT QUA ĐI
         yield return new WaitForSeconds(earthquakeDuration);
 
-        // BƯỚC 5: ĐÁNH THỨC BOSS
-        if (bossLogic != null)
+        // BƯỚC 5: ĐÁNH THỨC MỌI LOẠI BOSS
+        if (bossObject != null)
         {
-            bossLogic.SetArenaBounds(bossRoomBounds);
-            //bossLogic.WakeUpBoss();
+            // Truyền ranh giới phòng (Chỉ DungeonBoss nhận lệnh này, các Boss khác sẽ tự động phớt lờ)
+            bossObject.SendMessage("SetArenaBounds", bossRoomBounds, SendMessageOptions.DontRequireReceiver);
+
+            // Gọi Boss dậy (Áp dụng cho mọi Boss có hàm WakeUpBoss)
+            bossObject.SendMessage("WakeUpBoss", SendMessageOptions.DontRequireReceiver);
+
             Debug.Log("Kết thúc Động đất! Boss bắt đầu tấn công.");
         }
     }

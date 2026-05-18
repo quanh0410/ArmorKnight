@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2d9d1d2b876e2240a892b9c23041b9e, type: 3}
+  m_Name: GoldTraderNPC
+  m_EditorClassIdentifier: Assembly-CSharp::DialogData
+  firstTimeLines:
+  - speakerName: "G\xE3 ch\u0103n ng\u1EF1a"
+    sentence: "Nghe n\xF3i ng\xE0i \u0111inh \u0111i chi\u1EBFn \u0111\u1EA5u v\u1EDBi
+      l\u0169 ma th\xFA \u0111\xF3..."
+  - speakerName: "G\xE3 ch\u0103n ng\u1EF1a"
+    sentence: "N\u1EBFu c\xF3 l\xE3o gi\xE0 th\u1EE3 r\xE8n \u1EDF \u0111\xE2y th\xEC
+      t\u1ED1t r\u1ED3i, l\xE3o ta c\xF3 th\u1EC3 ch\u1EBF t\u1EA1o r\u1EA5t nhi\u1EC1u
+      trang b\u1ECB h\u1EEFu d\u1EE5ng."
+  - speakerName: "G\xE3 ch\u0103n ng\u1EF1a"
+    sentence: "\xC0 ph\u1EA3i r\u1ED3i..."
+  - speakerName: "G\xE3 ch\u0103n ng\u1EF1a"
+    sentence: "\u0110\xE2y l\xE0 vi\xEAn \u0111\xE1 s\u1EE9c m\u1EA1nh t\xF4i mua
+      c\u1EE7a l\xE3o ta \u0111\u1EC3 d\u1EC5 d\xE0ng thu\u1EA7n ph\u1EE5c l\u0169
+      ng\u1EF1a."
+  - speakerName: "G\xE3 ch\u0103n ng\u1EF1a"
+    sentence: "Vi\xEAn \u0111\xE1 s\u1EBD gi\xFAp ng\xE0i c\xF3 \u0111\xF4i ch\xE2n
+      m\u1EA1nh m\u1EBD nh\u01B0 chi\u1EBFn m\xE3, ng\xE0i c\xF3 mu\u1ED1n d\xF9ng
+      ch\u1EE9 ?! "
+  defaultLines:
+  - speakerName: "G\xE3 ch\u0103n ng\u1EF1a"
+    sentence: "C\u1EA3m \u01A1n ng\xE0i r\u1EA5t nhi\u1EC1u, ch\xFAc ng\xE0i may
+      m\u1EAFn !!"

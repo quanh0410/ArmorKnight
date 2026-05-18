@@ -664,6 +664,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Trap3 (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 2965719361654434901, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 6694036382606465030, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
       propertyPath: m_LocalPosition.x
       value: 164.45
@@ -732,6 +736,10 @@ PrefabInstance:
     - target: {fileID: 2965719361654434901, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
       propertyPath: m_Name
       value: Trap3 (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2965719361654434901, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 6694036382606465030, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1095,11 +1103,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 204756481866639783, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
       propertyPath: loopDelay
-      value: 1.5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2965719361654434901, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
       propertyPath: m_Name
       value: Trap3 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2965719361654434901, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 6694036382606465030, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18656,6 +18668,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Trap3 (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 2965719361654434901, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 6694036382606465030, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
       propertyPath: m_LocalPosition.x
       value: 125.85
@@ -18983,6 +18999,10 @@ PrefabInstance:
     - target: {fileID: 2965719361654434901, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
       propertyPath: m_Name
       value: Trap3 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2965719361654434901, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 6694036382606465030, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
       propertyPath: m_LocalPosition.x
@@ -20366,6 +20386,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Trap3 (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 2965719361654434901, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 6694036382606465030, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
       propertyPath: m_LocalPosition.x
       value: 133.9
@@ -20443,6 +20467,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MovingPlatform (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6058484915763825924, guid: b7c3cccfbb76b0d4ab098e00452613f0, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 6564744517716618026, guid: b7c3cccfbb76b0d4ab098e00452613f0, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.06
@@ -20511,6 +20539,10 @@ PrefabInstance:
     - target: {fileID: 6058484915763825924, guid: b7c3cccfbb76b0d4ab098e00452613f0, type: 3}
       propertyPath: m_Name
       value: MovingPlatform
+      objectReference: {fileID: 0}
+    - target: {fileID: 6058484915763825924, guid: b7c3cccfbb76b0d4ab098e00452613f0, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 6564744517716618026, guid: b7c3cccfbb76b0d4ab098e00452613f0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -21109,11 +21141,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 204756481866639783, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
       propertyPath: loopDelay
-      value: 1
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 2965719361654434901, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
       propertyPath: m_Name
       value: Trap3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2965719361654434901, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 6694036382606465030, guid: 965beef778d7f7f4e80bf1cb3fb17419, type: 3}
       propertyPath: m_LocalPosition.x
@@ -21179,6 +21215,10 @@ PrefabInstance:
     - target: {fileID: 369344285734897448, guid: 7a738f364825569458091c90107680fa, type: 3}
       propertyPath: m_Name
       value: Water (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 369344285734897448, guid: 7a738f364825569458091c90107680fa, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 369344285734897448, guid: 7a738f364825569458091c90107680fa, type: 3}
       propertyPath: m_IsActive

@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2d9d1d2b876e2240a892b9c23041b9e, type: 3}
+  m_Name: FerryNPC
+  m_EditorClassIdentifier: Assembly-CSharp::DialogData
+  firstTimeLines:
+  - speakerName: "C\u1EF1u binh"
+    sentence: '!?!?'
+  - speakerName: "C\u1EF1u binh"
+    sentence: "Th\xE1nh Hi\u1EC7p S\u0129 Garen"
+  - speakerName: "C\u1EF1u binh"
+    sentence: "T\u1EA1i sao ng\xE0i l\u1EA1i \u1EDF trong khu r\u1EEBng n\xE0y ch\u1EE9."
+  - speakerName: "Th\xE1nh Hi\u1EC7p S\u0129"
+    sentence: "Anh bi\u1EBFt t\xF4i sao."
+  - speakerName: "C\u1EF1u binh"
+    sentence: "Sao m\xE0 kh\xF4ng bi\u1EBFt cho \u0111\u01B0\u1EE3c ch\u1EE9..."
+  - speakerName: "C\u1EF1u binh"
+    sentence: "\u0110\u1EC7 nh\u1EA5t Th\xE1nh Hi\u1EC7p S\u0129 c\u1EE7a v\u01B0\u01A1ng
+      qu\u1ED1c Demacia, ng\u01B0\u1EDDi \u0111\xE3 l\xE3nh \u0111\u1EA1o qu\xE2n
+      \u0111\u1ED9i chinh chi\u1EBFn v\u1EDBi l\u0169 qu\xE1i v\u1EADt, g\xF3p ph\u1EA7n
+      duy tr\xEC ho\xE0 b\xECnh c\u1EE7a v\u01B0\u01A1ng qu\u1ED1c."
+  - speakerName: "C\u1EF1u binh"
+    sentence: "M\u1EB7c d\xF9 \u0111\xE3 r\u1EDDi kh\u1ECFi qu\xE2n \u0111\u1ED9i
+      ho\xE0ng gia, nh\u01B0ng t\xF4i v\u1EABn r\u1EA5t ng\u01B0\u1EE1ng m\u1ED9
+      ng\xE0i, ti\u1EBFc l\xE0 t\xF4i kh\xF4ng th\u1EC3 v\u0129 \u0111\u1EA1i \u0111\u01B0\u1EE3c
+      nh\u01B0 ng\xE0i."
+  - speakerName: "Th\xE1nh Hi\u1EC7p S\u0129"
+    sentence: ...
+  - speakerName: "C\u1EF1u binh"
+    sentence: "Nh\u01B0ng t\u1EA1i sao ng\xE0i l\u1EA1i xu\u1EA5t hi\u1EC7n \u1EDF
+      \u0111\xE2y ch\u1EE9, k\u1EC3 t\u1EEB khi v\u01B0\u01A1ng qu\u1ED1c b\u1ECB
+      qu\xE1i v\u1EADt t\u1EA5n c\xF4ng, ng\xE0i \u0111\xE3 m\u1EA5t t\xEDch m\u1EA5y
+      th\xE1ng nay, qu\xE2n \u0111\u1ED9i th\u1EADm ch\xED c\xF2n th\xF4ng b\xE1o
+      tin ng\xE0i t\u1EED n\u1EA1n tr\xEAn chi\u1EBFn tr\u01B0\u1EDDng."
+  - speakerName: "Th\xE1nh Hi\u1EC7p S\u0129"
+    sentence: "Sao c\xF3 th\u1EC3 nh\u01B0 th\u1EBF ta v\u1EABn \u0111ang \u0111\u1EE9ng
+      \u1EDF \u0111\xE2y m\xE0."
+  - speakerName: "C\u1EF1u binh"
+    sentence: "Ch\u1EAFc h\u1EB3n b\u1ECDn ch\xFAng ch\u1EA3 th\u1EADt s\u1EF1 \u0111i
+      t\xECm ng\xE0i, th\u1EE9 ch\xFAng mu\u1ED1n ch\u1EC9 l\xE0 ngai v\xE0ng \u0111ang
+      b\u1ECF tr\u1ED1ng."
+  - speakerName: "Th\xE1nh Hi\u1EC7p S\u0129"
+    sentence: ???
+  - speakerName: "C\u1EF1u binh"
+    sentence: "K\u1EC3 t\u1EEB h\xF4m \u0111\xF3 Ho\xE0ng T\u1EED Arthur ng\u01B0\u1EDDi
+      th\u1EEBa k\u1EBF c\u1EE7a ngai v\xE0ng c\u0169ng m\u1EA5t t\xEDch cho \u0111\u1EBFn
+      nay v\u1EABn ch\u01B0a t\xECm \u0111\u01B0\u1EE3c tung t\xEDch. "
+  - speakerName: "C\u1EF1u binh"
+    sentence: "Hi\u1EC7n t\u1EA1i theo t\xF4i nghe \u0111\u01B0\u1EE3c c\xF3 v\u1EBB
+      nh\u01B0 em trai c\u1EE7a qu\u1ED1c v\u01B0\u01A1ng qu\xE1 c\u1ED1 \u0111ang
+      t\u1EA1m th\u1EDDi \u0111i\u1EC1u h\xE0nh v\u01B0\u01A1ng qu\u1ED1c."
+  - speakerName: "C\u1EF1u binh"
+    sentence: "S\u1EAFp t\u1EDBi \xF4ng ta s\u1EBD \u0111\u0103ng quang l\xEAn l\xE0m
+      nh\xE0 vua m\u1EDBi."
+  - speakerName: "C\u1EF1u binh"
+    sentence: "T\xF4i th\u1EA5y trong chuy\u1EC7n n\xE0y v\u1EABn c\xF2n nhi\u1EC1u
+      \u0111i\u1EC1u m\u1EDD \xE1m, v\u1EDBi th\xE2n ph\u1EADn c\u1EE7a ng\xE0i,
+      t\xF4i ngh\u0129 ng\xE0i n\xEAn quay l\u1EA1i v\u01B0\u01A1ng qu\u1ED1c \u0111\u1EC3
+      \u0111i\u1EC1u tra."
+  - speakerName: "C\u1EF1u binh"
+    sentence: "R\u1EA5t xin l\u1ED7i ng\xE0i, k\u1EC3 t\u1EEB tr\u1EADn chi\u1EBFn
+      b\u1EA3o v\u1EC7 v\u01B0\u01A1ng qu\u1ED1c h\xF4m \u0111\xF3, t\xF4i \u0111\xE3
+      b\u1ECB th\u01B0\u01A1ng n\u1EB7ng gi\u1EDD \u0111\xE2y kh\xF4ng th\u1EC3 c\xF9ng
+      ng\xE0i chi\u1EBFn \u0111\u1EA5u \u0111\u01B0\u1EE3c n\u1EEFa."
+  - speakerName: "C\u1EF1u binh"
+    sentence: "B\xE2y gi\u1EDD t\xF4i \u0111ang s\u1ED1ng 1 cu\u1ED9c s\u1ED1ng y\xEAn
+      b\xECnh trong ng\xF4i l\xE0ng nh\u1ECF n\xE0y, d\xF9ng ch\xFAt s\u1EE9c l\u1EF1c
+      \u0111\u1EC3 b\u1EA3o v\u1EC7 ng\u01B0\u1EDDi d\xE2n kh\u1ECFi l\u0169 y\xEAu
+      tinh."
+  - speakerName: "C\u1EF1u binh"
+    sentence: "Tuy nhi\xEAn, t\xF4i s\u1EBD \u0111\u01B0a ng\xE0i quay v\u1EC1 \u0111\xF3,
+      \u0111\u01B0\u1EDDng v\u1EC1 v\u01B0\u01A1ng qu\u1ED1c c\xF2n r\u1EA5t xa,
+      n\u1EBFu d\xF9ng ng\u1EF1a c\u1EE7a t\xF4i ch\u1EC9 c\u1EA7n ch\u01B0a \u0111\u1EA7y
+      m\u1ED9t ng\xE0y l\xE0 t\u1EDBi."
+  - speakerName: "C\u1EF1u binh"
+    sentence: "Ch\u1EC9 c\xF3 \u0111i\u1EC1u... Ngo\xE0i r\xECa khu r\u1EEBng n\xE0y
+      l\xE0 \u0111\u1ECBa b\xE0n c\u1EE7a 3 con ma th\xFA. N\u1EBFu kh\xF4ng ti\xEAu
+      di\u1EC7t ch\xFAng, ch\xFAng ta kh\xF4ng th\u1EC3 ra kh\u1ECFi \u0111\xE2y."
+  - speakerName: "C\u1EF1u binh"
+    sentence: "Tr\u01B0\u1EDBc h\u1EBFt ng\xE0i h\xE3y \u0111\xE1nh b\u1EA1i 3 con
+      ma th\xFA \u0111\xF3 nh\xE9."
+  defaultLines:
+  - speakerName: "C\u1EF1u binh"
+    sentence: "Tr\u01B0\u1EDBc h\u1EBFt ng\xE0i h\xE3y \u0111\xE1nh b\u1EA1i 3 con
+      ma th\xFA \u0111\xF3 nh\xE9."

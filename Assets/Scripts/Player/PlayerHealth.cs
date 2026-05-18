@@ -17,7 +17,7 @@ public class PlayerHealth : MonoBehaviour
 
     [Header("Invincibility (I-Frames)")]
     public float iFrameDuration = 1.5f;
-    private bool isInvincible = false;
+    public bool isInvincible = false;
 
     [Header("Knockback Settings")]
     public float knockbackForceX = 6f;
@@ -241,13 +241,13 @@ public class PlayerHealth : MonoBehaviour
         Debug.Log("ĐÃ HỒI SINH TẠI CHECKPOINT!");
     }
 
-    private void OnTriggerStay2D(Collider2D collider)
-    {
-        if (collider.gameObject.layer == LayerMask.NameToLayer("EnemyDamage"))
-        {
-            TakeDamage(1, collider.transform);
-        }
-    }
+    //private void OnTriggerStay2D(Collider2D collider)
+    //{
+    //    if (collider.gameObject.layer == LayerMask.NameToLayer("EnemyDamage"))
+    //    {
+    //        TakeDamage(1, collider.transform);
+    //    }
+    //}
 
     public void TakeTrapDamage(int damageAmount)
     {

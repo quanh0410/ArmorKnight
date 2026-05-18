@@ -1,0 +1,1183 @@
+fileFormatVersion: 2
+guid: 134b8276d4d2b514b809d3d056c65ee6
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5140012481268568362
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_0
+  - first:
+      213: 6971464463465446359
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_1
+  - first:
+      213: -2417038804478182814
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_2
+  - first:
+      213: -4517686155645548922
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_3
+  - first:
+      213: 4309924600029042149
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_4
+  - first:
+      213: -7315012493081300812
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_5
+  - first:
+      213: -3031701445462338184
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_6
+  - first:
+      213: 6227360918423085864
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_7
+  - first:
+      213: -962088042521397570
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_8
+  - first:
+      213: -3445097946816730436
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_9
+  - first:
+      213: -7114835056237916045
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_10
+  - first:
+      213: -976450997653348798
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_11
+  - first:
+      213: -8366096155560860659
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_12
+  - first:
+      213: -2723025117030334164
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_13
+  - first:
+      213: -3203592879047816759
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_14
+  - first:
+      213: 8521337004389463611
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_15
+  - first:
+      213: -337768807338617440
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_16
+  - first:
+      213: 252007109990962212
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_17
+  - first:
+      213: -3837983637485370448
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_18
+  - first:
+      213: -7258574473274446392
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_19
+  - first:
+      213: -7575516538591148553
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_20
+  - first:
+      213: -96690408050055045
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_21
+  - first:
+      213: -2275042603873823219
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_22
+  - first:
+      213: 6519181367582591385
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_23
+  - first:
+      213: 6224796157332655566
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_24
+  - first:
+      213: 4124422775800920427
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_25
+  - first:
+      213: -8136499888025715247
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_26
+  - first:
+      213: 5153254265757934320
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_27
+  - first:
+      213: -7727919003268460866
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_28
+  - first:
+      213: 2966801295473153876
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_29
+  - first:
+      213: -6816166155599546740
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_30
+  - first:
+      213: 3301174508826878025
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_31
+  - first:
+      213: -8836318260781208217
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_32
+  - first:
+      213: -4667478135157224024
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_33
+  - first:
+      213: 2888528168551638125
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_34
+  - first:
+      213: -5652983189824271790
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_35
+  - first:
+      213: 4552471929970496714
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_36
+  - first:
+      213: -2746227814761665615
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_37
+  - first:
+      213: 7979863308890287512
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_38
+  - first:
+      213: 5410467966561493650
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_39
+  - first:
+      213: -2002843613888447616
+    second: Mega-Boss-for-Pixel-Platformer-Character-Pack4_40
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_0
+      rect:
+        serializedVersion: 2
+        x: 248
+        y: 633
+        width: 8
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6dea9e891e10ba8b0800000000000000
+      internalID: -5140012481268568362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_1
+      rect:
+        serializedVersion: 2
+        x: 418
+        y: 623
+        width: 16
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7dbfd1d3efd9fb060800000000000000
+      internalID: 6971464463465446359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_2
+      rect:
+        serializedVersion: 2
+        x: 572
+        y: 526
+        width: 48
+        height: 151
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26a3eba6304f47ed0800000000000000
+      internalID: -2417038804478182814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_3
+      rect:
+        serializedVersion: 2
+        x: 749
+        y: 526
+        width: 47
+        height: 151
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6860c0e8064fd41c0800000000000000
+      internalID: -4517686155645548922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_4
+      rect:
+        serializedVersion: 2
+        x: 928
+        y: 526
+        width: 139
+        height: 141
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e5d279b69defcb30800000000000000
+      internalID: 4309924600029042149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_5
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 526
+        width: 108
+        height: 103
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b03856e4eadb7a90800000000000000
+      internalID: -7315012493081300812
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_6
+      rect:
+        serializedVersion: 2
+        x: 389
+        y: 526
+        width: 106
+        height: 99
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 875dd26199b3de5d0800000000000000
+      internalID: -3031701445462338184
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_7
+      rect:
+        serializedVersion: 2
+        x: 923
+        y: 619
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82322c6e2c70c6650800000000000000
+      internalID: 6227360918423085864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_8
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 556
+        width: 28
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb67cdec50af5a2f0800000000000000
+      internalID: -962088042521397570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_9
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 556
+        width: 15
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbaaf879bad8030d0800000000000000
+      internalID: -3445097946816730436
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_10
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 557
+        width: 15
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 370517d5637034d90800000000000000
+      internalID: -7114835056237916045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_11
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 557
+        width: 21
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24edb48bdf2f272f0800000000000000
+      internalID: -976450997653348798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_12
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 557
+        width: 20
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d04a80b3fd7a5eb80800000000000000
+      internalID: -8366096155560860659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_13
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 556
+        width: 23
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c21c0f0551fd53ad0800000000000000
+      internalID: -2723025117030334164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_14
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 557
+        width: 21
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c94267ff3d8a83d0800000000000000
+      internalID: -3203592879047816759
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_15
+      rect:
+        serializedVersion: 2
+        x: 248
+        y: 469
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3676068bded14670800000000000000
+      internalID: 8521337004389463611
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_16
+      rect:
+        serializedVersion: 2
+        x: 385
+        y: 361
+        width: 105
+        height: 109
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a5df5e2f01005bf0800000000000000
+      internalID: -337768807338617440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_17
+      rect:
+        serializedVersion: 2
+        x: 573
+        y: 360
+        width: 127
+        height: 152
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42452ef912f4f7300800000000000000
+      internalID: 252007109990962212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_18
+      rect:
+        serializedVersion: 2
+        x: 748
+        y: 360
+        width: 48
+        height: 154
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b34ce9573ebcbac0800000000000000
+      internalID: -3837983637485370448
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_19
+      rect:
+        serializedVersion: 2
+        x: 928
+        y: 361
+        width: 133
+        height: 139
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8cd22c069fc544b90800000000000000
+      internalID: -7258574473274446392
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_20
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 361
+        width: 105
+        height: 103
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f58d2f48db5ed690800000000000000
+      internalID: -7575516538591148553
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_21
+      rect:
+        serializedVersion: 2
+        x: 922
+        y: 454
+        width: 11
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b782dfe069c78aef0800000000000000
+      internalID: -96690408050055045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_22
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 391
+        width: 27
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0698333ecc6d60e0800000000000000
+      internalID: -2275042603873823219
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_23
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 391
+        width: 15
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9990b19e9e8c87a50800000000000000
+      internalID: 6519181367582591385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_24
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 391
+        width: 15
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ecd870def1be26650800000000000000
+      internalID: 6224796157332655566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_25
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 392
+        width: 21
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b69f42799a4ec3930800000000000000
+      internalID: 4124422775800920427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_26
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 392
+        width: 21
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ddb83bf578551f80800000000000000
+      internalID: -8136499888025715247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_27
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 392
+        width: 23
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f2a4cb9379048740800000000000000
+      internalID: 5153254265757934320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_28
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 392
+        width: 26
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ebe413d5c9ae0c490800000000000000
+      internalID: -7727919003268460866
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_29
+      rect:
+        serializedVersion: 2
+        x: 248
+        y: 301
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45798d73f023c2920800000000000000
+      internalID: 2966801295473153876
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_30
+      rect:
+        serializedVersion: 2
+        x: 926
+        y: 206
+        width: 48
+        height: 100
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c86f27dbefc1861a0800000000000000
+      internalID: -6816166155599546740
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_31
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 193
+        width: 105
+        height: 104
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9406334b9b020dd20800000000000000
+      internalID: 3301174508826878025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_32
+      rect:
+        serializedVersion: 2
+        x: 393
+        y: 193
+        width: 124
+        height: 101
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76da6dfcb571f5580800000000000000
+      internalID: -8836318260781208217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_33
+      rect:
+        serializedVersion: 2
+        x: 595
+        y: 291
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ad0d0d8d59c93fb0800000000000000
+      internalID: -4667478135157224024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_34
+      rect:
+        serializedVersion: 2
+        x: 605
+        y: 285
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d64ea32b01d161820800000000000000
+      internalID: 2888528168551638125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_35
+      rect:
+        serializedVersion: 2
+        x: 750
+        y: 193
+        width: 46
+        height: 103
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25a05495db19c81b0800000000000000
+      internalID: -5652983189824271790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_36
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 225
+        width: 26
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac414dba911ad2f30800000000000000
+      internalID: 4552471929970496714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_37
+      rect:
+        serializedVersion: 2
+        x: 54
+        y: 224
+        width: 22
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1bb65d44a5073e9d0800000000000000
+      internalID: -2746227814761665615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_38
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 224
+        width: 33
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89d249a766b2ebe60800000000000000
+      internalID: 7979863308890287512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_39
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 217
+        width: 24
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 292278f13f7d51b40800000000000000
+      internalID: 5410467966561493650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mega-Boss-for-Pixel-Platformer-Character-Pack4_40
+      rect:
+        serializedVersion: 2
+        x: 571
+        y: 193
+        width: 122
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08bf48d38587434e0800000000000000
+      internalID: -2002843613888447616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_0: -5140012481268568362
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_1: 6971464463465446359
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_10: -7114835056237916045
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_11: -976450997653348798
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_12: -8366096155560860659
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_13: -2723025117030334164
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_14: -3203592879047816759
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_15: 8521337004389463611
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_16: -337768807338617440
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_17: 252007109990962212
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_18: -3837983637485370448
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_19: -7258574473274446392
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_2: -2417038804478182814
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_20: -7575516538591148553
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_21: -96690408050055045
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_22: -2275042603873823219
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_23: 6519181367582591385
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_24: 6224796157332655566
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_25: 4124422775800920427
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_26: -8136499888025715247
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_27: 5153254265757934320
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_28: -7727919003268460866
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_29: 2966801295473153876
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_3: -4517686155645548922
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_30: -6816166155599546740
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_31: 3301174508826878025
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_32: -8836318260781208217
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_33: -4667478135157224024
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_34: 2888528168551638125
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_35: -5652983189824271790
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_36: 4552471929970496714
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_37: -2746227814761665615
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_38: 7979863308890287512
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_39: 5410467966561493650
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_4: 4309924600029042149
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_40: -2002843613888447616
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_5: -7315012493081300812
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_6: -3031701445462338184
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_7: 6227360918423085864
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_8: -962088042521397570
+      Mega-Boss-for-Pixel-Platformer-Character-Pack4_9: -3445097946816730436
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

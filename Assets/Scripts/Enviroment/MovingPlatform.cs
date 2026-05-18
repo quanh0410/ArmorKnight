@@ -19,6 +19,15 @@ public class MovingPlatform : MonoBehaviour
         targetPosition = pointA.position;
     }
 
+    // ==========================================
+    // HÀM MỚI: ĐỂ SWITCH GỌI QUA UNITY EVENT
+    // ==========================================
+    public void ActivateMoveToC()
+    {
+        isSwitchActivated = true;
+        Debug.Log("Platform đã nhận lệnh: Bỏ tuần tra, di chuyển đến C!");
+    }
+
     private void Update()
     {
         if (isStoppedAtC)
@@ -45,11 +54,8 @@ public class MovingPlatform : MonoBehaviour
         // 4. TRUYỀN VẬN TỐC & KHẮC PHỤC LỖI RƠI XUỐNG
         if (playerController != null)
         {
-            // Trục X: Vẫn truyền vận tốc để Player đi bộ mượt mà
             playerController.platformVelocity = currentVelocity;
 
-            // Trục Y: NẾU PLATFORM ĐI XUỐNG, ép Player kéo xuống theo bằng đúng khoảng cách đó
-            // Điều này xóa bỏ hoàn toàn khe hở gây ra do trọng lực chậm chạp
             if (deltaPos.y < 0)
             {
                 playerController.transform.position += new Vector3(0, deltaPos.y, 0);
@@ -93,22 +99,5 @@ public class MovingPlatform : MonoBehaviour
                 playerController = null;
             }
         }
-    }
-
-    public void ActivateSwitch()
-    {
-        isSwitchActivated = true;
-        reachedC = false;
-        isStoppedAtC = false;
-    }
-
-    public void DeactivateSwitch()
-    {
-        isSwitchActivated = false;
-        reachedC = false;
-        isStoppedAtC = false;
-
-        targetPosition = (Vector3.Distance(transform.position, pointA.position) < Vector3.Distance(transform.position, pointB.position))
-            ? pointB.position : pointA.position;
     }
 }

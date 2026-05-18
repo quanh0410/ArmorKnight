@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3304624043706281948}
   - component: {fileID: 8635099326002760234}
+  - component: {fileID: 4560962178137798063}
   m_Layer: 9
   m_Name: DamageBox
   m_TagString: Untagged
@@ -78,6 +79,20 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.33656073, y: 0.13940622}
   m_EdgeRadius: 0
+--- !u!114 &4560962178137798063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3167694639195718112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fa08cb8ce57bf641b0472c53816651d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDamage
+  damageAmount: 1
+  ownerTransform: {fileID: 4172800918526395590}
 --- !u!1 &4708159977258197675
 GameObject:
   m_ObjectHideFlags: 0
@@ -195,7 +210,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 787453275
-  m_SortingLayer: 4
+  m_SortingLayer: -4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 8879881333668894217, guid: e240c06c1860d5447bdc4c33a3c6c255, type: 3}

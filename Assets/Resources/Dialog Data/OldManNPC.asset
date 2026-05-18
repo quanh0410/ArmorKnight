@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2d9d1d2b876e2240a892b9c23041b9e, type: 3}
+  m_Name: OldManNPC
+  m_EditorClassIdentifier: Assembly-CSharp::DialogData
+  firstTimeLines: []
+  defaultLines:
+  - speakerName: "Gi\xE0 l\xE0ng"
+    sentence: "Ng\xE0i Th\xE1nh Hi\u1EC7p S\u0129, h\xE3y c\u1EE9u l\u1EA5y v\u01B0\u01A1ng
+      qu\u1ED1c..."

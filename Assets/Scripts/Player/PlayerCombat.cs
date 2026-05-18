@@ -23,6 +23,13 @@ public class PlayerCombat : MonoBehaviour
     public float rangedSlashLifetime = 1f;                  // --- MỚI: Thời gian tồn tại ---
     public int rangedSlashDamage = 20;
 
+    [Header("Dive Kick Hitbox")]
+    public Transform diveKickHitPoint; // Vị trí dưới chân Player
+    public float diveKickHitRadius = 0.8f;
+    public int diveKickDamage = 15;
+
+    private bool isInvincible = false;
+
     [Header("References")]
     [SerializeField] private Transform attackPoint;
 
@@ -35,6 +42,51 @@ public class PlayerCombat : MonoBehaviour
         playerController = GetComponent<PlayerController>();
         playerAnimator = GetComponent<PlayerAnimator>();
         playerEnergy = GetComponent<PlayerEnergy>();
+    }
+
+    void Update()
+    {
+        if (playerController.isDiveKicking && diveKickHitPoint != null)
+        {
+            // Quét Enemy dưới chân
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(diveKickHitPoint.position, diveKickHitRadius, enemyLayer);
+            bool hasHit = false;
+
+            foreach (Collider2D enemy in hitEnemies)
+            {
+                EnemyHealth health = enemy.GetComponent<EnemyHealth>();
+                if (health != null)
+                {
+                    health.TakeDamage(diveKickDamage, transform);
+                    hasHit = true;
+
+                    // Sinh Effect nếu có
+                    if (hitEffectPrefab != null)
+                        ObjectPoolManager.Instance.Spawn(hitEffectPrefab, diveKickHitPoint.position, Quaternion.identity);
+                }
+            }
+
+            // Quét thêm Environment (ví dụ: Chém công tắc, đạp bom)
+            Collider2D[] hitEnvs = Physics2D.OverlapCircleAll(diveKickHitPoint.position, diveKickHitRadius, enviromentLayer);
+            foreach (Collider2D env in hitEnvs)
+            {
+                EGoblinBomb bomb = env.GetComponent<EGoblinBomb>();
+                if (bomb != null) { bomb.Deflect(transform); hasHit = true; }
+
+                VineInteraction vine = env.GetComponent<VineInteraction>();
+                if (vine != null) { vine.TakeMeleeHit(); hasHit = true; }
+
+                SwitchController sw = env.GetComponent<SwitchController>();
+                if (sw != null) { sw.HitSwitch(); hasHit = true; }
+            }
+
+            if (hasHit)
+            {
+                // Gọi hàm nảy lên ở PlayerController
+                playerController.ExecuteDiveKickBounce();
+                StartCoroutine(HitStop());
+            }
+        }
     }
 
     public void Attack(int comboStep)
@@ -126,6 +178,13 @@ public class PlayerCombat : MonoBehaviour
                 vine.TakeMeleeHit(); // Gọi hàm Rung lắc
                 hasHit = true;       // Kích hoạt khựng hình (Hit Stop) cho có cảm giác chém trúng vật thể
             }
+
+            SwitchController sw = env.GetComponent<SwitchController>();
+            if (sw != null)
+            {
+                sw.HitSwitch();
+                hasHit = true; // Kích hoạt HitStop cho cảm giác chém trúng vật thể thực
+            }
         }
 
         if (hasHit)
@@ -147,6 +206,13 @@ public class PlayerCombat : MonoBehaviour
         {
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+        }
+
+        // Vẽ Hitbox dưới chân
+        if (diveKickHitPoint != null)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawWireSphere(diveKickHitPoint.position, diveKickHitRadius);
         }
     }
 
@@ -172,6 +238,17 @@ public class PlayerCombat : MonoBehaviour
                 // CHUYỀN THÊM: Tốc độ và Thời gian tồn tại vào hàm Setup
                 projectile.Setup(facingDir, rangedSlashSpeed, rangedSlashDamage, rangedSlashLifetime);
             }
+        }
+    }
+
+    public void SetInvincible(bool state)
+    {
+        isInvincible = state;
+        // Báo cho PlayerHealth biết để không nhận sát thương (Yêu cầu bạn phải vào script PlayerHealth chặn sát thương nếu biến này true)
+        PlayerHealth health = GetComponent<PlayerHealth>();
+        if (health != null)
+        {
+            health.isInvincible = state; // Giả định PlayerHealth của bạn có biến này
         }
     }
 }

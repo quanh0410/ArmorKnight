@@ -25,6 +25,19 @@ public class PlayerController : MonoBehaviour
     public float sideRecoilForce = 5f;
     public float attackCooldown = 0.3f;
 
+    [Header("Dive Kick Settings")]
+    public float diveKickSpeed = 20f;
+    public float diveKickAngle = 60f;       // MỚI: Góc cắm đầu xuống (VD: 60 độ)
+    public float diveKickBounceForce = 15f;
+    public float diveKickBounceAngle = 45f; // MỚI: Góc nảy ngược lên
+    public float bounceLockDuration = 0.2f; // MỚI: Thời gian khóa phím để thấy lực nảy ngang
+
+    public GameObject diveKickEffectPrefab; // MỚI: Prefab hiệu ứng lao xuống
+    private GameObject currentDiveEffect;   // Lưu trữ hiệu ứng đang chạy
+
+    public bool isDiveKicking { get; private set; }
+    private bool hasDiveKicked = false;
+
     [Header("Combo Settings")]
     public float comboWindow = 0.8f;
     private int comboStep = 0;
@@ -116,7 +129,7 @@ public class PlayerController : MonoBehaviour
             if (EquipmentManager.instance.HasMechanic("RangedSlash") && Input.GetKeyDown(KeyCode.U) && Time.time >= lastAttackTime + attackCooldown && (!IsWalled() || IsGrounded()))
             {
                 // Kiểm tra và trừ 33 năng lượng
-                if (GetComponent<PlayerEnergy>().SpendEnergy(0))
+                if (GetComponent<PlayerEnergy>().SpendEnergy(40))
                 {
                     lastAttackTime = Time.time;
                     GetComponent<PlayerCombat>().CastRangedSlash(); // Gọi hàm chém xa ở PlayerCombat
@@ -140,9 +153,29 @@ public class PlayerController : MonoBehaviour
             {
                 StartCoroutine(PlayerDash());
             }
+
+            // --- MỚI: KÍCH HOẠT DIVE KICK ---
+            // Kiểm tra: Đang trên không, chưa DiveKick lần nào, ấn S và J cùng lúc
+            if (EquipmentManager.instance.HasMechanic("Dive") && !IsGrounded() && !hasDiveKicked && (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) && Input.GetKeyDown(KeyCode.I))
+            {
+                StartDiveKick();
+            }
         }
 
         bool isGrounded = IsGrounded();
+
+        // --- MỚI: RESET DIVE KICK KHI CHẠM ĐẤT ---
+        if (isGrounded)
+        {
+            hasDiveKicked = false;
+
+            // Nếu đang DiveKick mà chạm đất -> Dừng lại và khôi phục góc xoay
+            if (isDiveKicking)
+            {
+                EndDiveKick();
+            }
+        }
+
         if (!wasGrounded && isGrounded && rb.linearVelocity.y <= 0f)
         {
             Vector2 spawnPos = new Vector2(groundCheckPoint.position.x, groundCheckPoint.position.y);
@@ -355,6 +388,8 @@ public class PlayerController : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Dynamic;
         GetComponent<PlayerAnimator>().SetWallClimbAnimation(false);
         GetComponent<Animator>().SetBool("IsDashing", false);
+
+        if (isDiveKicking) EndDiveKick();
     }
 
     public IEnumerator WalkToBenchAndRest(Transform benchTransform, string benchID)
@@ -400,6 +435,102 @@ public class PlayerController : MonoBehaviour
         SaveManager.instance.UpdateCheckpoint(benchTransform.gameObject.scene.name, benchID);
         GetComponent<PlayerHealth>()?.FullHeal();
         Debug.Log("Đã ngồi vào ghế. Bây giờ có thể ấn E để mở túi đồ!");
+    }
+
+    private void StartDiveKick()
+    {
+        isDiveKicking = true;
+        hasDiveKicked = true;
+        isAttackLocked = true; // Khóa các đòn đánh/di chuyển thường
+
+        rb.linearVelocity = Vector2.zero;
+
+        // Tính toán vận tốc X, Y theo GÓC CHÉO
+        float facingDir = transform.localScale.x;
+        float angleRad = diveKickAngle * Mathf.Deg2Rad;
+        float velX = facingDir * Mathf.Cos(angleRad) * diveKickSpeed;
+        float velY = -Mathf.Sin(angleRad) * diveKickSpeed;
+
+        rb.linearVelocity = new Vector2(velX, velY);
+        transform.rotation = Quaternion.Euler(0, 0, facingDir > 0 ? 20f : -20f);
+
+        playerCombat.SetInvincible(true);
+
+        // --- FIX ANIMATION: Ép chạy BlendTree và gán thông số rơi ---
+        Animator anim = GetComponent<Animator>();
+        if (anim != null)
+        {
+            anim.Play("JumpAndFall", 0, 0f);
+            anim.SetFloat("yVelocity", rb.linearVelocity.y); // Báo cho BlendTree biết đang rơi nhanh
+        }
+
+        if (diveKickEffectPrefab != null && GetComponent<PlayerCombat>().diveKickHitPoint != null)
+        {
+            Transform hitPoint = GetComponent<PlayerCombat>().diveKickHitPoint;
+
+            // Tính toán góc xoay: Nếu nhìn phải (facingDir > 0) xoay -60, ngược lại xoay -120
+            float effectRotationZ = facingDir > 0 ? -60f : 60f;
+            Quaternion effectRotation = Quaternion.Euler(0, 0, effectRotationZ);
+
+            currentDiveEffect = ObjectPoolManager.Instance.Spawn(diveKickEffectPrefab, hitPoint.position, effectRotation);
+
+            // Gán làm con để effect di chuyển theo hitPoint của nhân vật
+            currentDiveEffect.transform.SetParent(hitPoint);
+
+            // Đảm bảo Scale của effect không bị ảnh hưởng bởi việc lật mặt (Flip) của nhân vật
+            currentDiveEffect.transform.localScale = Vector3.one;
+        }
+    }
+
+    public void ExecuteDiveKickBounce()
+    {
+        // Thay vì mở khóa ngay, ta dùng Coroutine để giữ lực nảy ngang
+        StartCoroutine(DiveKickBounceRoutine());
+    }
+
+    private IEnumerator DiveKickBounceRoutine()
+    {
+        isDiveKicking = false;
+        transform.rotation = Quaternion.identity;
+        playerCombat.SetInvincible(false);
+        hasDiveKicked = false;
+
+        // Tắt Effect lao xuống
+        if (currentDiveEffect != null)
+        {
+            currentDiveEffect.transform.SetParent(null);
+            currentDiveEffect.SetActive(false);
+        }
+
+        // Tính toán lực nảy chéo ngược lại
+        float facingDir = transform.localScale.x;
+        float angleRad = diveKickBounceAngle * Mathf.Deg2Rad;
+
+        float bounceVelX = -facingDir * Mathf.Cos(angleRad) * diveKickBounceForce;
+        float bounceVelY = Mathf.Sin(angleRad) * diveKickBounceForce;
+
+        rb.linearVelocity = new Vector2(bounceVelX, bounceVelY);
+
+        // --- FIX LỖI KHÔNG ĐI CHÉO LÊN: Khóa phím tạm thời ---
+        // Vẫn giữ nguyên isAttackLocked = true để hàm PlayerMovement() không đè mất lực bật ngang
+        isAttackLocked = true;
+        yield return new WaitForSeconds(bounceLockDuration);
+        isAttackLocked = false; // Mở khóa cho người chơi tiếp tục điều khiển
+    }
+
+    private void EndDiveKick()
+    {
+        isDiveKicking = false;
+        isAttackLocked = false;
+        transform.rotation = Quaternion.identity;
+        playerCombat.SetInvincible(false);
+
+        // Dọn dẹp Effect nếu lỡ chạm đất mà không trúng quái
+        if (currentDiveEffect != null)
+        {
+            currentDiveEffect.transform.SetParent(null);
+            currentDiveEffect.SetActive(false);
+        }
     }
 
     private void OnDrawGizmosSelected()

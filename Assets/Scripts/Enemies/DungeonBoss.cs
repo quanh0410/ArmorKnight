@@ -3,147 +3,254 @@ using System.Collections;
 
 public class DungeonBoss : EnemyBase
 {
-    [Header("Giai đoạn (Phases)")]
-    public float phase2Threshold = 0.3f; // 30% máu
+    #region ENUMS & FSM LAYERS
+    public enum Phase { Phase1_Normal, Phase2_Enraged }
+    public enum MovementState { Idle, Chase }
+    public enum CombatState { None, Meleeing, Teleporting, Casting }
+    public enum ReactionState { Normal, HitStunned }
+    #endregion
 
-    [Header("Tấn công thường")]
-    public float meleeAttackRange = 1.5f;
-    public float attackCooldown = 2f;
-    public int meleeDamage = 15;
+    #region INSPECTOR VARIABLES
+    [Header("--- CORE & PHASES ---")]
+    public bool isAwake = false;
+    [Range(0f, 1f)] public float phase2Threshold = 0.3f;
+
+    [Header("--- ATTACK 1: MELEE ---")]
     public Transform attackPoint;
     public float attackRadius = 1f;
+    public int meleeDamage = 15;
     public LayerMask playerLayer;
 
-    [Header("Chiêu Hố Đen")]
-    public GameObject blackHolePrefab;
-    public float spellSpawnHeight = 3f;
-    public float tripleSpellOffset = 3.5f; // Khoảng cách giữa 3 hố đen
-
-    [Header("Dịch chuyển")]
+    [Header("--- ATTACK 2: TELEPORT SLASH ---")]
     public float teleportOffset = 1.5f;
     public GameObject teleportEffectPrefab;
 
-    private bool isAttacking = false;
-    private float cooldownTimer = 0f;
-    private PlayerController playerController;
+    [Header("--- ATTACK 3: BLACK HOLE ---")]
+    public GameObject blackHolePrefab;
+    public float spellSpawnHeight = 3f;
+    public float tripleSpellOffset = 3.5f;
 
-    [Header("Trạng thái Boss")]
-    public bool isAwake = false; // Mới vào phòng sẽ đứng im chờ Cutscene
-    private Collider2D arenaBounds; // Lưu ranh giới phòng
+    [Header("--- AI RANGES & TUNING ---")]
+    public float meleeAttackRange = 1.5f;
+    public float baseAttackCooldown = 2f;
+    public float decisionInertiaTime = 0.2f;
+    #endregion
+
+    #region INTERNAL STATE
+    private Phase currentPhase = Phase.Phase1_Normal;
+    private MovementState moveState = MovementState.Idle;
+    private CombatState combatState = CombatState.None;
+    private CombatState lastCombatState = CombatState.None;
+    private ReactionState reactionState = ReactionState.Normal;
+
+    private float cooldownTimer = 0f;
+    private float decisionLockTimer = 0f;
+    private float failsafeTimer = 0f;
+    private Coroutine activeAttackCoroutine;
+    private EnemyHealth bossHealth;
+    private Collider2D arenaBounds;
+
+    private readonly int hashIsWalking = Animator.StringToHash("isWalking");
+    private readonly int hashAttack = Animator.StringToHash("Attack");
+    private readonly int hashTeleOut = Animator.StringToHash("TeleOut");
+    private readonly int hashTeleIn = Animator.StringToHash("TeleIn");
+    private readonly int hashCast = Animator.StringToHash("Cast");
+    private readonly int hashHitState = Animator.StringToHash("Hit"); // Thay tên theo Anim Hit của bạn
+    #endregion
 
     protected override void Awake()
     {
         base.Awake();
-        if (player != null) playerController = player.GetComponent<PlayerController>();
+        bossHealth = GetComponent<EnemyHealth>();
     }
 
     protected override void ExecuteAI()
     {
-        if (!isAwake) return;
+        if (!isAwake || player == null) return;
 
-        if (isAttacking || (health != null && health.isKnockedBack)) return;
+        UpdatePhaseSystem();
+        if (HandleReactionState()) return;
 
-        cooldownTimer -= Time.deltaTime;
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-
-        if (cooldownTimer <= 0f)
+        if (combatState != CombatState.None)
         {
-            // Kiểm tra phần trăm máu hiện tại
-            float healthPercent = (float)health.currentHealth / health.maxHealth;
-            int randomChoice = Random.Range(0, 100);
+            HandleCombatFailsafe();
+            return;
+        }
 
-            if (healthPercent > phase2Threshold)
+        if (cooldownTimer > 0)
+        {
+            cooldownTimer -= Time.deltaTime;
+
+            // --- CẢI TIẾN: Cho phép lội bộ rượt theo dù đang chờ hồi chiêu ---
+            float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+            if (distanceToPlayer > meleeAttackRange)
             {
-                // --- PHASE 1 (Máu > 30%) ---
-                if (distanceToPlayer <= meleeAttackRange) StartCoroutine(MeleeAttackRoutine());
-                else if (randomChoice < 50) ChasePlayer(); // 50% Truy đuổi
-                else if (randomChoice < 85) StartCoroutine(TeleportSlashRoutine()); // 35% Dịch chuyển
-                else StartCoroutine(CastSpellRoutine(false)); // 15% Hố đen
+                ChangeMovementState(MovementState.Chase);
             }
             else
             {
-                // --- PHASE 2 (Máu <= 30%) ---
-                if (distanceToPlayer <= meleeAttackRange) StartCoroutine(MeleeAttackRoutine());
-                else if (randomChoice < 30) ChasePlayer(); // 30% Truy đuổi
-                else if (randomChoice < 60) StartCoroutine(TeleportSlashRoutine()); // 30% Dịch chuyển
-                else StartCoroutine(CastSpellRoutine(true)); // 40% Hố đen (Triple)
+                ChangeMovementState(MovementState.Idle);
+                FacePlayer(); // Ở sát mặt thì đứng lườm tạo áp lực
             }
+            return;
         }
-        else if (distanceToPlayer > meleeAttackRange)
+
+        if (Time.time < decisionLockTimer) return;
+        EvaluateUtilityAndAct();
+    }
+
+    public void WakeUpBoss() { isAwake = true; }
+    public void SetArenaBounds(Collider2D bounds) { arenaBounds = bounds; }
+
+    private void UpdatePhaseSystem()
+    {
+        if (currentPhase == Phase.Phase1_Normal && bossHealth != null &&
+            (float)bossHealth.currentHealth / bossHealth.maxHealth <= phase2Threshold)
         {
-            ChasePlayer();
+            currentPhase = Phase.Phase2_Enraged;
+            baseAttackCooldown *= 0.5f; // Đánh nhanh gấp đôi khi máu < 30%
+            moveSpeed *= 1.5f;
         }
     }
 
-    private void ChasePlayer()
+    private bool HandleReactionState()
     {
-        anim.SetBool("isWalking", true);
-        float direction = player.position.x > transform.position.x ? 1f : -1f;
-        Flip(-direction);
-        rb.linearVelocity = new Vector2(direction * moveSpeed, rb.linearVelocity.y);
+        if (anim == null) return false;
+        if (anim.GetCurrentAnimatorStateInfo(0).shortNameHash == hashHitState)
+        {
+            if (reactionState != ReactionState.HitStunned)
+            {
+                reactionState = ReactionState.HitStunned;
+                InterruptAttacks();
+            }
+            return true;
+        }
+        else if (reactionState == ReactionState.HitStunned)
+        {
+            reactionState = ReactionState.Normal;
+            cooldownTimer = 0.2f;
+        }
+        return false;
     }
 
-    private IEnumerator MeleeAttackRoutine()
+    private void InterruptAttacks()
     {
-        isAttacking = true;
-        StopMovement();
-        anim.SetBool("isWalking", false);
-        anim.SetTrigger("Attack");
-        yield return new WaitForSeconds(1f);
-        cooldownTimer = attackCooldown;
-        isAttacking = false;
+        if (activeAttackCoroutine != null) { StopCoroutine(activeAttackCoroutine); activeAttackCoroutine = null; }
+        combatState = CombatState.None;
+        rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+        if (anim != null) { anim.ResetTrigger(hashAttack); anim.ResetTrigger(hashTeleOut); anim.ResetTrigger(hashTeleIn); anim.ResetTrigger(hashCast); }
     }
 
-    // ==========================================
-    // KỸ NĂNG 3: DỊCH CHUYỂN ĐÂM LÉN (TELEPORT SLASH)
-    // ==========================================
+    private void EvaluateUtilityAndAct()
+    {
+        float distSqr = (player.position - transform.position).sqrMagnitude;
+        FacePlayer();
+
+        float meleeScore = (distSqr <= meleeAttackRange * meleeAttackRange) ? 100f : 0f;
+        float teleportScore = (distSqr > meleeAttackRange * meleeAttackRange) ? 60f : 0f;
+        float castScore = (distSqr > meleeAttackRange * meleeAttackRange) ? 40f : 0f;
+        float chaseScore = (distSqr > meleeAttackRange * meleeAttackRange) ? 50f : 0f;
+
+        if (currentPhase == Phase.Phase2_Enraged) castScore += 30f; // Tăng tỉ lệ xài lỗ đen ở Phase 2
+
+        if (lastCombatState == CombatState.Meleeing) meleeScore -= 50f;
+        if (lastCombatState == CombatState.Teleporting) teleportScore -= 50f;
+        if (lastCombatState == CombatState.Casting) castScore -= 50f;
+
+        meleeScore += Random.Range(0, 15f); teleportScore += Random.Range(0, 15f); castScore += Random.Range(0, 15f); chaseScore += Random.Range(0, 15f);
+
+        float highest = Mathf.Max(meleeScore, teleportScore, castScore, chaseScore);
+
+        if (highest == meleeScore && meleeScore > 0) ExecuteAttack(CombatState.Meleeing, hashAttack);
+        else if (highest == teleportScore && teleportScore > 0)
+        {
+            combatState = CombatState.Teleporting; lastCombatState = CombatState.Teleporting; failsafeTimer = 5f;
+            if (activeAttackCoroutine != null) StopCoroutine(activeAttackCoroutine);
+            activeAttackCoroutine = StartCoroutine(TeleportSlashRoutine());
+        }
+        else if (highest == castScore && castScore > 0)
+        {
+            combatState = CombatState.Casting; lastCombatState = CombatState.Casting; failsafeTimer = 5f;
+            if (activeAttackCoroutine != null) StopCoroutine(activeAttackCoroutine);
+            activeAttackCoroutine = StartCoroutine(CastSpellRoutine(currentPhase == Phase.Phase2_Enraged));
+        }
+        else ChangeMovementState(MovementState.Chase);
+
+        decisionLockTimer = Time.time + decisionInertiaTime;
+    }
+
+    private void ExecuteAttack(CombatState state, int animHash)
+    {
+        ChangeMovementState(MovementState.Idle);
+        combatState = state; lastCombatState = state; failsafeTimer = 5f;
+        if (anim != null) anim.SetTrigger(animHash);
+    }
+
+    private void HandleCombatFailsafe()
+    {
+        failsafeTimer -= Time.deltaTime;
+        if (failsafeTimer <= 0f) Event_EndAttack();
+    }
+
+    private void ChangeMovementState(MovementState newState)
+    {
+        moveState = newState;
+        if (newState == MovementState.Idle) { rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y); if (anim != null) anim.SetBool(hashIsWalking, false); }
+        else if (newState == MovementState.Chase)
+        {
+            if (anim != null) anim.SetBool(hashIsWalking, true);
+            float dirX = Mathf.Sign(player.position.x - transform.position.x);
+            rb.linearVelocity = new Vector2(dirX * moveSpeed, rb.linearVelocity.y);
+        }
+    }
+
+    private void FacePlayer()
+    {
+        if (player == null) return;
+        float dirX = player.position.x - transform.position.x;
+        if (Mathf.Abs(dirX) > 0.1f) { float direction = dirX > 0 ? -1f : 1f; Flip(direction); }
+    }
+
+    // ANIMATION EVENTS (Melee)
+    public void TriggerMeleeDamage()
+    {
+        Collider2D hitPlayer = Physics2D.OverlapCircle(attackPoint.position, attackRadius, playerLayer);
+        if (hitPlayer != null) hitPlayer.GetComponent<PlayerHealth>()?.TakeDamage(meleeDamage, transform);
+    }
+
+    // COROUTINES (Teleport & Spell)
     private IEnumerator TeleportSlashRoutine()
     {
-        isAttacking = true;
-        StopMovement();
-        anim.SetBool("isWalking", false);
-
-        anim.SetTrigger("TeleOut");
+        ChangeMovementState(MovementState.Idle);
+        anim.SetTrigger(hashTeleOut);
         yield return new WaitForSeconds(0.5f);
+        if (reactionState == ReactionState.HitStunned) yield break;
 
-        // Tính vị trí định nhảy tới
         float bossSideRelativeToPlayer = Mathf.Sign(transform.position.x - player.position.x);
         float targetX = player.position.x - (bossSideRelativeToPlayer * teleportOffset);
 
-        // --- MỚI: ÉP TỌA ĐỘ KHÔNG ĐƯỢC VƯỢT QUÁ RANH GIỚI PHÒNG ---
         if (arenaBounds != null)
         {
-            // Lấy tọa độ vách tường trái (min) và phải (max)
-            float minWallX = arenaBounds.bounds.min.x;
-            float maxWallX = arenaBounds.bounds.max.x;
-
-            // Dùng Mathf.Clamp để nhốt targetX vào giữa 2 vách tường.
-            // (Cộng/trừ thêm 1.5f để chừa chỗ cho bụng con Boss, tránh việc bị ghim sát quá vào tường)
+            float minWallX = arenaBounds.bounds.min.x; float maxWallX = arenaBounds.bounds.max.x;
             targetX = Mathf.Clamp(targetX, minWallX + 1.5f, maxWallX - 1.5f);
         }
 
         transform.position = new Vector2(targetX, transform.position.y);
+        FacePlayer();
 
-        float directionToPlayer = player.position.x > transform.position.x ? 1f : -1f;
-        Flip(-directionToPlayer);
-
-        anim.SetTrigger("TeleIn");
+        anim.SetTrigger(hashTeleIn);
         yield return new WaitForSeconds(0.5f);
+        if (reactionState == ReactionState.HitStunned) yield break;
 
-        anim.SetTrigger("Attack");
-        yield return new WaitForSeconds(1f);
-
-        cooldownTimer = attackCooldown;
-        isAttacking = false;
+        anim.SetTrigger(hashAttack); // Quét sát thương dùng chung hàm TriggerMeleeDamage
     }
 
     private IEnumerator CastSpellRoutine(bool isTriple)
     {
-        isAttacking = true;
-        StopMovement();
-        anim.SetBool("isWalking", false);
-        anim.SetTrigger("Cast");
+        ChangeMovementState(MovementState.Idle);
+        anim.SetTrigger(hashCast);
         yield return new WaitForSeconds(0.5f);
+        if (reactionState == ReactionState.HitStunned) yield break;
 
         if (blackHolePrefab != null)
         {
@@ -152,36 +259,12 @@ public class DungeonBoss : EnemyBase
 
             if (isTriple)
             {
-                // Triệu hồi thêm 2 hố đen phía trước và phía sau
                 Instantiate(blackHolePrefab, centralPos + Vector2.left * tripleSpellOffset, Quaternion.identity);
                 Instantiate(blackHolePrefab, centralPos + Vector2.right * tripleSpellOffset, Quaternion.identity);
             }
         }
-
-        yield return new WaitForSeconds(0.5f);
-        cooldownTimer = attackCooldown;
-        isAttacking = false;
+        Event_EndAttack();
     }
 
-    public void TriggerMeleeDamage()
-    {
-        Collider2D hitPlayer = Physics2D.OverlapCircle(attackPoint.position, attackRadius, playerLayer);
-        if (hitPlayer != null)
-        {
-            PlayerHealth pHealth = hitPlayer.GetComponent<PlayerHealth>();
-            if (pHealth != null) pHealth.TakeDamage(meleeDamage, transform); // Gây 1 sát thương cho player
-        }
-    }
-
-    // Hàm này sẽ được BossArenaManager gọi khi cửa đã đóng và rung màn hình xong
-    public void WakeUpBoss()
-    {
-        isAwake = true;
-    }
-
-    // Hàm để BossArenaManager bơm dữ liệu vào
-    public void SetArenaBounds(Collider2D bounds)
-    {
-        arenaBounds = bounds;
-    }
+    public void Event_EndAttack() { InterruptAttacks(); cooldownTimer = baseAttackCooldown; }
 }
