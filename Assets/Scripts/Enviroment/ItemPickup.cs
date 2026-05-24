@@ -47,6 +47,7 @@ public class ItemPickup : MonoBehaviour
     {
         InventoryManager.instance.AddItem(itemInfo);
         InteractionUI.instance.Hide();
+        AudioManager.instance.PlaySFX("ItemPickup");
 
         // Ghi vào sổ: Vật phẩm nhặt xong là mất vĩnh viễn (true)
         if (SaveManager.instance != null && !string.IsNullOrEmpty(itemID))

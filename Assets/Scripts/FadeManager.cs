@@ -36,15 +36,19 @@ public class FadeManager : MonoBehaviour
     // --- HÀM TỐI DẦN (FADE OUT) ---
     public IEnumerator FadeOut(float duration)
     {
-        blackScreen.raycastTarget = true; // Chặn người chơi bấm bậy trong lúc chuyển cảnh
+        if (blackScreen == null) yield break; // Chống lỗi nếu lỡ quên kéo thả
+
+        blackScreen.raycastTarget = true;
         Color c = blackScreen.color;
         float time = 0;
 
+        // Ép thời gian tối thiểu để tránh lỗi chia cho 0
+        if (duration <= 0f) duration = 0.1f;
+
         while (time < duration)
         {
-            // Dùng unscaledDeltaTime để màn hình vẫn đen lại kể cả khi Time.timeScale = 0 (Lúc đóng băng game)
             time += Time.unscaledDeltaTime;
-            c.a = Mathf.Lerp(0f, 1f, time / duration);
+            c.a = Mathf.Clamp01(time / duration); // Lerp từ 0 đến 1 an toàn tuyệt đối
             blackScreen.color = c;
             yield return null;
         }
@@ -56,13 +60,17 @@ public class FadeManager : MonoBehaviour
     // --- HÀM SÁNG DẦN (FADE IN) ---
     public IEnumerator FadeIn(float duration)
     {
+        if (blackScreen == null) yield break;
+
         Color c = blackScreen.color;
         float time = 0;
+
+        if (duration <= 0f) duration = 0.1f;
 
         while (time < duration)
         {
             time += Time.unscaledDeltaTime;
-            c.a = Mathf.Lerp(1f, 0f, time / duration);
+            c.a = Mathf.Clamp01(1f - (time / duration)); // Giảm dần từ 1 về 0 chuẩn xác
             blackScreen.color = c;
             yield return null;
         }
@@ -122,6 +130,8 @@ public class FadeManager : MonoBehaviour
         SceneManager.SetActiveScene(loadedScene);
 
         // 4. Tìm kiếm SpawnPoint và Dịch chuyển
+        SpawnPoint targetSP = null; // --- MỚI: Khai báo biến lưu lại cái SpawnPoint tìm được ---
+
         if (player != null)
         {
             bool foundSpawn = false;
@@ -135,6 +145,7 @@ public class FadeManager : MonoBehaviour
                     if (sp.spawnPointID == spawnID)
                     {
                         player.transform.position = sp.transform.position;
+                        targetSP = sp; // --- MỚI: Lưu lại thông tin SpawnPoint này ---
                         foundSpawn = true;
                         break;
                     }
@@ -165,11 +176,37 @@ public class FadeManager : MonoBehaviour
         // Trả lại vật lý bình thường nhưng VẪN KHÓA PHÍM
         if (rb != null) rb.bodyType = RigidbodyType2D.Dynamic;
 
-        // Đợi 1 frame vật lý để nhân vật đáp xuống đất hoàn toàn
-        yield return new WaitForFixedUpdate();
+        // --- MỚI: KIỂM TRA XEM CÓ BỊ ĐẨY KHÔNG ---
+        // --- MỚI: KIỂM TRA XEM CÓ BỊ ĐẨY KHÔNG ---
+        if (targetSP != null && targetSP.isPushSpawn)
+        {
+            // 1. Ép vận tốc vật lý
+            if (rb != null) rb.linearVelocity = targetSP.pushForce;
 
-        // Ép IsGrounded một lần nữa để chắc chắn Animator không bị giật nhảy
-        if (anim != null) anim.SetBool("IsGrounded", true);
+            // --- MỚI: TỰ ĐỘNG LẬT NHÂN VẬT (FLIP) THEO HƯỚNG BAY ---
+            if (player != null)
+            {
+                // Hàm Mathf.Sign sẽ trả về 1 nếu pushForce.x >= 0 (Phải) và -1 nếu pushForce.x < 0 (Trái)
+                float flipDirection = Mathf.Sign(targetSP.pushForce.x);
+                player.transform.localScale = new Vector3(flipDirection, 1f, 1f);
+            }
+
+            // 2. ĐÁNH THỨC ANIMATOR NGAY LẬP TỨC
+            if (anim != null)
+            {
+                anim.SetBool("IsGrounded", false); // Báo là đang lơ lửng
+                anim.SetFloat("yVelocity", targetSP.pushForce.y); // Truyền lực nảy để Animator biết đang bay lên
+
+                // Ép chạy luôn State nhảy (Tên State này bạn đang dùng ở phần DiveKick trong PlayerController)
+                anim.Play("JumpAndFall", 0, 0f);
+            }
+        }
+        else
+        {
+            // Nếu là điểm xuất hiện bình thường: Đợi 1 frame và ép tư thế đáp đất
+            yield return new WaitForFixedUpdate();
+            if (anim != null) anim.SetBool("IsGrounded", true);
+        }
 
         // Sáng màn hình
         yield return StartCoroutine(FadeIn(0.5f));

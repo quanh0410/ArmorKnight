@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2d9d1d2b876e2240a892b9c23041b9e, type: 3}
+  m_Name: FinalBossDialog
+  m_EditorClassIdentifier: Assembly-CSharp::DialogData
+  firstTimeLines:
+  - speakerName: "Qu\u1EF7 v\u01B0\u01A1ng"
+    sentence: "100 sinh m\u1EA1ng ng\u01B0\u01A1i h\u1EE9a hi\u1EBFn t\u1EBF cho
+      ta, \u0111\xE3 chu\u1EA9n b\u1ECB xog ch\u01B0a ?"
+  - speakerName: "Ho\xE0ng th\xFAc"
+    sentence: "H\xE3y cho ta th\xEAm ch\xFAt th\u1EDDi gian n\u1EEFa..."
+  - speakerName: "Ho\xE0ng th\xFAc"
+    sentence: "S\u1ED1 l\u01B0\u1EE3ng ng\u01B0\u1EDDi m\u1EA5t t\xEDch ng\xE0y c\xE0ng
+      nhi\u1EC1u, l\u0169 d\xE2n th\u01B0\u1EDDng \u0111\xE3 b\u1EAFt \u0111\u1EA7u
+      \u0111\u1EC1 cao c\u1EA3nh gi\xE1c r\u1ED3i."
+  - speakerName: "Ho\xE0ng th\xFAc"
+    sentence: "S\u1EAFp t\u1EDBi l\u1EC5 \u0111\u0103ng quang r\u1ED3i, ta ph\u1EA3i
+      h\xE0nh \u0111\u1ED9ng c\u1EA9n th\u1EADn ch\xFAt."
+  - speakerName: "Qu\u1EF7 v\u01B0\u01A1ng"
+    sentence: "C\xE1i ch\u1EE9c vua qu\xE8n c\u1EE7a lo\xE0i ng\u01B0\u1EDDi ta kh\xF4ng
+      quan t\xE2m, \u0111\u1EEBng qu\xEAn n\u1EBFu k c\xF3 ta ng\u01B0\u01A1i ch\u1EA3
+      l\xE0 c\xE1i th\xE1 g\xEC."
+  - speakerName: "Ho\xE0ng th\xFAc"
+    sentence: "N\xE0y, ng\u01B0\u01A1i coi th\u01B0\u1EDDng ta qu\xE1 r\u1ED3i \u0111\u1EA5y,
+      d\xF9 sao n\u1EBFu ta n\u1EAFm quy\u1EC1n ta s\u1EBD d\u1EC5 d\xE0ng l\u1EEBa
+      l\u0169 d\xE2n th\u01B0\u1EDDng \u0111\xF3 d\xE2ng m\u1EA1ng cho ng\u01B0\u01A1i."
+  - speakerName: "Ho\xE0ng th\xFAc"
+    sentence: "AI \u0110\xD3 !?!?!"
+  - speakerName: "Ho\xE0ng th\xFAc"
+    sentence: 'Garen ?? '
+  - speakerName: "Ho\xE0ng th\xFAc"
+    sentence: "Kh\xF4ng..."
+  - speakerName: "Ho\xE0ng th\xFAc"
+    sentence: "Ng\u01B0\u1EDDi l\xE0 Arthur"
+  - speakerName: "Ho\xE0ng t\u1EED Arthur"
+    sentence: "C\xE1c ng\u01B0\u01A1i...."
+  - speakerName: "Ho\xE0ng t\u1EED Arthur"
+    sentence: "Ta hi\u1EC3u r\u1ED3i, ho\xE0ng th\xFAc, ng\u01B0\u01A1i \u0111\xE3
+      th\xF4ng \u0111\u1ED3ng v\u1EDBi qu\u1EF7 v\u01B0\u01A1ng t\u1EA1o n\xEAn k\u1ECBch
+      b\u1EA3n \u0111\u1EC3 d\xE0nh l\u1EA5y ngai v\xE0ng."
+  - speakerName: "Ho\xE0ng th\xFAc"
+    sentence: "HAHAHA, bi\u1EBFt r\u1ED3i th\xEC sao ch\u1EE9, \u0111\xE1ng l\xFD
+      ra ng\u01B0\u01A1i n\xEAn ch\u1EBFt \u1EDF \u0111\xE2u \u0111\xF3, ch\u1EE9
+      kh\xF4ng ph\u1EA3i trong cung \u0111i\u1EC7n ng\xE0y h\xF4m nay."
+  - speakerName: "Qu\u1EF7 v\u01B0\u01A1ng"
+    sentence: "Ti\u1EBFn l\xEAn \u0111i ta s\u1EBD y\u1EC3m tr\u1EE3 ng\u01B0\u01A1i."
+  - speakerName: "Ho\xE0ng th\xFAc"
+    sentence: "C\xE1i g\xEC, sao l\u1EA1i l\xE0 ta ch\u1EE9, kh\xF4ng ph\u1EA3i ng\u01B0\u01A1i
+      c\xF3 th\u1EC3 ph\u1EA9y tay ti\xEAu di\u1EC7t h\u1EAFn sao."
+  - speakerName: "Qu\u1EF7 v\u01B0\u01A1ng"
+    sentence: "\u0110\u1ED3 ngu, Th\xE1nh Gi\xE1p \u0111\xF3 \u0111\u01B0\u1EE3c
+      t\u1EA1o ra \u0111\u1EC3 kh\u1EAFc ch\u1EBF ta, h\u1EAFn c\xF3 th\u1EC3 d\u1EC5
+      d\xE0ng \u0111\u1EA3 th\u01B0\u01A1ng c\u01A1 th\u1EC3 ta."
+  - speakerName: "Ho\xE0ng th\xFAc"
+    sentence: "Nh\u01B0ng h\u1EAFn c\xF3 Th\xE1nh Gi\xE1p v\xE0 ki\u1EBFm thu\u1EADt
+      Ho\xE0ng Gia c\u1EE7a h\u1EAFn c\u0169ng \u0111\u1EA1t tr\xECnh \u0111\u1ED9
+      th\u01B0\u1EE3ng th\u1EEBa. Sao ta \u0111\xE1nh b\u1EA1i h\u1EAFn \u0111\u01B0\u1EE3c
+      ch\u1EE9."
+  - speakerName: "Qu\u1EF7 v\u01B0\u01A1ng"
+    sentence: "Y\xEAn t\xE2m, h\xE3y c\u1EE9 lao v\xE0o t\u1EA5n c\xF4ng \u0111i,
+      nh\u01B0ng nh\u1EDB h\xE3y b\u1EA3o v\u1EC7 ta"
+  - speakerName: "Qu\u1EF7 v\u01B0\u01A1ng"
+    sentence: "CH\u1EC8 C\u1EA6N TA C\xD2N S\u1ED0NG, H\u1EAEN S\u1EBC KH\xD4NG TH\u1EC2
+      N\xC0O \u0110\xC1NH B\u1EA0I NG\u01AF\u01A0I \u0110\u01AF\u1EE2C."
+  defaultLines: []

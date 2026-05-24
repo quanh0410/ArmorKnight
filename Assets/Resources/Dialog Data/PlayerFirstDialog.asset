@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2d9d1d2b876e2240a892b9c23041b9e, type: 3}
+  m_Name: PlayerFirstDialog
+  m_EditorClassIdentifier: Assembly-CSharp::DialogData
+  firstTimeLines:
+  - speakerName: "Th\xE1nh hi\u1EC7p s\u0129"
+    sentence: "B\u1ED9 gi\xE1p n\xE0y c\xF3 v\u1EBB kh\xF4ng t\u1EA7m th\u01B0\u1EDDng."
+  - speakerName: "Th\xE1nh hi\u1EC7p s\u0129"
+    sentence: "N\xF3 cho ta c\xF3 c\u1EA3m gi\xE1c nh\u01B0 c\u01A1 th\u1EC3 c\xF3
+      m\u1ED9t s\u1EE9c m\u1EA1nh to l\u1EDBn. "
+  - speakerName: "Th\xE1nh hi\u1EC7p s\u0129"
+    sentence: "H\u01A1n n\u1EEFa trong \u0111\u1EA7u ta nh\u01B0 c\xF3 m\u1ED9t \xFD
+      ch\xED m\u1EA1nh m\u1EBD n\xE0o \u0111\xF3 nh\u1EAFc r\u1EB1ng..."
+  - speakerName: "Th\xE1nh hi\u1EC7p s\u0129"
+    sentence: "PH\u1EA2I B\u1EA2O V\u1EC6 DEMACIA."
+  - speakerName: "Th\xE1nh hi\u1EC7p s\u0129"
+    sentence: "\u0110\xFAng ta l\xE0 Garen, \u0110\u1EC7 nh\u1EA5t Th\xE1nh hi\u1EC7p
+      s\u0129 c\u1EE7a Demacia, ta ph\u1EA3i tr\u1EDF v\u1EC1 v\xE0 b\u1EA3o v\u1EC7
+      v\u01B0\u01A1ng qu\u1ED1c. "
+  defaultLines: []

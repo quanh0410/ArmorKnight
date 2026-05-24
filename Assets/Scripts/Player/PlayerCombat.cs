@@ -147,6 +147,7 @@ public class PlayerCombat : MonoBehaviour
                 }
                 else
                 {
+                    if (enemy.GetComponent<KnightEnemy>() != null && enemy.GetComponent<KnightEnemy>().combatState == KnightEnemy.CombatState.Defending) return;
                     // Vũ khí Kiếm -> Gây sát thương bình thường
                     health.TakeDamage(10, transform);
 

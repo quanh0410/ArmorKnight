@@ -5,15 +5,26 @@ using UnityEngine;
 public class Trap3 : MonoBehaviour
 {
     [Header("Trap Settings")]
-    public int damage = 1; // Sát thương chuẩn (thường bẫy Hollow Knight trừ 1 máu)
-    public float loopDelay = 2f; // Thời gian lặp lại cú đâm/chém
+    public int damage = 1;
+    public float loopDelay = 2f;
+
+    // ==========================================
+    // --- MỚI: CẤU HÌNH ÂM THANH KHOẢNG CÁCH ---
+    // ==========================================
+    [Header("--- THIẾT LẬP ÂM THANH ---")]
+    [Tooltip("Khoảng cách tối đa (mét) bắt đầu nghe thấy tiếng bẫy hoạt động")]
+    public float maxAudibleDistance = 12f;
+
+    private AudioSource localAudioSource;
+    private AudioClip openClip;
+    private AudioClip closedClip;
+    private Transform playerTransform;
 
     private SpriteRenderer spriteRenderer;
     private PolygonCollider2D polyCollider;
     private Animator animator;
     private Sprite lastSprite;
 
-    // --- TỐI ƯU HIỆU SUẤT: Dùng Hash ID thay cho String ---
     private static readonly int ActTrigger = Animator.StringToHash("act");
 
     void Start()
@@ -22,17 +33,32 @@ public class Trap3 : MonoBehaviour
         polyCollider = GetComponent<PolygonCollider2D>();
         animator = GetComponent<Animator>();
 
-        // Ép buộc trở thành Trigger để không cản đường bay/vật lý của Player
         polyCollider.isTrigger = true;
 
-        // Bắt đầu vòng lặp Animation
+        // ========================================================
+        // --- MỚI: KHỞI TẠO HỆ THỐNG LOA VÀ LẤY ĐĨA NHẠC ---
+        // ========================================================
+        localAudioSource = gameObject.AddComponent<AudioSource>();
+
+        if (AudioManager.instance != null)
+        {
+            // Ép cái loa này chui vào đúng luồng SFX Mixer tổng của game bạn
+            localAudioSource.outputAudioMixerGroup = AudioManager.instance.sfxSource.outputAudioMixerGroup;
+
+            // Tự động lục tìm file âm thanh trong mảng sfxSounds đã khai báo ở AudioManager
+            var openSound = System.Array.Find(AudioManager.instance.sfxSounds, x => x.name == "Trap3Open");
+            if (openSound != null) openClip = openSound.clip;
+
+            var closedSound = System.Array.Find(AudioManager.instance.sfxSounds, x => x.name == "Trap3Closed");
+            if (closedSound != null) closedClip = closedSound.clip;
+        }
+
         InvokeRepeating(nameof(PlayAnimation), 0f, loopDelay);
         UpdateCollider();
     }
 
     void Update()
     {
-        // Liên tục bóp méo Hitbox bám sát theo từng frame ảnh thay đổi
         if (spriteRenderer.sprite != lastSprite)
         {
             UpdateCollider();
@@ -61,18 +87,57 @@ public class Trap3 : MonoBehaviour
         }
     }
 
-    // --- CƠ CHẾ GÂY SÁT THƯƠNG ĐÃ ĐỒNG BỘ VỚI PLAYER ---
     private void OnTriggerStay2D(Collider2D collision)
     {
-        // Nhớ gắn Tag "Player" cho nhân vật của bạn nhé
         if (collision.CompareTag("Player"))
         {
             PlayerHealth playerHealth = collision.GetComponent<PlayerHealth>();
             if (playerHealth != null)
             {
-                // Gọi thẳng vào hệ thống dịch chuyển an toàn của Player
                 playerHealth.TakeTrapDamage(damage);
             }
         }
+    }
+
+    // ========================================================
+    // --- MỚI: CHỈNH SỬA HÀM PHÁT ÂM THANH THEO KHOẢNG CÁCH ---
+    // ========================================================
+    public void PlaySFXOpen()
+    {
+        PlaySpatialTrapSound(openClip);
+    }
+
+    public void PlaySFXClosed()
+    {
+        PlaySpatialTrapSound(closedClip);
+    }
+
+    private void PlaySpatialTrapSound(AudioClip clip)
+    {
+        if (clip == null || localAudioSource == null) return;
+
+        // THUẬT TOÁN ĐỈNH CAO: Tìm Player kể cả khi Player đang bị ẩn (SetActive = false) lúc mới load Scene
+        if (playerTransform == null)
+        {
+            PlayerController pc = FindAnyObjectByType<PlayerController>(FindObjectsInactive.Include);
+            if (pc != null) playerTransform = pc.transform;
+        }
+
+        if (playerTransform == null) return;
+
+        // Tính khoảng cách hình học 2D thuần túy (bỏ qua trục Z)
+        float distance = Vector2.Distance(transform.position, playerTransform.position);
+
+        // Nếu người chơi đứng ngoài tầm nghe -> Không phát nhạc, ngắt lệnh ngay để tối ưu RAM/CPU
+        if (distance > maxAudibleDistance) return;
+
+        // Công thức tính Fade: Gần bằng 0 mét -> volume = 1. Gần bằng maxAudibleDistance -> volume = 0
+        float volumeFactor = 1f - (distance / maxAudibleDistance);
+
+        // Bình phương volumeFactor để mô phỏng đường cong âm thanh logarit (đúng với cơ chế sinh học tai người)
+        volumeFactor = volumeFactor * volumeFactor;
+
+        // Phát âm thanh ra loa nội bộ với âm lượng đã được làm mịn
+        localAudioSource.PlayOneShot(clip, volumeFactor);
     }
 }

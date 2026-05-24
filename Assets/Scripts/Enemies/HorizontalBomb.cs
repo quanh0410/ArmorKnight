@@ -1,8 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class HorizontalBomb : MonoBehaviour
 {
-    [Header("C�i ??t")]
+    [Header("Cài ??t")]
     public float speed = 15f;
     public int damage = 1;
     public float lifeTime = 3f;
@@ -25,7 +25,7 @@ public class HorizontalBomb : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    // T??ng t? RangedSlash, g?i h�m n�y khi xu?t x??ng ??n
+    // T??ng t? RangedSlash, g?i hàm này khi xu?t x??ng ??n
     public void Setup(float direction)
     {
         moveDirection = Mathf.Sign(direction);
@@ -76,9 +76,11 @@ public class HorizontalBomb : MonoBehaviour
     {
         hasExploded = true;
         if (anim != null) anim.SetTrigger("Explode"); // Ch?y Anim n? gi?ng EGoblinBomb
+        AudioManager.instance.PlaySFX("Explode"); // Phát 1 lần duy nhất tại đây
+
     }
 
-    // G?n h�m n�y v�o khung h�nh cu?i c?a Animation N? (Animation Event)
+    // G?n hàm này vào khung hình cu?i c?a Animation N? (Animation Event)
     public void DestroyBomb()
     {
         if (ObjectPoolManager.Instance != null)

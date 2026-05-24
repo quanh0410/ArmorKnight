@@ -5739,7 +5739,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0b93b6fea9514e43b005d75c9aaeb3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  spawnPointID: 0
+  spawnPointID: 1
 --- !u!4 &971741218
 Transform:
   m_ObjectHideFlags: 0
@@ -6198,6 +6198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cacee135741711741bddabe01db1e464, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  vineID: 
   wiggleDuration: 0.3
   wiggleAngle: 15
   wiggleSpeed: 25

@@ -70,6 +70,8 @@ public class ChestController : MonoBehaviour
         isOpened = true;
         Animator anim = GetComponent<Animator>();
         GetComponent<Animator>().SetTrigger("Open");
+        AudioManager.instance.PlaySFX("ChestOpen"); // Phát 1 lần duy nhất tại đây
+
         // 1. Tiêu thụ chìa khóa
         InventoryManager.instance.RemoveItem(requiredKey, keysNeeded);
 

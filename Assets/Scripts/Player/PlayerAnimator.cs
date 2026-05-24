@@ -24,7 +24,7 @@ public class PlayerAnimator : MonoBehaviour
     private static readonly int TurnAroundTrigger = Animator.StringToHash("TurnAround");
     private static readonly int IsRestingParam = Animator.StringToHash("IsResting");
 
-    void Start()
+    void Awake()
     {
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
@@ -50,8 +50,11 @@ public class PlayerAnimator : MonoBehaviour
         {
             // Ép mọi thông số về tư thế Đứng yên (Idle)
             anim.SetFloat(SpeedParam, 0f);
-            anim.SetFloat(YVelocityParam, 0f);
-            anim.SetBool(IsGroundedParam, true);
+            // SỬA Ở ĐÂY: Vẫn đọc vận tốc Y thực tế để Animator biết là đang bay lên hay rơi xuống
+            anim.SetFloat(YVelocityParam, rb.linearVelocity.y);
+
+            // SỬA Ở ĐÂY: Vẫn dùng hàm check đất thực tế để không bị kẹt cứng ở mặt đất
+            anim.SetBool(IsGroundedParam, playerController.IsGrounded());
             anim.SetBool(IsDashingParam, false);
             anim.SetBool(IsWallSlidingParam, false);
 

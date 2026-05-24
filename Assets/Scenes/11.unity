@@ -149,6 +149,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   spawnPointID: 0
+  isPushSpawn: 0
+  pushForce: {x: 10, y: 15}
 --- !u!4 &223116037
 Transform:
   m_ObjectHideFlags: 0
@@ -533,6 +535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cacee135741711741bddabe01db1e464, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  vineID: 27fa6992-87e9-498b-a280-84f94c415882
   wiggleDuration: 0.3
   wiggleAngle: 15
   wiggleSpeed: 25
@@ -1020,6 +1023,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cacee135741711741bddabe01db1e464, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VineInteraction
+  vineID: c11a8a82-7792-40a3-9d7b-a3e2d843db09
   wiggleDuration: 0.2
   wiggleAngle: 10
   wiggleSpeed: 50
@@ -1349,7 +1353,7 @@ Transform:
   m_GameObject: {fileID: 1015684815}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 187.91, y: 61.24, z: 0}
+  m_LocalPosition: {x: 188.61, y: 61.89, z: 0}
   m_LocalScale: {x: 1.6693707, y: 1.9160173, z: 1.2873}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1607,6 +1611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cacee135741711741bddabe01db1e464, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VineInteraction
+  vineID: d82e0ed0-0273-4f79-9889-f9ef964c855e
   wiggleDuration: 0.2
   wiggleAngle: 10
   wiggleSpeed: 50
@@ -6060,6 +6065,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cacee135741711741bddabe01db1e464, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VineInteraction
+  vineID: e53c2980-5484-4e32-9721-9ce66844415d
   wiggleDuration: 0.2
   wiggleAngle: 10
   wiggleSpeed: 50
@@ -6094,6 +6100,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   spawnPointID: 1
+  isPushSpawn: 0
+  pushForce: {x: 10, y: 15}
 --- !u!4 &1220179056
 Transform:
   m_ObjectHideFlags: 0

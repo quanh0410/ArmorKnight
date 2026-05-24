@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections;
-using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
@@ -30,6 +30,12 @@ public class PlayerHealth : MonoBehaviour
     public LayerMask trapLayer;
     private Vector2 lastSafePosition;
     private float groundedTimer;
+
+    [Header("--- HÀO QUANG NHÂN VẬT CHÍNH ---")]
+    public bool hasPlotArmor = false; // Bật lên khi đánh Boss cốt truyện
+    [HideInInspector]
+    public UnityEngine.Events.UnityEvent onPlotArmorTriggered = new UnityEngine.Events.UnityEvent();
+
 
     private Rigidbody2D rb;
     private PlayerAnimator playerAnimator;
@@ -101,6 +107,8 @@ public class PlayerHealth : MonoBehaviour
             playerAnimator.PlayHitAnimation();
             if (hitEffectPrefab != null && playerController != null && playerController.wallCheckPoint != null)
             {
+                AudioManager.instance.PlaySFX("PlayerHit");
+
                 GameObject effectObj = ObjectPoolManager.Instance.Spawn(hitEffectPrefab, playerController.wallCheckPoint.position, Quaternion.identity);
                 effectObj.GetComponent<StickyEffect2D>().SetTarget(transform);
             }
@@ -108,6 +116,14 @@ public class PlayerHealth : MonoBehaviour
         }
         else
         {
+            // --- MỚI: KIỂM TRA PLOT ARMOR TRƯỚC KHI CHẾT ---
+            if (hasPlotArmor)
+            {
+                currentHealth = 1; // Giữ lại 1 giọt máu
+                hasPlotArmor = false; // Tắt đi để không lạm dụng
+                onPlotArmorTriggered?.Invoke(); // Gọi Đạo diễn ra mặt!
+                return;
+            }
             Die();
         }
     }
@@ -271,6 +287,8 @@ public class PlayerHealth : MonoBehaviour
 
         if (hitEffectPrefab != null && playerController != null)
         {
+            AudioManager.instance.PlaySFX("PlayerHit");
+
             GameObject effectObj = ObjectPoolManager.Instance.Spawn(hitEffectPrefab, transform.position, Quaternion.identity);
             effectObj.GetComponent<StickyEffect2D>().SetTarget(transform);
         }

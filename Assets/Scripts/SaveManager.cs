@@ -38,8 +38,26 @@ public class SaveManager : MonoBehaviour
 
     public void SaveObjectState(string objectID, bool isPermanent = true)
     {
-        if (isPermanent) { if (!currentSaveData.interactedObjectIDs.Contains(objectID)) currentSaveData.interactedObjectIDs.Add(objectID); }
-        else { if (!temporaryEnemyDeaths.Contains(objectID)) temporaryEnemyDeaths.Add(objectID); }
+        if (isPermanent)
+        {
+            // Nếu chưa có ID này trong danh sách thì thêm vào
+            if (!currentSaveData.interactedObjectIDs.Contains(objectID))
+            {
+                currentSaveData.interactedObjectIDs.Add(objectID);
+
+                // ========================================================
+                // --- MỚI: Tự động ghi thẳng ra file Save trên ổ cứng ---
+                // ========================================================
+                SaveGame();
+            }
+        }
+        else
+        {
+            if (!temporaryEnemyDeaths.Contains(objectID))
+            {
+                temporaryEnemyDeaths.Add(objectID);
+            }
+        }
     }
 
     public bool IsObjectInteracted(string objectID)
@@ -201,6 +219,40 @@ public class SaveManager : MonoBehaviour
         return loadedItem;
     }
 
+    // Hàm kiểm tra xem đã có file save trên ổ cứng chưa
+    public bool HasSaveData()
+    {
+        return File.Exists(saveFilePath);
+    }
+
+    // ==========================================
+    // CƠ CHẾ TỰ ĐỘNG LƯU KHI THOÁT GAME
+    // ==========================================
+
+    /// <summary>
+    /// Được gọi tự động khi người chơi nhấn nút X tắt cửa sổ (Windows/Mac)
+    /// hoặc khi gọi lệnh Application.Quit() từ Main Menu.
+    /// </summary>
+    private void OnApplicationQuit()
+    {
+        Debug.Log("<color=cyan>Người chơi đang tắt game. Tiến hành Auto-Save...</color>");
+        SaveGame();
+    }
+
+    /// <summary>
+    /// Đặc biệt quan trọng cho Mobile (Android/iOS).
+    /// Trên điện thoại, người chơi ít khi "Quit" game mà thường vuốt thoát ra màn hình chính (Background).
+    /// Hàm này bắt được khoảnh khắc ứng dụng bị đẩy xuống chạy ngầm.
+    /// </summary>
+    private void OnApplicationPause(bool isPaused)
+    {
+        if (isPaused)
+        {
+            Debug.Log("<color=cyan>Game bị ẩn xuống nền (Pause). Tiến hành Auto-Save...</color>");
+            SaveGame();
+        }
+    }
+
     [ContextMenu("🔥 Xóa Dữ Liệu (Clear Save)")]
     public void ClearSaveData()
     {
@@ -214,6 +266,9 @@ public class SaveManager : MonoBehaviour
 
         currentSaveData = new GameSaveData();
         temporaryEnemyDeaths.Clear();
+
+        // --- 2. MỚI: BẮT BUỘC ÉP TÚI ĐỒ VÀ TRANG BỊ CẬP NHẬT LẠI TRẠNG THÁI TRẮNG NÀY ---
+        StartCoroutine(ApplyLoadData());
         Debug.Log("<color=green><b>ĐÃ RESET TOÀN BỘ! Bấm Play để chơi như mới.</b></color>");
     }
 }

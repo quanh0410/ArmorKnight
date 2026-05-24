@@ -16,10 +16,19 @@ public class Coin : MonoBehaviour
     }
 
     // Nếu bạn dùng Object Pool, phải reset trạng thái khi đồng xu được bật lại
+    // Nếu bạn dùng Object Pool, phải reset trạng thái khi đồng xu được bật lại
     private void OnEnable()
     {
         isCollected = false;
-        if (rb != null) rb.bodyType = RigidbodyType2D.Dynamic; // Trả lại vật lý bình thường
+
+        if (rb != null)
+        {
+            rb.bodyType = RigidbodyType2D.Dynamic; // Trả lại vật lý bình thường
+
+            // --- MỚI: Reset lại vận tốc rơi cũ ---
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -29,6 +38,7 @@ public class Coin : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             isCollected = true;
+            AudioManager.instance.PlaySFX("CoinPickup");
 
             if (CoinManager.Instance != null)
             {

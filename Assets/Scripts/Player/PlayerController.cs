@@ -77,6 +77,10 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isInputLocked = false;
     [HideInInspector] public bool isResting = false;
 
+    [Header("Footstep Settings")]
+    public float footstepInterval = 0.4f; // Khoảng cách thời gian giữa 2 bước chân
+    private float footstepTimer;
+
     [Header("Rest Settings")]
     public GameObject restEffectPrefab;
     private GameObject currentRestEffect;
@@ -179,6 +183,7 @@ public class PlayerController : MonoBehaviour
         if (!wasGrounded && isGrounded && rb.linearVelocity.y <= 0f)
         {
             Vector2 spawnPos = new Vector2(groundCheckPoint.position.x, groundCheckPoint.position.y);
+            AudioManager.instance.PlaySFX("PlayerFall");
             if (jumpEffectPrefab != null) ObjectPoolManager.Instance.Spawn(jumpEffectPrefab, spawnPos, Quaternion.identity);
         }
         wasGrounded = isGrounded;
@@ -235,6 +240,19 @@ public class PlayerController : MonoBehaviour
         {
             if (EquipmentManager.instance != null && EquipmentManager.instance.currentWeapon != null)
             {
+                // ====================================================
+                // --- MỚI: BỐC THĂM NGẪU NHIÊN 1 TRONG 2 ÂM THANH ---
+                // ====================================================
+                // Tạo một mảng chứa tên các âm thanh bạn đã khai báo trong AudioManager
+                string[] attackSounds = { "AttackGrunt_1", "AttackGrunt_2" };
+
+                // Random.Range(0, 2) đối với số nguyên (int) sẽ trả về kết quả là 0 hoặc 1.
+                int randomIndex = Random.Range(0, attackSounds.Length);
+
+                // Phát âm thanh tương ứng với con số vừa bốc được
+                AudioManager.instance.PlaySFX(attackSounds[randomIndex]);
+                // ====================================================
+                AudioManager.instance.PlaySFX("Attack");
                 lastAttackTime = Time.time;
                 comboStep++;
                 if (comboStep > 2)
@@ -271,6 +289,21 @@ public class PlayerController : MonoBehaviour
     {
         float moveInput = Input.GetAxisRaw("Horizontal");
 
+        // --- MỚI: Logic phát âm thanh bước chân ---
+        if (moveInput != 0 && IsGrounded())
+        {
+            footstepTimer -= Time.deltaTime;
+            if (footstepTimer <= 0)
+            {
+                AudioManager.instance.PlaySFX("PlayerRun");
+                footstepTimer = footstepInterval; // Reset timer
+            }
+        }
+        else
+        {
+            footstepTimer = 0; // Reset ngay khi dừng lại để bước tiếp theo phát ngay lập tức
+        }
+
         // CỘNG DỒN VẬN TỐC: Lấy (Input * Tốc độ đi bộ) + Vận tốc của bệ đỡ (Nếu có)
         rb.linearVelocity = new Vector2((moveInput * moveSpeed) + platformVelocity.x, rb.linearVelocity.y);
 
@@ -296,15 +329,20 @@ public class PlayerController : MonoBehaviour
 
     public void PlayerJump()
     {
+        // Chỉ phát âm thanh khi bắt đầu nhấn xuống (GetButtonDown)
         if (Input.GetButtonDown("Jump") && IsGrounded())
         {
+            AudioManager.instance.PlaySFX("PlayerJump"); // Phát 1 lần duy nhất tại đây
+
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             Vector2 spawnPos = new Vector2(groundCheckPoint.transform.position.x, groundCheckPoint.transform.position.y);
             if (jumpEffectPrefab != null) ObjectPoolManager.Instance.Spawn(jumpEffectPrefab, spawnPos, Quaternion.identity);
         }
 
+        // Khi thả nút (GetButtonUp), chỉ thực hiện giảm lực, KHÔNG phát âm thanh
         if (Input.GetButtonUp("Jump") && rb.linearVelocity.y > 0)
         {
+            // Đã xóa dòng phát âm thanh ở đây để tránh bị lặp
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
         }
     }
@@ -331,6 +369,8 @@ public class PlayerController : MonoBehaviour
 
         if (EquipmentManager.instance.HasMechanic("WallSlide") && Input.GetButtonDown("Jump") && IsWalled() && !IsGrounded())
         {
+            AudioManager.instance.PlaySFX("PlayerJump"); // Phát 1 lần duy nhất tại đây
+
             isWallJumping = true;
             rb.linearVelocity = new Vector2(wallJumpDirection * wallJumpPower.x, wallJumpPower.y);
             transform.localScale = new Vector3(wallJumpDirection, 1, 1);
@@ -348,6 +388,8 @@ public class PlayerController : MonoBehaviour
     {
         if (!IsWalled() && EquipmentManager.instance.HasMechanic("Dash"))
         {
+            AudioManager.instance.PlaySFX("PlayerDash");
+
             canDash = false;
             isDashing = true;
             float originalGravity = rb.gravityScale;
@@ -553,6 +595,8 @@ public class PlayerController : MonoBehaviour
     {
         isInputLocked = true;
         isResting = true;
+
+        if (rb == null) rb = GetComponent<Rigidbody2D>();
         rb.linearVelocity = Vector2.zero;
         Animator anim = GetComponent<Animator>();
         anim.SetFloat("Speed", 0f);

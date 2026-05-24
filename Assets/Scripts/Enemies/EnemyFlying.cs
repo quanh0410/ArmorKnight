@@ -167,6 +167,7 @@ public class EnemyFlying : EnemyBase
     {
         currentState = FlyState.Recover; 
         rb.linearVelocity = Vector2.zero; // Găm xuống đất đứng im 
+        AudioManager.instance.PlaySFX("GroundImpact"); // Phát 1 lần duy nhất tại đây
         anim.SetTrigger("AttackEnd"); 
         CinemachineShake.Instance.ShakeCamera(0.1f); 
     }

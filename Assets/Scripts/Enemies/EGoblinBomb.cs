@@ -86,6 +86,8 @@ public class EGoblinBomb : MonoBehaviour
     {
         hasExploded = true;
         if (animator != null) animator.SetTrigger("Explode");
+        AudioManager.instance.PlaySFX("Explode"); // Phát 1 lần duy nhất tại đây
+
 
         if (rb != null)
         {

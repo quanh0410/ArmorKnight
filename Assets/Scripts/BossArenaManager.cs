@@ -8,38 +8,58 @@ public class BossArenaManager : MonoBehaviour
     public GameObject[] doors;
     public Collider2D bossRoomBounds;
 
+    [Header("--- CAMERA CINEMATIC ---")]
+    [Tooltip("Kéo Transform của Boss (hoặc điểm bạn muốn Camera nhìn vào) trong lúc hội thoại")]
+    public Transform dialogCameraFocus; // --- MỚI: Điểm Camera sẽ lia tới ---
+
     [Header("--- KỊCH BẢN ĐỘNG ĐẤT ---")]
-    [Tooltip("Khoảng thời gian im lặng (giây) tính từ lúc cửa sập đến lúc bắt đầu động đất")]
     public float delayBeforeEarthquake = 0.5f;
-    [Tooltip("Độ mạnh của trận động đất")]
     public float shakeIntensity = 5f;
-    [Tooltip("Thời gian động đất diễn ra (giây) trước khi Boss thức tỉnh")]
     public float earthquakeDuration = 2f;
 
-    [Header("--- THEO DÕI BOSS ---")]
-    public EnemyHealth bossHealth;
+    [Header("--- THEO DÕI BOSS (HỖ TRỢ NHIỀU BOSS) ---")]
+    public EnemyHealth[] bossHealths;
+    public GameObject[] bossObjects;
 
-    [Tooltip("Kéo thả GameObject của BẤT KỲ con Boss nào vào đây")]
-    public GameObject bossObject; // --- SỬA Ở ĐÂY: Dùng GameObject chung ---
-
+    // Biến nội bộ
     private bool isBattleActive = false;
     private Collider2D triggerCollider;
+    private NPCDialog bossDialog;
 
     // Biến lưu Camera
     private CinemachineConfiner2D cameraConfiner;
     private Collider2D originalCameraBounds;
 
+    // --- MỚI: Biến để thao tác lia Camera ---
+    private CinemachineCamera mainCam;
+    private Transform originalFollowTarget;
+
     private void Start()
     {
         triggerCollider = GetComponent<Collider2D>();
+        bossDialog = GetComponent<NPCDialog>();
         UnlockDoors();
     }
 
     private void Update()
     {
-        if (isBattleActive && bossHealth != null)
+        if (isBattleActive && bossHealths != null && bossHealths.Length > 0)
         {
-            if (bossHealth.isDead) EndBattle();
+            bool areAllBossesDead = true;
+
+            foreach (EnemyHealth health in bossHealths)
+            {
+                if (health != null && !health.isDead)
+                {
+                    areAllBossesDead = false;
+                    break;
+                }
+            }
+
+            if (areAllBossesDead)
+            {
+                EndBattle();
+            }
         }
     }
 
@@ -47,23 +67,35 @@ public class BossArenaManager : MonoBehaviour
     {
         if (collision.CompareTag("Player") && !isBattleActive)
         {
-            StartCoroutine(StartBattleRoutine());
+            isBattleActive = true;
+            if (triggerCollider != null) triggerCollider.enabled = false;
+
+            PrepareArena();
+
+            if (bossDialog != null)
+            {
+                bossDialog.isManagedByQuest = true;
+                bossDialog.onFirstDialogComplete.AddListener(OnDialogFinished);
+                bossDialog.onDefaultDialogComplete.AddListener(OnDialogFinished);
+                bossDialog.TriggerDialog();
+            }
+            else
+            {
+                StartCoroutine(EarthquakeAndWakeBossRoutine());
+            }
         }
     }
 
     // ==========================================
-    // CHUỖI SỰ KIỆN: CỬA SẬP -> ĐỘNG ĐẤT -> ĐÁNH
+    // CÁC BƯỚC KỊCH BẢN ĐẠO DIỄN
     // ==========================================
-    private IEnumerator StartBattleRoutine()
+    private void PrepareArena()
     {
-        isBattleActive = true;
-        if (triggerCollider != null) triggerCollider.enabled = false;
-
-        // BƯỚC 1: CỬA SẬP XUỐNG VÀ ĐỔI GÓC NHÌN NGAY LẬP TỨC
         LockDoors();
         GameObject mainCamObj = GameObject.Find("CinemachineCamera");
         if (mainCamObj != null)
         {
+            // 1. Gài Bounding Box giới hạn phòng
             cameraConfiner = mainCamObj.GetComponent<CinemachineConfiner2D>();
             if (cameraConfiner != null)
             {
@@ -71,30 +103,59 @@ public class BossArenaManager : MonoBehaviour
                 cameraConfiner.BoundingShape2D = bossRoomBounds;
                 cameraConfiner.InvalidateBoundingShapeCache();
             }
+
+            // 2. TẠO HIỆU ỨNG LIA CAMERA TỚI BOSS
+            mainCam = mainCamObj.GetComponent<CinemachineCamera>();
+            if (mainCam != null)
+            {
+                // Lưu lại mục tiêu cũ (Chính là Player)
+                originalFollowTarget = mainCam.Follow;
+
+                // Đổi mục tiêu sang Boss nếu có gán điểm nhìn và có hội thoại
+                if (dialogCameraFocus != null && bossDialog != null)
+                {
+                    mainCam.Follow = dialogCameraFocus;
+                }
+            }
+        }
+    }
+
+    private void OnDialogFinished()
+    {
+        bossDialog.onFirstDialogComplete.RemoveListener(OnDialogFinished);
+        bossDialog.onDefaultDialogComplete.RemoveListener(OnDialogFinished);
+
+        // --- MỚI: TRẢ CAMERA VỀ LẠI CHO PLAYER ---
+        if (mainCam != null && originalFollowTarget != null)
+        {
+            mainCam.Follow = originalFollowTarget;
         }
 
-        // BƯỚC 2: TẠO MỘT NHỊP DỪNG NGẮN ĐỂ TĂNG SỰ CĂNG THẲNG
+        StartCoroutine(EarthquakeAndWakeBossRoutine());
+    }
+
+    private IEnumerator EarthquakeAndWakeBossRoutine()
+    {
         yield return new WaitForSeconds(delayBeforeEarthquake);
 
-        // BƯỚC 3: KÍCH HOẠT ĐỘNG ĐẤT
         if (CinemachineShake.Instance != null)
         {
             CinemachineShake.Instance.ShakeCameraContinuous(shakeIntensity, earthquakeDuration);
         }
 
-        // BƯỚC 4: CHỜ ĐỘNG ĐẤT QUA ĐI
         yield return new WaitForSeconds(earthquakeDuration);
 
-        // BƯỚC 5: ĐÁNH THỨC MỌI LOẠI BOSS
-        if (bossObject != null)
+        if (bossObjects != null && bossObjects.Length > 0)
         {
-            // Truyền ranh giới phòng (Chỉ DungeonBoss nhận lệnh này, các Boss khác sẽ tự động phớt lờ)
-            bossObject.SendMessage("SetArenaBounds", bossRoomBounds, SendMessageOptions.DontRequireReceiver);
-
-            // Gọi Boss dậy (Áp dụng cho mọi Boss có hàm WakeUpBoss)
-            bossObject.SendMessage("WakeUpBoss", SendMessageOptions.DontRequireReceiver);
-
-            Debug.Log("Kết thúc Động đất! Boss bắt đầu tấn công.");
+            foreach (GameObject boss in bossObjects)
+            {
+                if (boss != null)
+                {
+                    boss.SendMessage("SetArenaBounds", bossRoomBounds, SendMessageOptions.DontRequireReceiver);
+                    boss.SendMessage("WakeUpBoss", SendMessageOptions.DontRequireReceiver);
+                }
+            }
+            Debug.Log("<color=orange>Kết thúc Động đất! Các Boss bắt đầu tấn công.</color>");
         }
     }
 

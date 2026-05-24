@@ -21,6 +21,8 @@ public class EnemyHealth : MonoBehaviour
     public float knockbackForce = 4f;
     public float knockbackDuration = 0.2f;
 
+    [Header("--- TRẠNG THÁI ---")]
+    public bool isInvincible = false; // Cờ chặn mọi sát thương
     private Animator anim;
     private Rigidbody2D rb;
 
@@ -42,6 +44,8 @@ public class EnemyHealth : MonoBehaviour
 
     public void TakeDamage(int damageAmount, Transform attacker)
     {
+
+        if (isInvincible) return;
         if (isDead) return;
 
         currentHealth -= damageAmount;
@@ -49,6 +53,8 @@ public class EnemyHealth : MonoBehaviour
         if (currentHealth > 0)
         {
             if (anim != null) anim.SetTrigger("Hit");
+            AudioManager.instance.PlaySFX("EnemyHit"); // Phát 1 lần duy nhất tại đây
+
 
             if (attacker != null && rb != null)
             {
@@ -144,7 +150,6 @@ public class EnemyHealth : MonoBehaviour
         isKnockedBack = false;
         isStunned = false;
 
-        // --- MỚI: Tắt effect nếu quái chết trong lúc đang bị choáng ---
         if (currentStunEffect != null)
         {
             currentStunEffect.SetActive(false);
@@ -162,13 +167,20 @@ public class EnemyHealth : MonoBehaviour
             anim.SetTrigger("Die");
         }
 
-        Collider2D col = GetComponent<Collider2D>();
-        if (col != null) col.enabled = false;
+        // =========================================================
+        // SỬA TẠI ĐÂY: TẮT TẤT CẢ CÁC COLLIDER TRÊN QUÁI VÀ OBJECT CON
+        // =========================================================
+        Collider2D[] allColliders = GetComponentsInChildren<Collider2D>();
+        foreach (Collider2D col in allColliders)
+        {
+            col.enabled = false;
+        }
 
+        // Cố định cái xác để nó không rơi xuyên địa hình
         if (rb != null)
         {
             rb.linearVelocity = Vector2.zero;
-            rb.bodyType = RigidbodyType2D.Kinematic;
+            rb.simulated = false; // Tắt hoàn toàn tương tác vật lý thay vì Kinematic
         }
     }
 

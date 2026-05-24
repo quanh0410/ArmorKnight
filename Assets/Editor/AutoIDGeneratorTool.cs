@@ -10,62 +10,62 @@ public class AutoIDGeneratorTool
     {
         int count = 0;
 
-        // 1. Quét toàn bộ RƯƠNG trên màn hình
+        // 1. Quét RƯƠNG
         ChestController[] chests = Object.FindObjectsOfType<ChestController>();
-        foreach (var chest in chests)
-        {
-            if (string.IsNullOrEmpty(chest.chestID))
-            {
-                chest.chestID = System.Guid.NewGuid().ToString();
-                EditorUtility.SetDirty(chest);
-                count++;
-            }
-        }
+        foreach (var chest in chests) { if (string.IsNullOrEmpty(chest.chestID)) { chest.chestID = System.Guid.NewGuid().ToString(); EditorUtility.SetDirty(chest); count++; } }
 
-        // 2. Quét toàn bộ VẬT PHẨM (Máu, Chìa khóa, Tiền...)
+        // 2. Quét VẬT PHẨM
         ItemPickup[] items = Object.FindObjectsOfType<ItemPickup>();
-        foreach (var item in items)
-        {
-            if (string.IsNullOrEmpty(item.itemID))
-            {
-                item.itemID = System.Guid.NewGuid().ToString();
-                EditorUtility.SetDirty(item);
-                count++;
-            }
-        }
+        foreach (var item in items) { if (string.IsNullOrEmpty(item.itemID)) { item.itemID = System.Guid.NewGuid().ToString(); EditorUtility.SetDirty(item); count++; } }
 
-        // 3. Quét toàn bộ KẺ ĐỊCH (Boss, Quái thường...)
+        // 3. Quét KẺ ĐỊCH
         EnemyHealth[] enemies = Object.FindObjectsOfType<EnemyHealth>();
-        foreach (var enemy in enemies)
-        {
-            if (string.IsNullOrEmpty(enemy.enemyID))
-            {
-                enemy.enemyID = System.Guid.NewGuid().ToString();
-                EditorUtility.SetDirty(enemy);
-                count++;
-            }
-        }
+        foreach (var enemy in enemies) { if (string.IsNullOrEmpty(enemy.enemyID)) { enemy.enemyID = System.Guid.NewGuid().ToString(); EditorUtility.SetDirty(enemy); count++; } }
 
-        // 4. Quét toàn bộ GHẾ ĐÁ (Checkpoint)
+        // 4. Quét GHẾ ĐÁ
         Checkpoint[] benches = Object.FindObjectsOfType<Checkpoint>();
-        foreach (var bench in benches)
+        foreach (var bench in benches) { if (string.IsNullOrEmpty(bench.benchID)) { bench.benchID = System.Guid.NewGuid().ToString(); EditorUtility.SetDirty(bench); count++; } }
+
+        // 5. Quét CỬA CÓ KHÓA
+        LockedDoorTeleporter[] lockedDoors = Object.FindObjectsOfType<LockedDoorTeleporter>();
+        foreach (var door in lockedDoors) { if (string.IsNullOrEmpty(door.doorID)) { door.doorID = System.Guid.NewGuid().ToString(); EditorUtility.SetDirty(door); count++; } }
+
+        // ==========================================
+        // MỚI: QUÉT NPC, CÔNG TẮC VÀ DÂY LEO
+        // ==========================================
+
+        // 6. Quét HỘI THOẠI NPC
+        NPCDialog[] npcs = Object.FindObjectsOfType<NPCDialog>();
+        foreach (var npc in npcs)
         {
-            if (string.IsNullOrEmpty(bench.benchID))
+            if (string.IsNullOrEmpty(npc.dialogSaveID))
             {
-                bench.benchID = System.Guid.NewGuid().ToString();
-                EditorUtility.SetDirty(bench);
+                npc.dialogSaveID = System.Guid.NewGuid().ToString();
+                EditorUtility.SetDirty(npc);
                 count++;
             }
         }
 
-        // 5. --- MỚI: Quét toàn bộ CỬA CÓ KHÓA (LockedDoorTeleporter) ---
-        LockedDoorTeleporter[] lockedDoors = Object.FindObjectsOfType<LockedDoorTeleporter>();
-        foreach (var door in lockedDoors)
+        // 7. Quét CÔNG TẮC (Switch)
+        SwitchController[] switches = Object.FindObjectsOfType<SwitchController>();
+        foreach (var sw in switches)
         {
-            if (string.IsNullOrEmpty(door.doorID))
+            if (string.IsNullOrEmpty(sw.switchID))
             {
-                door.doorID = System.Guid.NewGuid().ToString();
-                EditorUtility.SetDirty(door);
+                sw.switchID = System.Guid.NewGuid().ToString();
+                EditorUtility.SetDirty(sw);
+                count++;
+            }
+        }
+
+        // 8. Quét DÂY LEO (Vine)
+        VineInteraction[] vines = Object.FindObjectsOfType<VineInteraction>();
+        foreach (var vine in vines)
+        {
+            if (string.IsNullOrEmpty(vine.vineID))
+            {
+                vine.vineID = System.Guid.NewGuid().ToString();
+                EditorUtility.SetDirty(vine);
                 count++;
             }
         }
