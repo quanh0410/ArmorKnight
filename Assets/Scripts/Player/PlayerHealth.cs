@@ -202,25 +202,62 @@ public class PlayerHealth : MonoBehaviour
 
         if (SaveManager.instance != null)
         {
-            // Lấy ID dạng String
             string targetScene = SaveManager.instance.currentSaveData.respawnSceneName;
             string targetBench = SaveManager.instance.currentSaveData.respawnBenchID;
-
             SaveManager.instance.ResetNormalEnemies();
 
-            string currentMapScene = SceneManager.GetActiveScene().name;
-            if (currentMapScene != "Core_Scene")
+            // ======================================================================
+            // --- THUẬT TOÁN TỐI ƯU TUYỆT ĐỐI: QUÉT RÁC & BẢO VỆ COROUTINE ---
+            // ======================================================================
+
+            // Bước 1: Kéo Player ra khỏi Map hiện tại để giữ mạng cho Coroutine chạy tiếp
+            transform.SetParent(null);
+            DontDestroyOnLoad(gameObject);
+
+            // Bước 2: Quét toàn bộ hệ thống để tìm tất cả các Map đang mở
+            System.Collections.Generic.List<string> scenesToUnload = new System.Collections.Generic.List<string>();
+            for (int i = 0; i < SceneManager.sceneCount; i++)
             {
-                AsyncOperation unload = SceneManager.UnloadSceneAsync(currentMapScene);
-                while (!unload.isDone) yield return null;
+                Scene s = SceneManager.GetSceneAt(i);
+                // Cấm đụng vào Core_Scene và vùng nhớ an toàn
+                if (s.name != "Core_Scene" && s.name != "DontDestroyOnLoad")
+                {
+                    scenesToUnload.Add(s.name);
+                }
             }
 
+            // Bước 3: Hủy diệt tất cả các Map cũ trong danh sách (dọn sạch sành sanh)
+            foreach (string mapName in scenesToUnload)
+            {
+                AsyncOperation unload = SceneManager.UnloadSceneAsync(mapName);
+                while (unload != null && !unload.isDone) yield return null;
+            }
+
+            // Bước 4: Tải lại Map hồi sinh (Lúc này không gian đã sạch, tránh được lỗi trùng lặp Scene)
             AsyncOperation load = SceneManager.LoadSceneAsync(targetScene, LoadSceneMode.Additive);
             while (!load.isDone) yield return null;
 
             Scene loadedScene = SceneManager.GetSceneByName(targetScene);
-            SceneManager.SetActiveScene(loadedScene);
+            if (loadedScene.IsValid())
+            {
+                SceneManager.SetActiveScene(loadedScene);
 
+                // Bước 5: Đưa Player về đúng "hộ khẩu" để tránh rác bộ nhớ
+                Scene coreScene = SceneManager.GetSceneByName("Core_Scene");
+                if (coreScene.IsValid())
+                {
+                    // Nếu đang chơi Full Game, trả Player về Core_Scene
+                    SceneManager.MoveGameObjectToScene(gameObject, coreScene);
+                }
+                else
+                {
+                    // Nếu đang test lẻ, gán tạm Player vào Map vừa load xong
+                    SceneManager.MoveGameObjectToScene(gameObject, loadedScene);
+                }
+            }
+            // ======================================================================
+
+            // --- ĐOẠN TÌM GHẾ BÊN DƯỚI GIỮ NGUYÊN ---
             // Tìm kiếm cô lập Checkpoint
             bool foundBench = false;
             GameObject[] rootObjects = loadedScene.GetRootGameObjects();
@@ -243,10 +280,7 @@ public class PlayerHealth : MonoBehaviour
 
         FullHeal();
 
-        // Bật lại script điều khiển trước
         playerController.enabled = true;
-
-        // GỌI HÀM ÉP NGỒI TRỰC TIẾP LÊN GHẾ
         playerController.SnapToRest();
 
         isInvincible = false;
@@ -254,7 +288,7 @@ public class PlayerHealth : MonoBehaviour
 
         if (FadeManager.instance != null) yield return StartCoroutine(FadeManager.instance.FadeIn(1f));
 
-        Debug.Log("ĐÃ HỒI SINH TẠI CHECKPOINT!");
+        Debug.Log("ĐÃ HỒI SINH TẠI CHECKPOINT AN TOÀN!");
     }
 
     //private void OnTriggerStay2D(Collider2D collider)

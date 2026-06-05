@@ -22,11 +22,13 @@ public class EnemyHealth : MonoBehaviour
     public float knockbackDuration = 0.2f;
 
     [Header("--- TRẠNG THÁI ---")]
-    public bool isInvincible = false; // Cờ chặn mọi sát thương
+    public bool isInvincible = false;
+
+    // --- MỚI: Biến chặn hiệu ứng Hit/Knockback (Giáp siêu việt) ---
+    public bool isUnstoppable = false;
+
     private Animator anim;
     private Rigidbody2D rb;
-
-    // --- MỚI: Biến lưu trữ Effect để tắt đi khi hết choáng ---
     private GameObject currentStunEffect;
 
     void Start()
@@ -44,7 +46,6 @@ public class EnemyHealth : MonoBehaviour
 
     public void TakeDamage(int damageAmount, Transform attacker)
     {
-
         if (isInvincible) return;
         if (isDead) return;
 
@@ -52,13 +53,17 @@ public class EnemyHealth : MonoBehaviour
 
         if (currentHealth > 0)
         {
-            if (anim != null) anim.SetTrigger("Hit");
-            AudioManager.instance.PlaySFX("EnemyHit"); // Phát 1 lần duy nhất tại đây
+            AudioManager.instance.PlaySFX("EnemyHit");
 
-
-            if (attacker != null && rb != null)
+            // CẢI TIẾN: Chỉ chạy hoạt ảnh Hit và Knockback nếu KHÔNG CÓ giáp siêu việt
+            if (!isUnstoppable)
             {
-                StartCoroutine(ApplyKnockback(attacker));
+                if (anim != null) anim.SetTrigger("Hit");
+
+                if (attacker != null && rb != null)
+                {
+                    StartCoroutine(ApplyKnockback(attacker));
+                }
             }
         }
         else
@@ -67,38 +72,27 @@ public class EnemyHealth : MonoBehaviour
         }
     }
 
-    // ==========================================
-    // CẬP NHẬT: Nhận Prefab thay vì Object đã sinh ra
-    // ==========================================
     public void TakeStun(float stunDuration, Transform attacker, GameObject effectPrefab = null)
     {
         if (isDead) return;
 
-        if (attacker != null && rb != null)
+        if (attacker != null && rb != null && !isUnstoppable) // Chặn knockback nếu có giáp
         {
             StartCoroutine(ApplyKnockback(attacker));
         }
 
-        // 1. Tắt effect cũ nếu quái đang bị choáng mà bị đánh bồi thêm
         if (currentStunEffect != null)
         {
             currentStunEffect.SetActive(false);
         }
 
-        // 2. TỰ ĐỘNG SINH EFFECT VÀ QUẢN LÝ
         if (effectPrefab != null)
         {
-            // Sinh effect ngay tại vị trí của quái
             currentStunEffect = ObjectPoolManager.Instance.Spawn(effectPrefab, transform.position, Quaternion.identity);
-
-            // Ép Effect làm con của quái để nó bay theo khi quái bị đẩy lùi
             currentStunEffect.transform.SetParent(transform);
-
-            // (Tùy chọn) Nhấc effect lên cao một chút cho ngay đỉnh đầu
             currentStunEffect.transform.localPosition = new Vector3(0f, 0.2f, 0f);
         }
 
-        // 3. Reset lại tiến trình đếm ngược
         StopCoroutine(nameof(StunRoutine));
         StartCoroutine(StunRoutine(stunDuration));
     }
@@ -106,8 +100,6 @@ public class EnemyHealth : MonoBehaviour
     private IEnumerator StunRoutine(float duration)
     {
         isStunned = true;
-
-        // Chỉ đóng băng hoạt ảnh, ĐÃ XÓA HIỆU ỨNG MÀU VÀNG
         if (anim != null) anim.speed = 0f;
 
         yield return new WaitForSeconds(duration);
@@ -118,10 +110,9 @@ public class EnemyHealth : MonoBehaviour
             if (anim != null) anim.speed = 1f;
         }
 
-        // --- MỚI: Hết thời gian choáng -> Tắt Effect đi ---
         if (currentStunEffect != null)
         {
-            currentStunEffect.SetActive(false); // Dùng SetActive(false) để Object Pool tự thu hồi
+            currentStunEffect.SetActive(false);
             currentStunEffect = null;
         }
     }
@@ -167,20 +158,16 @@ public class EnemyHealth : MonoBehaviour
             anim.SetTrigger("Die");
         }
 
-        // =========================================================
-        // SỬA TẠI ĐÂY: TẮT TẤT CẢ CÁC COLLIDER TRÊN QUÁI VÀ OBJECT CON
-        // =========================================================
         Collider2D[] allColliders = GetComponentsInChildren<Collider2D>();
         foreach (Collider2D col in allColliders)
         {
             col.enabled = false;
         }
 
-        // Cố định cái xác để nó không rơi xuyên địa hình
         if (rb != null)
         {
             rb.linearVelocity = Vector2.zero;
-            rb.simulated = false; // Tắt hoàn toàn tương tác vật lý thay vì Kinematic
+            rb.simulated = false;
         }
     }
 

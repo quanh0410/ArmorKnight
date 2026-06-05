@@ -245,6 +245,7 @@ MonoBehaviour:
   burstForceY: 6
   spriteFacesRight: 0
   phase2HealthThreshold: 0.5
+  isAwake: 0
   smashPoint: {fileID: 2792101693865473647}
   smashBox: {x: 1, y: 1}
   smashDamage: 2
@@ -258,6 +259,8 @@ MonoBehaviour:
   thrustRange: 1.5
   baseAttackCooldown: 1
   decisionInertiaTime: 0.2
+  hitStunCooldown: 1
+  comboChance: 30
 --- !u!114 &5686391241376113569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -275,6 +278,8 @@ MonoBehaviour:
   maxHealth: 300
   knockbackForce: 2
   knockbackDuration: 0.2
+  isInvincible: 0
+  isUnstoppable: 0
 --- !u!1 &7169394080176818483
 GameObject:
   m_ObjectHideFlags: 0

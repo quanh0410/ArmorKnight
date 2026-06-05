@@ -63,6 +63,7 @@ public class SwitchController : MonoBehaviour
         isOn = true;
 
         if (anim != null) anim.SetTrigger("On");
+        AudioManager.instance.PlaySFX("EnemyHit");
         Debug.Log("Công tắc đã BẬT!");
 
         // 2. LƯU TRẠNG THÁI VÀO BỘ NHỚ

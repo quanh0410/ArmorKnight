@@ -3,33 +3,36 @@
 public class ParallaxForeground : MonoBehaviour
 {
     [Header("Cài đặt Cuộn cảnh (Parallax)")]
-    [Tooltip("Tỷ lệ dịch chuyển. Với Foreground, bạn có thể thử số lớn hơn 1 hoặc số âm (VD: -0.2 hoặc 1.2) để nó trôi nhanh hơn Camera")]
     public float parallaxMultiplierX = 1.2f;
-    public float parallaxMultiplierY = 1.2f;
+
+    [Tooltip("Khuyên dùng: Nên để 0 hoặc số rất nhỏ (VD: 0.05). Nếu để quá lớn, khi Player nhảy lên, sương mù sẽ bay thốc lên che mất màn hình.")]
+    public float parallaxMultiplierY = 0f;
 
     private Transform cameraTransform;
-    private Vector3 lastCameraPosition;
+
+    // Lưu tọa độ tuyệt đối ban đầu
+    private Vector3 startPosition;
+    private Vector3 startCameraPosition;
 
     void Start()
     {
-        // Tự động tìm và bám theo Camera chính (kể cả khi bạn dùng Cinemachine, nó vẫn sẽ điều khiển Camera chính)
         cameraTransform = Camera.main.transform;
-        lastCameraPosition = cameraTransform.position;
+
+        // Chốt sổ vị trí gốc của cả Foreground và Camera ngay khi vừa mở Map
+        startPosition = transform.position;
+        startCameraPosition = cameraTransform.position;
     }
 
     void LateUpdate()
     {
-        // 1. Tính toán xem khung hình này Camera đã đi được bao xa
-        Vector3 deltaMovement = cameraTransform.position - lastCameraPosition;
+        // 1. Tính toán tổng quãng đường Camera đã đi xa khỏi ĐIỂM XUẤT PHÁT
+        Vector3 travelDistance = cameraTransform.position - startCameraPosition;
 
-        // 2. Tính toán vị trí mới cho Foreground dựa trên quãng đường Camera đi được nhân với tỷ lệ
-        float targetPosX = transform.position.x + (deltaMovement.x * parallaxMultiplierX);
-        float targetPosY = transform.position.y + (deltaMovement.y * parallaxMultiplierY);
+        // 2. Định vị lại Foreground một cách chính xác tuyệt đối, không có sai số cộng dồn
+        float targetPosX = startPosition.x + (travelDistance.x * parallaxMultiplierX);
+        float targetPosY = startPosition.y + (travelDistance.y * parallaxMultiplierY);
 
-        // 3. Dịch chuyển Foreground
-        transform.position = new Vector3(targetPosX, targetPosY, transform.position.z);
-
-        // 4. Lưu lại vị trí Camera để tính toán cho khung hình tiếp theo
-        lastCameraPosition = cameraTransform.position;
+        // 3. Cập nhật vị trí
+        transform.position = new Vector3(targetPosX, targetPosY, startPosition.z);
     }
 }

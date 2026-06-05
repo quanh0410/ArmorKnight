@@ -70,6 +70,18 @@ public class AutoIDGeneratorTool
             }
         }
 
+        // 9. Quét BOSS ARENA MANAGER
+        BossArenaManager[] arenas = Object.FindObjectsOfType<BossArenaManager>();
+        foreach (var arena in arenas)
+        {
+            if (string.IsNullOrEmpty(arena.arenaID))
+            {
+                arena.arenaID = System.Guid.NewGuid().ToString();
+                EditorUtility.SetDirty(arena);
+                count++;
+            }
+        }
+
         // KẾT LUẬN VÀ LƯU LẠI
         if (count > 0)
         {

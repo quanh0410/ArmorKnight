@@ -110,7 +110,7 @@ GameObject:
   - component: {fileID: 8788305867915262195}
   m_Layer: 7
   m_Name: EnemyBat
-  m_TagString: Untagged
+  m_TagString: Bat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -326,3 +326,5 @@ MonoBehaviour:
   maxHealth: 30
   knockbackForce: 1
   knockbackDuration: 0.2
+  isInvincible: 0
+  isUnstoppable: 0

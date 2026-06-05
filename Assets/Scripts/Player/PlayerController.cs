@@ -5,6 +5,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
+    public float maxFallSpeed = 25f; // --- MỚI: Giới hạn tốc độ rơi tối đa ---
     [HideInInspector] public Vector2 platformVelocity; // --- BIẾN MỚI: Nhận vận tốc từ Platform ---
 
     [Header("Jump Settings")]
@@ -130,11 +131,13 @@ public class PlayerController : MonoBehaviour
         {
             HandleAttackInput();
             // --- MỚI: KỸ NĂNG CHÉM XA (Phím U) ---
-            if (EquipmentManager.instance.HasMechanic("RangedSlash") && Input.GetKeyDown(KeyCode.U) && Time.time >= lastAttackTime + attackCooldown && (!IsWalled() || IsGrounded()))
+            if (EquipmentManager.instance != null && EquipmentManager.instance.HasMechanic("RangedSlash") && Input.GetKeyDown(KeyCode.U) && Time.time >= lastAttackTime + attackCooldown && (!IsWalled() || IsGrounded()))
             {
                 // Kiểm tra và trừ 33 năng lượng
                 if (GetComponent<PlayerEnergy>().SpendEnergy(40))
                 {
+                    AudioManager.instance.PlaySFX("RangedSlash");
+
                     lastAttackTime = Time.time;
                     GetComponent<PlayerCombat>().CastRangedSlash(); // Gọi hàm chém xa ở PlayerCombat
                 }
@@ -160,8 +163,9 @@ public class PlayerController : MonoBehaviour
 
             // --- MỚI: KÍCH HOẠT DIVE KICK ---
             // Kiểm tra: Đang trên không, chưa DiveKick lần nào, ấn S và J cùng lúc
-            if (EquipmentManager.instance.HasMechanic("Dive") && !IsGrounded() && !hasDiveKicked && (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) && Input.GetKeyDown(KeyCode.I))
+            if (EquipmentManager.instance != null && EquipmentManager.instance.HasMechanic("Dive") && !IsGrounded() && !hasDiveKicked && (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) && Input.GetKeyDown(KeyCode.I))
             {
+                AudioManager.instance.PlaySFX("PlayerDive");
                 StartDiveKick();
             }
         }
@@ -185,6 +189,14 @@ public class PlayerController : MonoBehaviour
             Vector2 spawnPos = new Vector2(groundCheckPoint.position.x, groundCheckPoint.position.y);
             AudioManager.instance.PlaySFX("PlayerFall");
             if (jumpEffectPrefab != null) ObjectPoolManager.Instance.Spawn(jumpEffectPrefab, spawnPos, Quaternion.identity);
+        }
+
+        // ========================================================
+        // --- MỚI: GIỚI HẠN TỐC ĐỘ RƠI (CHỐNG XUYÊN ĐẤT) ---
+        // ========================================================
+        if (rb.linearVelocity.y < -maxFallSpeed)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, -maxFallSpeed);
         }
         wasGrounded = isGrounded;
     }
@@ -349,7 +361,7 @@ public class PlayerController : MonoBehaviour
 
     private void PlayerWallSlide()
     {
-        if (EquipmentManager.instance.HasMechanic("WallSlide") && IsWalled() && !IsGrounded() && rb.linearVelocity.y <= 0f)
+        if (EquipmentManager.instance != null && EquipmentManager.instance.HasMechanic("WallSlide") && IsWalled() && !IsGrounded() && rb.linearVelocity.y <= 0f)
         {
             isWallSliding = true;
             rb.linearVelocity = new Vector2(0f, Mathf.Clamp(rb.linearVelocity.y, -wallSlidingSpeed, float.MaxValue));
@@ -367,7 +379,7 @@ public class PlayerController : MonoBehaviour
             wallJumpDirection = -transform.localScale.x;
         }
 
-        if (EquipmentManager.instance.HasMechanic("WallSlide") && Input.GetButtonDown("Jump") && IsWalled() && !IsGrounded())
+        if (EquipmentManager.instance != null && EquipmentManager.instance.HasMechanic("WallSlide") && Input.GetButtonDown("Jump") && IsWalled() && !IsGrounded())
         {
             AudioManager.instance.PlaySFX("PlayerJump"); // Phát 1 lần duy nhất tại đây
 
@@ -386,7 +398,7 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator PlayerDash()
     {
-        if (!IsWalled() && EquipmentManager.instance.HasMechanic("Dash"))
+        if (EquipmentManager.instance != null && !IsWalled() && EquipmentManager.instance.HasMechanic("Dash"))
         {
             AudioManager.instance.PlaySFX("PlayerDash");
 
@@ -498,7 +510,7 @@ public class PlayerController : MonoBehaviour
 
         playerCombat.SetInvincible(true);
 
-        // --- FIX ANIMATION: Ép chạy BlendTree và gán thông số rơi ---
+        // --- FIX ANIMATION: ÉP RUN BLENDTREE VÀO ĐỂ TRÁNH LỖI ---
         Animator anim = GetComponent<Animator>();
         if (anim != null)
         {

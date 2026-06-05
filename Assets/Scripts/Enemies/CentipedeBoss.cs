@@ -5,7 +5,7 @@ public class CentipedeBoss : EnemyBase
 {
     #region ENUMS & FSM LAYERS
     public enum Phase { Phase1_Normal, Phase2_Enraged }
-    public enum MovementState { Idle, Chase }
+    public enum MovementState { Idle, Chase, CombatWalk }
     public enum CombatState { None, Smashing, Thrusting, Slithering }
     public enum ReactionState { Normal, HitStunned }
     #endregion
@@ -14,7 +14,7 @@ public class CentipedeBoss : EnemyBase
     [Header("--- CORE & PHASES ---")]
     public bool spriteFacesRight = false;
     [Range(0f, 1f)] public float phase2HealthThreshold = 0.5f;
-    public bool isAwake = false; // --- MỚI: Biến ngủ đông ---
+    public bool isAwake = false;
 
     [Header("--- ATTACK 1: SMASH ---")]
     public Transform smashPoint;
@@ -36,6 +36,10 @@ public class CentipedeBoss : EnemyBase
     public float thrustRange = 6f;
     public float baseAttackCooldown = 1.2f;
     public float decisionInertiaTime = 0.2f;
+
+    [Header("--- AGGRESSIVE UPGRADES ---")]
+    public float hitStunCooldown = 3f;
+    [Range(0f, 100f)] public float comboChance = 30f;
     #endregion
 
     #region INTERNAL STATE
@@ -48,6 +52,9 @@ public class CentipedeBoss : EnemyBase
     private float cooldownTimer = 0f;
     private float decisionLockTimer = 0f;
     private float failsafeTimer = 0f;
+    private float lastHitStunTime = -10f;
+    private int lastHealth;
+
     private Coroutine activeAttackCoroutine;
     private EnemyHealth bossHealth;
 
@@ -59,7 +66,6 @@ public class CentipedeBoss : EnemyBase
     private readonly int hashAttack1 = Animator.StringToHash("Attack1");
     private readonly int hashAttack2 = Animator.StringToHash("Attack2");
     private readonly int hashAttack3 = Animator.StringToHash("Attack3");
-    private readonly int hashHitState = Animator.StringToHash("BCentipedeHit");
     #endregion
 
     protected override void Awake()
@@ -68,10 +74,28 @@ public class CentipedeBoss : EnemyBase
         bossHealth = GetComponent<EnemyHealth>();
     }
 
+    protected virtual void Start()
+    {
+        if (bossHealth != null) lastHealth = bossHealth.maxHealth;
+    }
+
     protected override void ExecuteAI()
     {
+        if (!isAwake || player == null || bossHealth == null) return;
 
-        if (!isAwake || player == null) return;
+        bossHealth.isUnstoppable = (Time.time <= lastHitStunTime + hitStunCooldown);
+
+        if (bossHealth.currentHealth < lastHealth)
+        {
+            lastHealth = bossHealth.currentHealth;
+            if (!bossHealth.isUnstoppable)
+            {
+                InterruptAttacks();
+                reactionState = ReactionState.HitStunned;
+                lastHitStunTime = Time.time;
+            }
+        }
+        else if (bossHealth.currentHealth > lastHealth) lastHealth = bossHealth.currentHealth;
 
         UpdatePhaseSystem();
         if (HandleReactionState()) return;
@@ -86,7 +110,7 @@ public class CentipedeBoss : EnemyBase
         if (cooldownTimer > 0)
         {
             cooldownTimer -= Time.deltaTime;
-            ChangeMovementState(MovementState.Idle);
+            HandleCooldownMovement();
             return;
         }
 
@@ -102,27 +126,30 @@ public class CentipedeBoss : EnemyBase
             currentPhase = Phase.Phase2_Enraged;
             baseAttackCooldown *= 0.6f;
             moveSpeed *= 1.3f;
+            comboChance = 60f;
         }
     }
 
     private bool HandleReactionState()
     {
-        if (anim == null) return false;
-        if (anim.GetCurrentAnimatorStateInfo(0).shortNameHash == hashHitState)
-        {
-            if (reactionState != ReactionState.HitStunned)
-            {
-                reactionState = ReactionState.HitStunned;
-                InterruptAttacks();
-            }
-            return true;
-        }
+        if (bossHealth.isKnockedBack || bossHealth.isStunned) return true;
         else if (reactionState == ReactionState.HitStunned)
         {
             reactionState = ReactionState.Normal;
-            cooldownTimer = 0.2f;
+            cooldownTimer = 0.1f;
         }
         return false;
+    }
+
+    private void HandleCooldownMovement()
+    {
+        float distToPlayer = Vector2.Distance(transform.position, player.position);
+        if (distToPlayer > smashRange) ChangeMovementState(MovementState.Chase);
+        else
+        {
+            FacePlayer();
+            ChangeMovementState(MovementState.CombatWalk);
+        }
     }
 
     private void InterruptAttacks()
@@ -168,7 +195,7 @@ public class CentipedeBoss : EnemyBase
     private void ExecuteAttack(CombatState state, int animHash)
     {
         ChangeMovementState(MovementState.Idle);
-        combatState = state; lastCombatState = state; failsafeTimer = 8f; // Tăng failsafe vì dash khá dài
+        combatState = state; lastCombatState = state; failsafeTimer = 8f;
         isBraking = false;
         if (anim != null) anim.SetTrigger(animHash);
     }
@@ -197,6 +224,12 @@ public class CentipedeBoss : EnemyBase
             if (anim != null) anim.SetBool(hashIsWalking, true);
             float dirX = Mathf.Sign(player.position.x - transform.position.x);
             rb.linearVelocity = new Vector2(dirX * moveSpeed, rb.linearVelocity.y);
+        }
+        else if (newState == MovementState.CombatWalk)
+        {
+            if (anim != null) anim.SetBool(hashIsWalking, true);
+            float dirX = Mathf.Sign(player.position.x - transform.position.x);
+            rb.linearVelocity = new Vector2(dirX * (moveSpeed * 0.5f), rb.linearVelocity.y);
         }
     }
 
@@ -236,6 +269,7 @@ public class CentipedeBoss : EnemyBase
     public void Event_StopSlitherMove() { isBraking = true; }
 
     public void Event_CheckCombo() { if (activeAttackCoroutine != null) StopCoroutine(activeAttackCoroutine); activeAttackCoroutine = StartCoroutine(HandleDashEndRoutine()); }
+
     private IEnumerator HandleDashEndRoutine()
     {
         while (combatState == CombatState.Slithering && isBraking && Mathf.Abs(rb.linearVelocity.x) > 0.5f) yield return null;
@@ -253,15 +287,20 @@ public class CentipedeBoss : EnemyBase
         else
         {
             float distance = Vector2.Distance(transform.position, player.position);
-            if (slitherVariant == 0 && distance <= smashRange) ExecuteAttack(CombatState.Smashing, hashAttack1);
-            else Event_EndAttack();
+            // Có tỉ lệ nhỏ lập tức chém bồi nếu đứng sát
+            if (slitherVariant == 0 && distance <= smashRange && Random.Range(0, 100) < comboChance)
+                ExecuteAttack(CombatState.Smashing, hashAttack1);
+            else
+                Event_EndAttack();
         }
     }
 
-    public void Event_EndAttack() { InterruptAttacks(); cooldownTimer = baseAttackCooldown; }
-
-    public void WakeUpBoss()
+    public void Event_EndAttack()
     {
-        isAwake = true;
+        InterruptAttacks();
+        if (Random.Range(0f, 100f) <= comboChance) cooldownTimer = 0f;
+        else cooldownTimer = baseAttackCooldown;
     }
+
+    public void WakeUpBoss() { isAwake = true; }
 }

@@ -85,6 +85,7 @@ public class MainMenuManager : MonoBehaviour
         if (SaveManager.instance != null && SaveManager.instance.currentSaveData != null)
         {
             mapToLoad = SaveManager.instance.currentSaveData.respawnSceneName;
+            SaveManager.instance.ResetNormalEnemies();
         }
 
         StartCoroutine(TransitionToGame(mapToLoad, isNewGame: false));

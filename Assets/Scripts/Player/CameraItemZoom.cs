@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
-using Unity.Cinemachine; // BẮT BUỘC dùng thư viện này cho Cinemachine bản mới
+using Unity.Cinemachine;
 
 [RequireComponent(typeof(CinemachineCamera))]
 public class CameraItemZoom : MonoBehaviour
 {
     private CinemachineCamera cam;
+    private CinemachineConfiner2D confiner;
 
     [Header("Cài đặt Lens")]
     [Tooltip("Thông số Lens gốc (VD: 3.34)")]
@@ -19,6 +20,7 @@ public class CameraItemZoom : MonoBehaviour
     void Start()
     {
         cam = GetComponent<CinemachineCamera>();
+        confiner = GetComponent<CinemachineConfiner2D>(); // Lấy Confiner chung GameObject
 
         // Tự động lấy kích thước Lens hiện tại làm mặc định lúc mới vào game
         if (cam != null)
@@ -31,7 +33,7 @@ public class CameraItemZoom : MonoBehaviour
     {
         if (cam == null) return;
 
-        // KIỂM TRA ITEM: Xem có đang đeo đồ có chữ "ExpandView" không?
+        // KIỂM TRA ITEM
         bool hasZoomItem = false;
         if (EquipmentManager.instance != null && EquipmentManager.instance.HasMechanic("ExpandView"))
         {
@@ -41,13 +43,29 @@ public class CameraItemZoom : MonoBehaviour
         // Quyết định mục tiêu Lens cần đạt đến
         float targetLens = hasZoomItem ? expandedLensSize : defaultLensSize;
 
-        // Lấy struct Lens hiện tại của Cinemachine
         var lens = cam.Lens;
+        float currentSize = lens.OrthographicSize;
+
+        // Bỏ qua nếu camera đã đạt đúng kích thước mục tiêu (Tiết kiệm hiệu năng)
+        if (Mathf.Approximately(currentSize, targetLens)) return;
 
         // Làm mượt (Lerp) giá trị từ hiện tại tiến tới mục tiêu
-        lens.OrthographicSize = Mathf.Lerp(lens.OrthographicSize, targetLens, Time.deltaTime * zoomSpeed);
+        float newSize = Mathf.Lerp(currentSize, targetLens, Time.deltaTime * zoomSpeed);
 
-        // Gán ngược Lens đã cập nhật trở lại cho Camera
+        // SNAP (Làm tròn): Nếu tiến rất gần đến đích, ép bằng đích luôn để dừng Lerp
+        if (Mathf.Abs(targetLens - newSize) < 0.01f)
+        {
+            newSize = targetLens;
+        }
+
+        // Gán ngược Lens đã cập nhật
+        lens.OrthographicSize = newSize;
         cam.Lens = lens;
+
+        // BẮT BUỘC: Ép Confiner tính toán lại mép va chạm với kích thước Camera mới
+        if (confiner != null)
+        {
+            confiner.InvalidateBoundingShapeCache();
+        }
     }
 }

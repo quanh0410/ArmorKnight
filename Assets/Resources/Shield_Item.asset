@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentData
   itemID: Shield_Item
   itemName: "Khi\xEAn h\u1ED9 th\u1EA1ch"
-  itemDescription: 
+  itemDescription: "Sau khi trang b\u1ECB \u0111\xF2n \u0111\xE1nh kh\xF4ng c\xF2n
+    g\xE2y s\xE1t th\u01B0\u01A1ng nh\u01B0ng s\u1EBD l\xE0m cho\xE1ng k\u1EBB \u0111\u1ECBch."
   itemIcon: {fileID: 21300000, guid: 7dd12c64fb415a74c8d77470e08f10fe, type: 3}
   category: 0
   isStackable: 0

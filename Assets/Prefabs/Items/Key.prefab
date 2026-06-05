@@ -185,6 +185,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4971495171045829287}
     m_Modifications:
+    - target: {fileID: 1649321547422139329, guid: cdc7482e7369b264d996a7810dc66ee3, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5423885034821057482, guid: cdc7482e7369b264d996a7810dc66ee3, type: 3}
       propertyPath: m_Name
       value: ItemEffect
@@ -240,6 +244,10 @@ PrefabInstance:
     - target: {fileID: 5789742358188361162, guid: cdc7482e7369b264d996a7810dc66ee3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5831517752816523048, guid: cdc7482e7369b264d996a7810dc66ee3, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

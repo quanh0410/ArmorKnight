@@ -17,7 +17,7 @@ public class Checkpoint : MonoBehaviour
     private void Rest()
     {
         // Lấy script PlayerController
-        PlayerController pc = FindObjectOfType<PlayerController>();
+        PlayerController pc = FindFirstObjectByType<PlayerController>();
         if (pc != null && !pc.isResting && !pc.isInputLocked)
         {
             // Ra lệnh tự động đi bộ và ngồi

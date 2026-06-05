@@ -5,7 +5,7 @@ public class TurtleBoss : EnemyBase
 {
     #region ENUMS & FSM LAYERS
     public enum Phase { Phase1_Normal, Phase2_Enraged }
-    public enum MovementState { Idle, Chase }
+    public enum MovementState { Idle, Chase, CombatWalk }
     public enum CombatState { None, ShootingWalk, Biting, ShootingArc, ShootingIdle }
     public enum ReactionState { Normal, HitStunned }
     #endregion
@@ -14,7 +14,7 @@ public class TurtleBoss : EnemyBase
     [Header("--- CORE & PHASES ---")]
     public bool spriteFacesRight = false;
     [Range(0f, 1f)] public float phase2HealthThreshold = 0.5f;
-    public bool isAwake = false; // --- MỚI: Biến ngủ đông ---
+    public bool isAwake = false;
 
     [Header("--- ATTACK 1 & 4: HORIZONTAL BOMB ---")]
     public Transform[] horizontalFirePoints;
@@ -36,6 +36,10 @@ public class TurtleBoss : EnemyBase
     public float midRange = 5f;
     public float baseAttackCooldown = 1.5f;
     public float decisionInertiaTime = 0.2f;
+
+    [Header("--- AGGRESSIVE UPGRADES ---")]
+    public float hitStunCooldown = 3f;
+    [Range(0f, 100f)] public float comboChance = 30f;
     #endregion
 
     #region INTERNAL STATE
@@ -48,6 +52,9 @@ public class TurtleBoss : EnemyBase
     private float cooldownTimer = 0f;
     private float decisionLockTimer = 0f;
     private float failsafeTimer = 0f;
+    private float lastHitStunTime = -10f;
+    private int lastHealth;
+
     private Coroutine activeAttackCoroutine;
     private EnemyHealth bossHealth;
 
@@ -57,7 +64,6 @@ public class TurtleBoss : EnemyBase
     private readonly int hashAttack2 = Animator.StringToHash("Attack2");
     private readonly int hashAttack3 = Animator.StringToHash("Attack3");
     private readonly int hashAttack4 = Animator.StringToHash("Attack4");
-    private readonly int hashHitState = Animator.StringToHash("BTurtleHit");
     #endregion
 
     protected override void Awake()
@@ -66,23 +72,43 @@ public class TurtleBoss : EnemyBase
         bossHealth = GetComponent<EnemyHealth>();
     }
 
+    protected virtual void Start()
+    {
+        if (bossHealth != null) lastHealth = bossHealth.maxHealth;
+    }
+
     protected override void ExecuteAI()
     {
-        if (!isAwake || player == null) return;
+        if (!isAwake || player == null || bossHealth == null) return;
+
+        bossHealth.isUnstoppable = (Time.time <= lastHitStunTime + hitStunCooldown);
+
+        if (bossHealth.currentHealth < lastHealth)
+        {
+            lastHealth = bossHealth.currentHealth;
+            if (!bossHealth.isUnstoppable)
+            {
+                InterruptAttacks();
+                reactionState = ReactionState.HitStunned;
+                lastHitStunTime = Time.time;
+            }
+        }
+        else if (bossHealth.currentHealth > lastHealth) lastHealth = bossHealth.currentHealth;
+
         UpdatePhaseSystem();
         if (HandleReactionState()) return;
 
         if (combatState != CombatState.None)
         {
             HandleCombatFailsafe();
-            HandleCombatMovement(); // Dành riêng cho chiêu vừa đi vừa bắn
+            HandleCombatMovement();
             return;
         }
 
         if (cooldownTimer > 0)
         {
             cooldownTimer -= Time.deltaTime;
-            ChangeMovementState(MovementState.Idle);
+            HandleCooldownMovement();
             return;
         }
 
@@ -98,27 +124,30 @@ public class TurtleBoss : EnemyBase
             currentPhase = Phase.Phase2_Enraged;
             baseAttackCooldown *= 0.7f;
             moveSpeed *= 1.2f;
+            comboChance = 60f;
         }
     }
 
     private bool HandleReactionState()
     {
-        if (anim == null) return false;
-        if (anim.GetCurrentAnimatorStateInfo(0).shortNameHash == hashHitState)
-        {
-            if (reactionState != ReactionState.HitStunned)
-            {
-                reactionState = ReactionState.HitStunned;
-                InterruptAttacks();
-            }
-            return true;
-        }
+        if (bossHealth.isKnockedBack || bossHealth.isStunned) return true;
         else if (reactionState == ReactionState.HitStunned)
         {
             reactionState = ReactionState.Normal;
-            cooldownTimer = 0.2f;
+            cooldownTimer = 0.1f;
         }
         return false;
+    }
+
+    private void HandleCooldownMovement()
+    {
+        float distToPlayer = Vector2.Distance(transform.position, player.position);
+        if (distToPlayer > biteRange) ChangeMovementState(MovementState.Chase);
+        else
+        {
+            FacePlayer();
+            ChangeMovementState(MovementState.CombatWalk);
+        }
     }
 
     private void InterruptAttacks()
@@ -140,13 +169,11 @@ public class TurtleBoss : EnemyBase
         float arcShootScore = (distSqr > midRange * midRange) ? 70f : 0f;
         float chaseScore = (distSqr > biteRange * biteRange) ? 50f : 0f;
 
-        // Anti-Spam
         if (lastCombatState == CombatState.Biting) biteScore -= 50f;
         if (lastCombatState == CombatState.ShootingWalk) walkShootScore -= 50f;
         if (lastCombatState == CombatState.ShootingIdle) idleShootScore -= 50f;
         if (lastCombatState == CombatState.ShootingArc) arcShootScore -= 50f;
 
-        // Random Noise
         biteScore += Random.Range(0, 15f); walkShootScore += Random.Range(0, 15f);
         idleShootScore += Random.Range(0, 15f); arcShootScore += Random.Range(0, 15f); chaseScore += Random.Range(0, 15f);
 
@@ -176,7 +203,6 @@ public class TurtleBoss : EnemyBase
 
     private void HandleCombatMovement()
     {
-        // Vận tốc cho chiêu vừa đi vừa bắn
         if (combatState == CombatState.ShootingWalk)
         {
             FacePlayer();
@@ -194,6 +220,12 @@ public class TurtleBoss : EnemyBase
             if (anim != null) anim.SetBool(hashIsWalking, true);
             float dirX = Mathf.Sign(player.position.x - transform.position.x);
             rb.linearVelocity = new Vector2(dirX * moveSpeed, rb.linearVelocity.y);
+        }
+        else if (newState == MovementState.CombatWalk)
+        {
+            if (anim != null) anim.SetBool(hashIsWalking, true);
+            float dirX = Mathf.Sign(player.position.x - transform.position.x);
+            rb.linearVelocity = new Vector2(dirX * (moveSpeed * 0.5f), rb.linearVelocity.y);
         }
     }
 
@@ -253,10 +285,12 @@ public class TurtleBoss : EnemyBase
         if (bomb.GetComponent<Rigidbody2D>()) bomb.GetComponent<Rigidbody2D>().linearVelocity = vel;
     }
 
-    public void Event_EndAttack() { InterruptAttacks(); cooldownTimer = baseAttackCooldown; }
-
-    public void WakeUpBoss()
+    public void Event_EndAttack()
     {
-        isAwake = true;
+        InterruptAttacks();
+        if (Random.Range(0f, 100f) <= comboChance) cooldownTimer = 0f;
+        else cooldownTimer = baseAttackCooldown;
     }
+
+    public void WakeUpBoss() { isAwake = true; }
 }

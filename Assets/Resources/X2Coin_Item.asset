@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: X2Coin_Item
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentData
   itemID: X2Coin_item
-  itemName: 
+  itemName: "V\xE0ng may m\u1EAFn"
   itemDescription: "Sau khi trang b\u1ECB, \u0111\xE1nh qu\xE1i s\u1EBD r\u01A1i
     ra l\u01B0\u1EE3ng v\xE0ng g\u1EA5p \u0111\xF4i b\xECnh th\u01B0\u1EDDng."
   itemIcon: {fileID: 21300000, guid: fce544d15f26c0e479c87290f9f6b893, type: 3}

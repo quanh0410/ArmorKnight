@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 5930069852898008174}
   - component: {fileID: 2703456999070983813}
   - component: {fileID: 2581872427090907443}
-  - component: {fileID: 682957204400179473}
   m_Layer: 0
   m_Name: MagicShieldBoss
   m_TagString: Untagged
@@ -79,8 +78,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 244127381
+  m_SortingLayer: 2
   m_SortingOrder: 3
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7773031391787181946, guid: 94257a75668c48243b751a021fc080e8, type: 3}
@@ -115,16 +114,3 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &682957204400179473
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2188468047243680952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8685e0d8fc2ebf4f83af7eee349de44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StickyEffect2D
-  positionOffset: {x: 0, y: 0}

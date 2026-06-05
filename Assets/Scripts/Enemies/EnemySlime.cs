@@ -53,6 +53,7 @@ public class EnemySlime : EnemyBase
                 anim.SetBool(IsWalkingParam, false);
                 if (Time.time >= lastJumpTime + jumpCooldown)
                 {
+                    AudioManager.instance.PlaySFX("SlimeJump");
                     JumpAttack();
                 }
                 // QUAN TRỌNG: Không gọi SmoothStop() ở đây.

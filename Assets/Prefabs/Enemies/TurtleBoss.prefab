@@ -266,6 +266,8 @@ MonoBehaviour:
   midRange: 5
   baseAttackCooldown: 1.2
   decisionInertiaTime: 0.2
+  hitStunCooldown: 1
+  comboChance: 30
 --- !u!114 &7968938823124207600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -283,6 +285,8 @@ MonoBehaviour:
   maxHealth: 300
   knockbackForce: 4
   knockbackDuration: 0.2
+  isInvincible: 0
+  isUnstoppable: 0
 --- !u!1 &4627532781148391644
 GameObject:
   m_ObjectHideFlags: 0

@@ -402,6 +402,7 @@ MonoBehaviour:
   burstForceY: 6
   spriteFacesRight: 0
   phase2HealthThreshold: 0.3
+  isAwake: 0
   shootPoint: {fileID: 4142472467737947456}
   projectilePrefab: {fileID: 7554447226501359611, guid: 99fc4845fe9f18248a7f09bc29204b5d, type: 3}
   summonPoint: {fileID: 1748795432757618507}
@@ -421,6 +422,8 @@ MonoBehaviour:
   midRange: 6
   baseAttackCooldown: 1
   decisionInertiaTime: 0.2
+  hitStunCooldown: 1
+  comboChance: 30
 --- !u!114 &3857878591039074919
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -438,6 +441,8 @@ MonoBehaviour:
   maxHealth: 300
   knockbackForce: 2
   knockbackDuration: 0.2
+  isInvincible: 0
+  isUnstoppable: 0
 --- !u!1 &8475335479129976513
 GameObject:
   m_ObjectHideFlags: 0

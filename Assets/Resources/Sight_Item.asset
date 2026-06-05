@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Sight_Item
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentData
   itemID: Sight_Item
-  itemName: 
-  itemDescription: 
+  itemName: "M\u1EAFt th\u1EA7n"
+  itemDescription: "Trang b\u1ECB v\u1EADt ph\u1EA9m s\u1EBD cho t\u1EA7m nh\xECn
+    r\u1ED9ng h\u01A1n."
   itemIcon: {fileID: 21300000, guid: 4203f30957fb1d541b1759c6210c6416, type: 3}
   category: 0
   isStackable: 0

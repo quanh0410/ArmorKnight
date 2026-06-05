@@ -6,7 +6,7 @@ public class BloatedBoss : EnemyBase
 {
     #region ENUMS & FSM LAYERS
     public enum Phase { Phase1_Normal, Phase2_Enraged }
-    public enum MovementState { Idle, Chase, Reposition }
+    public enum MovementState { Idle, Chase, Reposition, CombatWalk }
     public enum CombatState { None, Shooting, Summoning, Spiking, Thrusting }
     public enum ReactionState { Normal, HitStunned }
     #endregion
@@ -15,7 +15,7 @@ public class BloatedBoss : EnemyBase
     [Header("--- CORE & PHASES ---")]
     public bool spriteFacesRight = false;
     [Range(0f, 1f)] public float phase2HealthThreshold = 0.5f;
-    public bool isAwake = false; // --- MỚI: Biến ngủ đông ---
+    public bool isAwake = false;
 
     [Header("--- ATTACK 1: SHOOT ---")]
     public Transform shootPoint;
@@ -45,6 +45,10 @@ public class BloatedBoss : EnemyBase
     public float midRange = 7f;
     public float baseAttackCooldown = 0.8f;
     public float decisionInertiaTime = 0.2f;
+
+    [Header("--- AGGRESSIVE UPGRADES ---")]
+    public float hitStunCooldown = 3f;
+    [Range(0f, 100f)] public float comboChance = 30f;
     #endregion
 
     #region INTERNAL STATE & CACHING
@@ -52,12 +56,13 @@ public class BloatedBoss : EnemyBase
     private MovementState moveState = MovementState.Idle;
     private CombatState combatState = CombatState.None;
     private ReactionState reactionState = ReactionState.Normal;
-
     private CombatState lastCombatState = CombatState.None;
 
     private float cooldownTimer = 0f;
     private float decisionLockTimer = 0f;
     private float failsafeTimer = 0f;
+    private float lastHitStunTime = -10f;
+    private int lastHealth;
 
     private Coroutine activeAttackCoroutine;
     private Coroutine spikeCoroutine;
@@ -71,7 +76,6 @@ public class BloatedBoss : EnemyBase
     private readonly int hashAttack2 = Animator.StringToHash("Attack2");
     private readonly int hashAttack3 = Animator.StringToHash("Attack3");
     private readonly int hashAttack4 = Animator.StringToHash("Attack4");
-    private readonly int hashHitState = Animator.StringToHash("BBloatedHit");
     #endregion
 
     protected override void Awake()
@@ -81,9 +85,30 @@ public class BloatedBoss : EnemyBase
         cachedSpikeDelay = new WaitForSeconds(timeBetweenSpikes);
     }
 
+    protected virtual void Start()
+    {
+        if (bossHealth != null) lastHealth = bossHealth.maxHealth;
+    }
+
     protected override void ExecuteAI()
     {
-        if (!isAwake || player == null) return;
+        if (!isAwake || player == null || bossHealth == null) return;
+
+        // 1. ĐỒNG BỘ GIÁP SIÊU VIỆT
+        bossHealth.isUnstoppable = (Time.time <= lastHitStunTime + hitStunCooldown);
+
+        // 2. THEO DÕI SÁT THƯƠNG THỰC TẾ
+        if (bossHealth.currentHealth < lastHealth)
+        {
+            lastHealth = bossHealth.currentHealth;
+            if (!bossHealth.isUnstoppable)
+            {
+                InterruptAttacks();
+                reactionState = ReactionState.HitStunned;
+                lastHitStunTime = Time.time;
+            }
+        }
+        else if (bossHealth.currentHealth > lastHealth) lastHealth = bossHealth.currentHealth;
 
         UpdatePhaseSystem();
 
@@ -98,12 +123,11 @@ public class BloatedBoss : EnemyBase
         if (cooldownTimer > 0)
         {
             cooldownTimer -= Time.deltaTime;
-            ChangeMovementState(MovementState.Idle);
+            HandleCooldownMovement();
             return;
         }
 
         if (Time.time < decisionLockTimer) return;
-
         EvaluateUtilityAndAct();
     }
 
@@ -117,47 +141,41 @@ public class BloatedBoss : EnemyBase
                 currentPhase = Phase.Phase2_Enraged;
                 baseAttackCooldown *= 0.6f;
                 moveSpeed *= 1.25f;
+                comboChance = 60f; // Tăng tỉ lệ đánh bồi liên tiếp
             }
         }
     }
 
     private bool HandleReactionState()
     {
-        if (anim == null) return false;
-
-        bool isHitAnimationPlaying = anim.GetCurrentAnimatorStateInfo(0).shortNameHash == hashHitState;
-
-        if (isHitAnimationPlaying)
+        if (bossHealth.isKnockedBack || bossHealth.isStunned)
         {
-            if (reactionState != ReactionState.HitStunned)
-            {
-                reactionState = ReactionState.HitStunned;
-
-                if (spikeCoroutine != null)
-                {
-                    StopCoroutine(spikeCoroutine);
-                    spikeCoroutine = null;
-                }
-                InterruptAttacks();
-            }
             return true;
         }
         else if (reactionState == ReactionState.HitStunned)
         {
             reactionState = ReactionState.Normal;
-            cooldownTimer = 0.2f;
+            cooldownTimer = 0.1f;
         }
-
         return false;
+    }
+
+    private void HandleCooldownMovement()
+    {
+        float distToPlayer = Vector2.Distance(transform.position, player.position);
+        if (distToPlayer > midRange) ChangeMovementState(MovementState.Chase);
+        else
+        {
+            FacePlayer();
+            ChangeMovementState(MovementState.CombatWalk);
+        }
     }
 
     private void InterruptAttacks()
     {
-        if (activeAttackCoroutine != null)
-        {
-            StopCoroutine(activeAttackCoroutine);
-            activeAttackCoroutine = null;
-        }
+        if (activeAttackCoroutine != null) { StopCoroutine(activeAttackCoroutine); activeAttackCoroutine = null; }
+        if (spikeCoroutine != null) { StopCoroutine(spikeCoroutine); spikeCoroutine = null; }
+
         combatState = CombatState.None;
         rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
 
@@ -208,11 +226,9 @@ public class BloatedBoss : EnemyBase
     private void ExecuteAttack(CombatState state, int animHash)
     {
         ChangeMovementState(MovementState.Idle);
-
         lastCombatState = state;
         combatState = state;
         failsafeTimer = 5f;
-
         if (anim != null) anim.SetTrigger(animHash);
     }
 
@@ -236,6 +252,12 @@ public class BloatedBoss : EnemyBase
             float dirX = Mathf.Sign(player.position.x - transform.position.x);
             rb.linearVelocity = new Vector2(dirX * moveSpeed, rb.linearVelocity.y);
         }
+        else if (newState == MovementState.CombatWalk)
+        {
+            if (anim != null) anim.SetBool(hashIsWalking, true);
+            float dirX = Mathf.Sign(player.position.x - transform.position.x);
+            rb.linearVelocity = new Vector2(dirX * (moveSpeed * 0.5f), rb.linearVelocity.y);
+        }
     }
 
     private void FacePlayer()
@@ -258,10 +280,7 @@ public class BloatedBoss : EnemyBase
     {
         if (projectilePrefab == null || shootPoint == null) return;
         float dir = spriteFacesRight ? Mathf.Sign(transform.localScale.x) : -Mathf.Sign(transform.localScale.x);
-
         GameObject bullet = ObjectPoolManager.Instance.Spawn(projectilePrefab, shootPoint.position, Quaternion.identity);
-
-        // 1. SỬA LỖI ĐẠN: Dùng SendMessage chuẩn, KHÔNG dùng Interface nữa để khớp đạn của bạn
         bullet.SendMessage("Setup", dir, SendMessageOptions.DontRequireReceiver);
     }
 
@@ -275,56 +294,42 @@ public class BloatedBoss : EnemyBase
     public void Event_SpikeLine()
     {
         if (player == null || groundSlamPoint == null) return;
-
         if (spikeCoroutine != null) StopCoroutine(spikeCoroutine);
         spikeCoroutine = StartCoroutine(SpikeStaticTargetRoutine());
     }
 
-    // ==========================================
-    // 2. SỬA LỖI GAI: KHÓA MỤC TIÊU CỐ ĐỊNH (STATIC TARGET)
-    // ==========================================
     private IEnumerator SpikeStaticTargetRoutine()
     {
         Vector2 startPos = groundSlamPoint.position;
         float currentX = startPos.x;
-
-        // Bắt chết tọa độ X của Player tại THỜI ĐIỂM Boss đập tay
         float targetX = player.position.x;
-
         float totalDistance = Mathf.Abs(targetX - currentX);
         float dirX = Mathf.Sign(targetX - currentX);
-
-        // Nếu Player đứng quá gần (ngay dưới chân Boss)
         if (dirX == 0) dirX = spriteFacesRight ? Mathf.Sign(transform.localScale.x) : -Mathf.Sign(transform.localScale.x);
 
-        // Tính toán trước tổng số lượng gai cần thiết để chạy tới tọa độ targetX
         int numberOfSpikes = Mathf.FloorToInt(totalDistance / spikeSpacing);
-        if (numberOfSpikes < 1) numberOfSpikes = 1; // Ít nhất 1 cái gai dưới chân
+        if (numberOfSpikes < 1) numberOfSpikes = 1;
 
         for (int i = 1; i <= numberOfSpikes; i++)
         {
             if (reactionState == ReactionState.HitStunned) yield break;
-
             currentX += dirX * spikeSpacing;
             Vector2 spawnPos = new Vector2(currentX, startPos.y);
 
-            // Nếu là cái gai chốt hạ cuối cùng
             if (i == numberOfSpikes)
             {
-                // Ép vị trí chốt hạ đúng ngay tọa độ targetX (phòng sai số chia)
                 spawnPos.x = targetX;
-
                 GameObject finalSpike = ObjectPoolManager.Instance.Spawn(spikePrefab, spawnPos, Quaternion.identity);
+                AudioManager.instance.PlaySFX("Trap3Open"); // Phát 1 lần duy nhất tại đây
                 finalSpike.transform.localScale = new Vector3(dirX * largeSpikeScale, largeSpikeScale, 1f);
                 CinemachineShake.Instance.ShakeCamera(0.3f);
             }
-            else // Các gai nhỏ trên đường đi
+            else
             {
                 GameObject spike = ObjectPoolManager.Instance.Spawn(spikePrefab, spawnPos, Quaternion.identity);
                 spike.transform.localScale = new Vector3(dirX * 1f, 1f, 1f);
                 CinemachineShake.Instance.ShakeCamera(0.05f);
             }
-
             yield return cachedSpikeDelay;
         }
     }
@@ -358,31 +363,25 @@ public class BloatedBoss : EnemyBase
     public void Event_ThrustHit()
     {
         rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
-
         Collider2D hit = Physics2D.OverlapBox(thrustPoint.position, thrustBox, 0f, LayerMask.GetMask("Player"));
         if (hit != null) hit.GetComponent<PlayerHealth>()?.TakeDamage(thrustDamage, transform);
-
         CinemachineShake.Instance.ShakeCamera(0.15f);
     }
 
     public void Event_EndAttack()
     {
         InterruptAttacks();
-        cooldownTimer = baseAttackCooldown;
+        if (Random.Range(0f, 100f) <= comboChance) cooldownTimer = 0f;
+        else cooldownTimer = baseAttackCooldown;
     }
 
-    public void WakeUpBoss()
-    {
-        isAwake = true;
-    }
+    public void WakeUpBoss() { isAwake = true; }
     #endregion
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, midRange);
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, meleeRange);
+        Gizmos.color = Color.cyan; Gizmos.DrawWireSphere(transform.position, midRange);
+        Gizmos.color = Color.blue; Gizmos.DrawWireSphere(transform.position, meleeRange);
         if (thrustPoint != null) { Gizmos.color = Color.red; Gizmos.DrawWireCube(thrustPoint.position, thrustBox); }
     }
 }

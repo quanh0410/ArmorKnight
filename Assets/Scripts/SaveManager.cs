@@ -8,7 +8,8 @@ using UnityEngine.SceneManagement;
 public class GameSaveData
 {
     public List<string> interactedObjectIDs = new List<string>();
-    public string respawnSceneName = "Scene_1";
+    public List<string> deadEnemyIDs = new List<string>(); // Đưa vào đây để lưu cùng file JSON
+    public string respawnSceneName = "1";
     public string respawnBenchID = "";
 
     // --- MỚI: DỮ LIỆU LƯU TRỮ TRANG BỊ & TIỀN ---
@@ -34,35 +35,34 @@ public class SaveManager : MonoBehaviour
 
         saveFilePath = Application.persistentDataPath + "/gamesave.json";
         LoadGame();
+
+        // Thêm điều kiện: Không Load game tự động nếu GameObject có tên là "TestSaveManager"
+        if (gameObject.name != "TestSaveManager")
+        {
+            LoadGame();
+        }
     }
 
+    // Trong SaveManager.cs
     public void SaveObjectState(string objectID, bool isPermanent = true)
     {
         if (isPermanent)
         {
-            // Nếu chưa có ID này trong danh sách thì thêm vào
             if (!currentSaveData.interactedObjectIDs.Contains(objectID))
-            {
                 currentSaveData.interactedObjectIDs.Add(objectID);
-
-                // ========================================================
-                // --- MỚI: Tự động ghi thẳng ra file Save trên ổ cứng ---
-                // ========================================================
-                SaveGame();
-            }
         }
         else
         {
-            if (!temporaryEnemyDeaths.Contains(objectID))
-            {
-                temporaryEnemyDeaths.Add(objectID);
-            }
+            // Lưu thẳng vào danh sách đã lưu trữ của file save
+            if (!currentSaveData.deadEnemyIDs.Contains(objectID))
+                currentSaveData.deadEnemyIDs.Add(objectID);
         }
+        SaveGame();
     }
 
     public bool IsObjectInteracted(string objectID)
     {
-        return currentSaveData.interactedObjectIDs.Contains(objectID) || temporaryEnemyDeaths.Contains(objectID);
+        return currentSaveData.interactedObjectIDs.Contains(objectID) || currentSaveData.deadEnemyIDs.Contains(objectID);
     }
 
     // Đã đổi int benchID thành string benchID
@@ -74,19 +74,28 @@ public class SaveManager : MonoBehaviour
         SaveGame();
     }
 
-    public void ResetNormalEnemies() { temporaryEnemyDeaths.Clear(); }
+    public void ResetNormalEnemies()
+    {
+        currentSaveData.deadEnemyIDs.Clear();
+        SaveGame(); // Lưu trạng thái trống vào file
+    }
 
     public void SaveGame()
     {
-        currentSaveData.totalCoins = CoinManager.Instance.totalCoins;
+        // Kiểm tra an toàn cho CoinManager
+        if (CoinManager.Instance != null)
+            currentSaveData.totalCoins = CoinManager.Instance.totalCoins;
 
-        // Lưu ID của đồ trong túi
-        currentSaveData.inventoryItemIDs.Clear();
-        foreach (var item in InventoryManager.instance.items)
-            currentSaveData.inventoryItemIDs.Add(item.itemID); // Lấy itemID, không lấy itemName
+        // Kiểm tra an toàn cho InventoryManager
+        if (InventoryManager.instance != null)
+        {
+            currentSaveData.inventoryItemIDs.Clear();
+            foreach (var item in InventoryManager.instance.items)
+                currentSaveData.inventoryItemIDs.Add(item.itemID);
+        }
 
-        // Lưu ID của vũ khí và ngọc
-        if (EquipmentManager.instance.currentWeapon != null)
+        // Kiểm tra an toàn cho EquipmentManager
+        if (EquipmentManager.instance != null && EquipmentManager.instance.currentWeapon != null)
         {
             currentSaveData.equippedWeaponID = EquipmentManager.instance.currentWeapon.itemID;
             currentSaveData.socketedGemIDs = EquipmentManager.instance.GetSocketedGemIDs();
@@ -117,38 +126,41 @@ public class SaveManager : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
 
-        CoinManager.Instance.LoadData(currentSaveData.totalCoins);
-        InventoryManager.instance.LoadData(currentSaveData.inventoryItemIDs);
+        // Kiểm tra an toàn trước khi Load
+        if (CoinManager.Instance != null) CoinManager.Instance.LoadData(currentSaveData.totalCoins);
 
-        string savedWeaponID = currentSaveData.equippedWeaponID;
-        EquipmentData weaponInInventory = null;
-
-        if (!string.IsNullOrEmpty(savedWeaponID))
+        if (InventoryManager.instance != null)
         {
-            foreach (ItemData item in InventoryManager.instance.items)
+            InventoryManager.instance.LoadData(currentSaveData.inventoryItemIDs);
+
+            // Di chuyển toàn bộ logic phục hồi vũ khí vào bên trong khối an toàn này
+            string savedWeaponID = currentSaveData.equippedWeaponID;
+            EquipmentData weaponInInventory = null;
+
+            if (!string.IsNullOrEmpty(savedWeaponID))
             {
-                if (item is EquipmentData equip && equip.itemID == savedWeaponID)
+                foreach (ItemData item in InventoryManager.instance.items)
                 {
-                    weaponInInventory = equip;
-                    break;
+                    if (item is EquipmentData equip && equip.itemID == savedWeaponID)
+                    {
+                        weaponInInventory = equip;
+                        break;
+                    }
                 }
             }
 
-            // --- DÒNG THÔNG BÁO LỖI QUAN TRỌNG ---
-            if (weaponInInventory == null)
+            if (EquipmentManager.instance != null)
             {
-                Debug.LogError($"<color=red>LỖI LOAD TRANG BỊ:</color> Tìm thấy ID '{savedWeaponID}' trong file Save, nhưng không tìm thấy món đồ nào có ID này trong Túi đồ!");
+                if (weaponInInventory != null && weaponInInventory.weaponStats != null)
+                {
+                    EquipmentManager.instance.EquipWeapon(weaponInInventory.weaponStats);
+                    EquipmentManager.instance.LoadGemsFromInventory(currentSaveData.socketedGemIDs);
+                }
+                else
+                {
+                    EquipmentManager.instance.UnequipWeapon();
+                }
             }
-        }
-
-        if (weaponInInventory != null && weaponInInventory.weaponStats != null)
-        {
-            EquipmentManager.instance.EquipWeapon(weaponInInventory.weaponStats);
-            EquipmentManager.instance.LoadGemsFromInventory(currentSaveData.socketedGemIDs);
-        }
-        else
-        {
-            EquipmentManager.instance.UnequipWeapon();
         }
 
         if (InventoryUIManager.instance != null)

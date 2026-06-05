@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ce32db8c722d5e4191c97a9aecfc449, type: 3}
+  m_Name: Crown_Item
+  m_EditorClassIdentifier: Assembly-CSharp::MaterialData
+  itemID: Crown_Item
+  itemName: "V\u01B0\u01A1ng mi\u1EC7n ho\xE0ng gia"
+  itemDescription: "CH\u1EC8 C\xD3 K\u1EBA X\u1EE8NG \u0110\xC1NG M\u1EDAI C\xD3
+    TH\u1EC2 \u0110\u1ED8I V\u01AF\u01A0NG MI\u1EC6N V\xC0 NG\u1ED2I L\xCAN NGAI
+    V\xC0NG."
+  itemIcon: {fileID: -9208682892332689686, guid: 97b20ab2134c7874eb1df5b1393d199f, type: 3}
+  category: 1
+  isStackable: 0
+  maxStackSize: 99
