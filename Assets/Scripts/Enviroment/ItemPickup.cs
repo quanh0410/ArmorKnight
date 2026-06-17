@@ -10,10 +10,9 @@ public class ItemPickup : MonoBehaviour
 
     private void Start()
     {
-        // Vừa vào map, hỏi SaveManager xem đồ này đã bị nhặt ở quá khứ chưa?
         if (SaveManager.instance != null && SaveManager.instance.IsObjectInteracted(itemID))
         {
-            Destroy(gameObject); // Đã nhặt rồi thì hủy luôn
+            Destroy(gameObject); 
         }
     }
 
@@ -49,7 +48,6 @@ public class ItemPickup : MonoBehaviour
         InteractionUI.instance.Hide();
         AudioManager.instance.PlaySFX("ItemPickup");
 
-        // Ghi vào sổ: Vật phẩm nhặt xong là mất vĩnh viễn (true)
         if (SaveManager.instance != null && !string.IsNullOrEmpty(itemID))
         {
             SaveManager.instance.SaveObjectState(itemID, true);

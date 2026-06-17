@@ -21,14 +21,12 @@ public class ThroneInteraction : MonoBehaviour
     {
         if (isEndingTriggered || !isPlayerInRange) return;
 
-        // --- SỬA ĐỔI: CHỈ cho phép ấn S nếu thực sự có Vương Miện trong người ---
         if (Input.GetKeyDown(KeyCode.S) && CheckHasCrown())
         {
             StartCoroutine(SitOnThroneRoutine());
         }
     }
 
-    // Hàm bổ trợ kiểm tra sự tồn tại của Vương Miện trong file Save/Túi đồ
     private bool CheckHasCrown()
     {
         if (SaveManager.instance != null && SaveManager.instance.currentSaveData != null)
@@ -59,7 +57,6 @@ public class ThroneInteraction : MonoBehaviour
             }
         }
 
-        // Chờ 1.5 giây để người chơi tận hưởng khoảnh khắc vinh quang
         yield return new WaitForSeconds(1.5f);
 
         // 2. Màn hình tối dần đều (Fade Out)
@@ -68,12 +65,8 @@ public class ThroneInteraction : MonoBehaviour
             yield return StartCoroutine(FadeManager.instance.FadeOut(1.5f));
         }
 
-        // ======================================================================
-        // --- VÁ LỖI PHẦN 1: ẨN NGAY PLAYER VÀ NGAI VÀNG KHI MÀN HÌNH ĐÃ TỐI ĐEN ---
-        // ======================================================================
         if (player != null)
         {
-            // TẮT HOÀN TOÀN PLAYER: Giúp nhân vật biến mất khỏi camera, tắt vật lý, chống rơi tự do vào khoảng không!
             player.gameObject.SetActive(false);
         }
 
@@ -81,7 +74,6 @@ public class ThroneInteraction : MonoBehaviour
         SpriteRenderer throneSr = GetComponent<SpriteRenderer>();
         if (throneSr != null) throneSr.enabled = false;
 
-        // Nhấc Ngai Vàng vào vùng bất tử DontDestroyOnLoad để giữ mạng cho Coroutine chạy tiếp
         transform.SetParent(null);
         DontDestroyOnLoad(gameObject);
 
@@ -91,29 +83,20 @@ public class ThroneInteraction : MonoBehaviour
             SaveManager.instance.ClearSaveData();
         }
 
-        // ======================================================================
-        // --- VÁ LỖI PHẦN 2: SỬA LỖI TRÔI HOẠT ẢNH OUTRO ---
-        // ======================================================================
         if (StoryManager.instance != null && outroStoryFrames != null && outroStoryFrames.Count > 0)
         {
             StoryManager.instance.PlayStory(outroStoryFrames);
 
-            // ĐIỂM MẤU CHỐT: Nghỉ 1 frame để StoryManager kịp setup và đưa Time.timeScale về 0f!
             yield return null;
 
-            // Bây giờ vòng lặp sẽ chờ chuẩn xác cho đến khi người chơi đọc hết Outro truyện
             while (Time.timeScale == 0f) yield return null;
         }
 
-        // Tối màn hình nhè nhẹ một nhịp ngắn sau khi xem xong Outro truyện kết thúc
         if (FadeManager.instance != null)
         {
             yield return StartCoroutine(FadeManager.instance.FadeOut(0.5f));
         }
 
-        // ======================================================================
-        // --- VÁ LỖI PHẦN 3: DỌN SẠCH MAP CŨ VÀ BÀN GIAO CHO MAIN MENU ---
-        // ======================================================================
         List<string> scenesToUnload = new List<string>();
         for (int i = 0; i < SceneManager.sceneCount; i++)
         {
@@ -124,28 +107,24 @@ public class ThroneInteraction : MonoBehaviour
             }
         }
 
-        // Tải Main Menu theo chế độ Additive (Tải thêm), giúp Core_Scene được bảo vệ 100%
         AsyncOperation loadMenu = SceneManager.LoadSceneAsync(mainMenuSceneName, LoadSceneMode.Additive);
         while (!loadMenu.isDone) yield return null;
 
         Scene menuScene = SceneManager.GetSceneByName(mainMenuSceneName);
         if (menuScene.IsValid()) SceneManager.SetActiveScene(menuScene);
 
-        // Tiến hành xóa toàn bộ các Scene Map cũ ra khỏi RAM để làm sạch Hierarchy
         foreach (string mapName in scenesToUnload)
         {
             AsyncOperation unload = SceneManager.UnloadSceneAsync(mapName);
             while (unload != null && !unload.isDone) yield return null;
         }
 
-        // Kéo rèm làm sáng màn hình khi đã ra tới sảnh chính Main Menu sạch sẽ, gọn gàng!
         if (FadeManager.instance != null)
         {
             yield return StartCoroutine(FadeManager.instance.FadeIn(1f));
         }
 
-        // Xong việc, tự hủy cái Ngai Vàng ngầm này để dọn rác bộ nhớ hoàn toàn
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
 
     #region XỬ LÝ VA CHẠM TRIGGER
@@ -155,7 +134,6 @@ public class ThroneInteraction : MonoBehaviour
         {
             isPlayerInRange = true;
 
-            // --- SỬA ĐỔI: CHỈ HIỂN THỊ UI NẾU PLAYER CÓ VƯƠNG MIỆN ---
             if (CheckHasCrown())
             {
                 if (InteractionUI.instance != null)
@@ -165,7 +143,6 @@ public class ThroneInteraction : MonoBehaviour
             }
             else
             {
-                // Nếu đi tay không: Im lặng hoàn toàn, không cho tương tác.
                 Debug.Log("<color=red>Throne: Player không có vương miện, từ chối tương tác.</color>");
             }
         }

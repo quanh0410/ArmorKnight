@@ -116,7 +116,6 @@ public class PlayerHealth : MonoBehaviour
         }
         else
         {
-            // --- MỚI: KIỂM TRA PLOT ARMOR TRƯỚC KHI CHẾT ---
             if (hasPlotArmor)
             {
                 currentHealth = 1; // Giữ lại 1 giọt máu
@@ -291,14 +290,6 @@ public class PlayerHealth : MonoBehaviour
         Debug.Log("ĐÃ HỒI SINH TẠI CHECKPOINT AN TOÀN!");
     }
 
-    //private void OnTriggerStay2D(Collider2D collider)
-    //{
-    //    if (collider.gameObject.layer == LayerMask.NameToLayer("EnemyDamage"))
-    //    {
-    //        TakeDamage(1, collider.transform);
-    //    }
-    //}
-
     public void TakeTrapDamage(int damageAmount)
     {
         if (isInvincible || currentHealth <= 0) return;
@@ -314,7 +305,6 @@ public class PlayerHealth : MonoBehaviour
             PlayerEnergy energyObj = GetComponent<PlayerEnergy>();
             if (energyObj != null)
             {
-                // Gọi hàm đã gộp và truyền 20 năng lượng cho mỗi 1 máu mất đi
                 energyObj.AddEnergy(damageAmount * 20);
             }
         }

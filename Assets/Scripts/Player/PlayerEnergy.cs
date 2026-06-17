@@ -52,11 +52,6 @@ public class PlayerEnergy : MonoBehaviour
         }
     }
 
-    // ==========================================
-    // GỘP: HÀM CỘNG NĂNG LƯỢNG ĐA NĂNG
-    // ==========================================
-    // - Nếu gọi AddEnergy() -> Tự cộng 11 (dùng cho chém quái)
-    // - Nếu gọi AddEnergy(20) -> Cộng 20 (dùng cho Item lấy máu đổi năng lượng)
     public void AddEnergy(int amount = 0)
     {
         // Nếu truyền vào số > 0 thì dùng số đó, nếu không thì dùng mặc định energyPerHit (11)
@@ -145,7 +140,6 @@ public class PlayerEnergy : MonoBehaviour
         }
     }
 
-    // --- MỚI: Hàm trừ năng lượng đa dụng cho các kỹ năng ---
     public bool SpendEnergy(int amount)
     {
         if (currentEnergy >= amount)

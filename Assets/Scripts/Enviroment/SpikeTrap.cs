@@ -3,9 +3,8 @@
 public class SpikeTrap : MonoBehaviour
 {
     [Header("Trap Settings")]
-    public int damage = 1; // Tha hồ chỉnh sát thương cho từng loại bẫy ngoài Inspector
+    public int damage = 1; 
 
-    // Cái bẫy tự động chờ Player giẫm vào
     private void OnTriggerStay2D(Collider2D collision)
     {
         // Kiểm tra xem thứ vừa giẫm vào bẫy có phải là Player không (nhớ tag Player nhé)

@@ -5,7 +5,7 @@ using System.Collections;
 public class VineInteraction : MonoBehaviour
 {
     [Header("--- LƯU TRỮ ---")]
-    public string vineID; // MỚI: ID lưu trạng thái bị đứt
+    public string vineID;
 
     [Header("Wiggle Settings (Rung lắc)")]
     public float wiggleDuration = 0.3f;
@@ -20,12 +20,11 @@ public class VineInteraction : MonoBehaviour
 
     void Start()
     {
-        // 1. KIỂM TRA LƯU TRỮ: Nếu dây leo đã bị chặt đứt từ trước thì ẩn luôn
         if (!string.IsNullOrEmpty(vineID) && SaveManager.instance != null)
         {
             if (SaveManager.instance.IsObjectInteracted(vineID))
             {
-                gameObject.SetActive(false); // Dùng SetActive an toàn hơn Destroy lúc Start
+                gameObject.SetActive(false); 
                 return;
             }
         }
@@ -48,7 +47,6 @@ public class VineInteraction : MonoBehaviour
             ObjectPoolManager.Instance.Spawn(cutEffectPrefab, transform.position, Quaternion.identity);
         }
 
-        // 2. LƯU TRẠNG THÁI ĐÃ ĐỨT VÀO BỘ NHỚ
         if (!string.IsNullOrEmpty(vineID) && SaveManager.instance != null)
         {
             SaveManager.instance.SaveObjectState(vineID, true);

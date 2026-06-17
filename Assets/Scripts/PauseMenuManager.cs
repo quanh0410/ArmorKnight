@@ -27,14 +27,10 @@ public class PauseMenuManager : MonoBehaviour
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         isPaused = true;
-
-        // ========================================================
-        // --- MỚI: TÌM PLAYER VÀ KHÓA ĐIỀU KHIỂN BÀN PHÍM ---
-        // ========================================================
         PlayerController player = FindAnyObjectByType<PlayerController>();
         if (player != null)
         {
-            player.isInputLocked = true; // Khóa chặt không cho nhận phím xoay người/di chuyển
+            player.isInputLocked = true; 
         }
     }
 
@@ -44,22 +40,15 @@ public class PauseMenuManager : MonoBehaviour
         Time.timeScale = 1f;
         isPaused = false;
 
-        // ========================================================
-        // --- MỚI: MỞ KHÓA ĐIỀU KHIỂN CHO PLAYER KHI CHƠI TIẾP ---
-        // ========================================================
         PlayerController player = FindAnyObjectByType<PlayerController>();
         if (player != null)
         {
-            player.isInputLocked = false; // Trả lại quyền điều khiển cho người chơi
+            player.isInputLocked = false; 
         }
     }
 
-    // ==========================================
-    // --- ĐÃ SỬA: CHUYỂN HÀM THOÁT THÀNH GỌI COROUTINE ---
-    // ==========================================
     public void SaveAndQuitToMenu()
     {
-        // Giao việc cho Coroutine để có thể chờ màn hình tối đi
         StartCoroutine(SaveAndQuitRoutine());
     }
 
@@ -88,8 +77,6 @@ public class PauseMenuManager : MonoBehaviour
         }
 
         // 4. BỌC THÉP CHO SCRIPT: 
-        // Nếu script Pause này đang nằm trong 1 Map sắp bị xóa, nó sẽ bị bốc hơi giữa chừng.
-        // Ta phải nhấc nó ra và cho nó quyền bất tử tạm thời để nó có thể chạy nốt đoạn code bên dưới!
         bool wasMovedToSafety = false;
         if (scenesToUnload.Contains(gameObject.scene.name))
         {
@@ -109,7 +96,6 @@ public class PauseMenuManager : MonoBehaviour
         foreach (string mapName in scenesToUnload)
         {
             AsyncOperation unload = SceneManager.UnloadSceneAsync(mapName);
-            // Kiểm tra null vì nếu Scene đã bị xóa từ trước thì hàm sẽ trả về null
             while (unload != null && !unload.isDone) yield return null;
         }
 

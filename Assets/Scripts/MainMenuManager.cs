@@ -1,9 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic; // Để sử dụng List
+using System.Collections.Generic; 
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.Video; // --- MỚI: Thêm thư viện để điều khiển Video ---
+using UnityEngine.Video; 
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -18,10 +18,8 @@ public class MainMenuManager : MonoBehaviour
 
     [Header("--- CỐT TRUYỆN MỞ ĐẦU (INTRO) ---")]
     [Tooltip("Thêm các khung hình (Ảnh + Chữ) để kể chuyện khi bấm New Game")]
-    public List<StoryFrame> introStoryFrames; // --- MỚI: Kịch bản mở đầu ---
+    public List<StoryFrame> introStoryFrames; 
 
-    // --- MỚI: BIẾN QUẢN LÝ VIDEO NỀN ---
-    // ==========================================
     [Header("--- VIDEO NỀN ---")]
     public VideoPlayer backgroundVideo;
 
@@ -60,18 +58,12 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
-    // ==========================================
-    // SỬA ĐỔI: HÀM BẤM NÚT NEW GAME
-    // ==========================================
     public void OnNewGameClicked()
     {
         if (isTransitioning) return;
         PlayClickSound();
-
-        // 1. Dọn dẹp Save cũ
         if (SaveManager.instance != null) SaveManager.instance.ClearSaveData();
 
-        // 2. Chuyển hướng sang Coroutine Kể truyện thay vì Load Game ngay
         StartCoroutine(IntroStoryThenLoadRoutine());
     }
 
@@ -105,21 +97,14 @@ public class MainMenuManager : MonoBehaviour
         if (AudioManager.instance != null) AudioManager.instance.PlaySFX("UI_Click");
     }
 
-    // ==========================================
-    // MỚI: COROUTINE CHIẾU TRUYỆN MỞ ĐẦU
-    // ==========================================
     private IEnumerator IntroStoryThenLoadRoutine()
     {
         isTransitioning = true;
         LockButtons();
 
-        // --- MỚI: TẠM DỪNG HOẶC TẮT TIẾNG VIDEO NGAY LẬP TỨC ---
-        // Giúp nhường không gian âm thanh cho Story Manager sau này
         if (backgroundVideo != null)
         {
             backgroundVideo.Pause();
-            // Nếu bạn chỉ muốn tắt tiếng mà vẫn để hình chạy mờ mờ phía sau, 
-            // bạn có thể thay thế bằng lệnh: backgroundVideo.SetDirectAudioMute(0, true);
         }
 
         // 1. Làm tối màn hình Menu đi một chút cho điện ảnh (Tùy chọn)
@@ -134,8 +119,6 @@ public class MainMenuManager : MonoBehaviour
             // Bật kể chuyện
             StoryManager.instance.PlayStory(introStoryFrames);
 
-            // Chờ cho đến khi timeScale của game được StoryManager nhả về 1 (Tức là kể xong)
-            // LƯU Ý: Phải đợi 1 frame trước tiên để StoryManager kịp set TimeScale về 0
             yield return null;
             while (Time.timeScale == 0f)
             {
@@ -144,7 +127,6 @@ public class MainMenuManager : MonoBehaviour
         }
 
         // 3. Truyện đã kể xong, bây giờ chính thức load vào Map 1
-        // Lệnh này nối tiếp với Coroutine Load Map ở bên dưới
         StartCoroutine(TransitionToGame(firstLevelName, isNewGame: true));
     }
 
@@ -155,20 +137,15 @@ public class MainMenuManager : MonoBehaviour
         if (quitButton != null) quitButton.interactable = false;
     }
 
-    // ==========================================
-    // COROUTINE CHUYỂN SCENE CHÍNH
-    // ==========================================
     private IEnumerator TransitionToGame(string mapName, bool isNewGame)
     {
-        // Tránh bị gán đè nếu chạy từ Continue
         if (!isTransitioning)
         {
             isTransitioning = true;
             LockButtons();
         }
 
-        // (Xóa lệnh FadeOut ở đây đi đối với New Game vì đã FadeOut lúc kể truyện rồi)
-        // Nhưng nếu là Continue thì vẫn cần FadeOut
+
         if (!isNewGame && FadeManager.instance != null)
         {
             yield return StartCoroutine(FadeManager.instance.FadeOut(0.5f));

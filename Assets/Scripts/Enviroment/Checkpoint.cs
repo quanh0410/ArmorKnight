@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class Checkpoint : MonoBehaviour
 {
-    public string benchID; // GUID riêng biệt của Ghế
+    public string benchID; 
     private bool isPlayerNearby = false;
 
     private void Update()
@@ -16,14 +16,11 @@ public class Checkpoint : MonoBehaviour
 
     private void Rest()
     {
-        // Lấy script PlayerController
         PlayerController pc = FindFirstObjectByType<PlayerController>();
         if (pc != null && !pc.isResting && !pc.isInputLocked)
         {
-            // Ra lệnh tự động đi bộ và ngồi
             pc.StartCoroutine(pc.WalkToBenchAndRest(transform, benchID));
 
-            // Ẩn UI tương tác "[S] Nghỉ ngơi" đi
             if (InteractionUI.instance != null) InteractionUI.instance.Hide();
         }
     }
@@ -41,7 +38,6 @@ public class Checkpoint : MonoBehaviour
 #if UNITY_EDITOR
     private void OnValidate()
     {
-        // Tự động tạo GUID cho Ghế mà không cần SpawnPoint
         if (string.IsNullOrEmpty(benchID) && !UnityEditor.EditorUtility.IsPersistent(this))
         {
             benchID = System.Guid.NewGuid().ToString();

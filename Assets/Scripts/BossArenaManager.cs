@@ -42,9 +42,6 @@ public class BossArenaManager : MonoBehaviour
         bossDialog = GetComponent<NPCDialog>();
         UnlockDoors();
 
-        // ======================================================================
-        // CHUẨN HÓA: Dùng hàm IsObjectInteracted của SaveManager hiện tại
-        // ======================================================================
         if (!string.IsNullOrEmpty(arenaID) && SaveManager.instance != null)
         {
             if (SaveManager.instance.IsObjectInteracted(arenaID))
@@ -100,7 +97,6 @@ public class BossArenaManager : MonoBehaviour
             isBattleActive = true;
             if (triggerCollider != null) triggerCollider.enabled = false;
 
-            // CHUẨN HÓA: Dùng hàm PlayMusic có sẵn trong AudioManager của bạn
             if (AudioManager.instance != null && !string.IsNullOrEmpty(bossMusicTheme))
             {
                 AudioManager.instance.PlayMusic(bossMusicTheme);
@@ -204,15 +200,11 @@ public class BossArenaManager : MonoBehaviour
             cameraConfiner.InvalidateBoundingShapeCache();
         }
 
-        // CHUẨN HÓA: Dùng hàm PlayMusic có sẵn trong AudioManager
         if (AudioManager.instance != null && !string.IsNullOrEmpty(mapMusicTheme))
         {
             AudioManager.instance.PlayMusicWithFade(mapMusicTheme);
         }
 
-        // ======================================================================
-        // CHUẨN HÓA: Lưu ID Đấu trường vào danh sách interactedObjectIDs bằng hàm chuẩn
-        // ======================================================================
         if (!string.IsNullOrEmpty(arenaID) && SaveManager.instance != null)
         {
             // Truyền tham số true để lưu vĩnh viễn (Permanent = true)

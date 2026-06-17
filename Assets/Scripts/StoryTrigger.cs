@@ -33,9 +33,7 @@ public class StoryTrigger : MonoBehaviour
         }
     }
 
-    // ==========================================
-    // MỚI: HÀM PUBLIC ĐỂ GỌI TỪ BÊN NGOÀI (LÚC CHẾT)
-    // ==========================================
+
     public void TriggerStoryEvent()
     {
         if (StoryManager.instance != null)

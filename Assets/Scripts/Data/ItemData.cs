@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-// ==========================================
-// 1. CLASS GỐC (ĐƯA LÊN TRÊN CÙNG)
-// ==========================================
 public class ItemData : ScriptableObject
 {
     [Header("--- THÔNG TIN CƠ BẢN ---")]
@@ -25,7 +22,6 @@ public class ItemData : ScriptableObject
     }
 }
 
-// --- CÁC ĐỊNH NGHĨA CHUNG (ĐƯA XUỐNG DƯỚI CÙNG) ---
 public enum ItemColor { Gray, Blue, Yellow, Red }
 public enum EquipmentType { None, Weapon }
 public enum ItemCategory { Equipment, Material }

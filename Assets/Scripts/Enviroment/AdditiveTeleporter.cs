@@ -16,8 +16,6 @@ public class AdditiveTeleporter : MonoBehaviour
     [Tooltip("Gõ chính xác tên Scene bạn muốn đi tới (VD: Level_2)")]
     public string sceneToLoad;
 
-    // ĐÃ XÓA: public string sceneToUnload; (Giờ code sẽ tự động lo việc này)
-
     public int targetSpawnPointID = 0;
 
     private bool isPlayerInRange = false;
@@ -73,12 +71,10 @@ public class AdditiveTeleporter : MonoBehaviour
 
         if (InteractionUI.instance != null) InteractionUI.instance.Hide();
 
-        // --- NÂNG CẤP CHUYÊN NGHIỆP: TỰ ĐỘNG LẤY TÊN SCENE CHỨA CÁI CỬA NÀY ---
         string currentSceneToUnload = gameObject.scene.name;
 
         if (FadeManager.instance != null)
         {
-            // Truyền tên Scene tự động lấy được sang cho FadeManager
             FadeManager.instance.StartTransition(sceneToLoad, currentSceneToUnload, targetSpawnPointID, player);
         }
         else

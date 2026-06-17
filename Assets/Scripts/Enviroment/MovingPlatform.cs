@@ -19,9 +19,6 @@ public class MovingPlatform : MonoBehaviour
         targetPosition = pointA.position;
     }
 
-    // ==========================================
-    // HÀM MỚI: ĐỂ SWITCH GỌI QUA UNITY EVENT
-    // ==========================================
     public void ActivateMoveToC()
     {
         isSwitchActivated = true;

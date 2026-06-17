@@ -14,7 +14,7 @@ public class Sound
 
     [Range(0f, 1f)] public float volume = 1f;
     [Range(0.5f, 1.5f)] public float pitch = 1f;
-    public bool loop = true; // Nhạc nền nên để mặc định là true
+    public bool loop = true; 
 }
 
 public class AudioManager : MonoBehaviour
@@ -29,8 +29,8 @@ public class AudioManager : MonoBehaviour
     public Sound[] sfxSounds;
 
     [Header("--- KÊNH PHÁT (CHANNELS) ---")]
-    public AudioSource musicSource1; // Kênh 1: Nhạc chính
-    public AudioSource musicSource2; // Kênh 2: Nhạc môi trường/Phụ
+    public AudioSource musicSource1; 
+    public AudioSource musicSource2; 
     public AudioSource sfxSource;
 
     private void Awake()
@@ -62,7 +62,6 @@ public class AudioManager : MonoBehaviour
         targetSource.Play();
     }
 
-    // --- PHÁT NHẠC CHẾ ĐỘ CHUYỂN MƯỢT (FADE) ---
     private Coroutine fadeRoutine1;
     private Coroutine fadeRoutine2;
 
@@ -117,7 +116,6 @@ public class AudioManager : MonoBehaviour
         targetSource.volume = newSound.volume;
     }
 
-    // --- CÁC HÀM TIỆN ÍCH KHÁC ---
     public void PlaySFX(string soundName)
     {
         Sound s = Array.Find(sfxSounds, x => x.name == soundName);

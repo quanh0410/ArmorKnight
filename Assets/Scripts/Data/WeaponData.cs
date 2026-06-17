@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-// ==========================================
-// CLASS CHÍNH (ĐƯA LÊN TRÊN CÙNG)
-// ==========================================
+
 [CreateAssetMenu(fileName = "New Weapon", menuName = "Equipment/Weapon")]
 public class WeaponData : ScriptableObject
 {

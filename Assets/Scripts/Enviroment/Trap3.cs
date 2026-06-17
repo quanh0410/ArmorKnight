@@ -8,9 +8,6 @@ public class Trap3 : MonoBehaviour
     public int damage = 1;
     public float loopDelay = 2f;
 
-    // ==========================================
-    // --- MỚI: CẤU HÌNH ÂM THANH KHOẢNG CÁCH ---
-    // ==========================================
     [Header("--- THIẾT LẬP ÂM THANH ---")]
     [Tooltip("Khoảng cách tối đa (mét) bắt đầu nghe thấy tiếng bẫy hoạt động")]
     public float maxAudibleDistance = 12f;
@@ -35,17 +32,12 @@ public class Trap3 : MonoBehaviour
 
         polyCollider.isTrigger = true;
 
-        // ========================================================
-        // --- MỚI: KHỞI TẠO HỆ THỐNG LOA VÀ LẤY ĐĨA NHẠC ---
-        // ========================================================
         localAudioSource = gameObject.AddComponent<AudioSource>();
 
         if (AudioManager.instance != null)
         {
-            // Ép cái loa này chui vào đúng luồng SFX Mixer tổng của game bạn
             localAudioSource.outputAudioMixerGroup = AudioManager.instance.sfxSource.outputAudioMixerGroup;
 
-            // Tự động lục tìm file âm thanh trong mảng sfxSounds đã khai báo ở AudioManager
             var openSound = System.Array.Find(AudioManager.instance.sfxSounds, x => x.name == "Trap3Open");
             if (openSound != null) openClip = openSound.clip;
 
@@ -99,9 +91,6 @@ public class Trap3 : MonoBehaviour
         }
     }
 
-    // ========================================================
-    // --- MỚI: CHỈNH SỬA HÀM PHÁT ÂM THANH THEO KHOẢNG CÁCH ---
-    // ========================================================
     public void PlaySFXOpen()
     {
         PlaySpatialTrapSound(openClip);
@@ -116,7 +105,6 @@ public class Trap3 : MonoBehaviour
     {
         if (clip == null || localAudioSource == null) return;
 
-        // THUẬT TOÁN ĐỈNH CAO: Tìm Player kể cả khi Player đang bị ẩn (SetActive = false) lúc mới load Scene
         if (playerTransform == null)
         {
             PlayerController pc = FindAnyObjectByType<PlayerController>(FindObjectsInactive.Include);

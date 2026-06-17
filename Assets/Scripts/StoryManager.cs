@@ -9,7 +9,6 @@ public class StoryFrame
 {
     public Sprite image;
 
-    // --- SỬA Ở ĐÂY: Chuyển thành Mảng để chứa nhiều dòng chữ trên cùng 1 ảnh ---
     [TextArea(2, 4)]
     public string[] textLines;
 }
@@ -20,8 +19,8 @@ public class StoryManager : MonoBehaviour
 
     [Header("--- KẾT NỐI UI ---")]
     public GameObject storyCanvas;
-    public CanvasGroup mainCanvasGroup; // Quản lý mờ/tỏ của TOÀN BỘ khung hình (gồm cả ảnh)
-    public CanvasGroup textCanvasGroup; // --- MỚI: Chỉ quản lý mờ/tỏ của riêng dòng CHỮ ---
+    public CanvasGroup mainCanvasGroup; 
+    public CanvasGroup textCanvasGroup; 
     public Image storyImage;
     public TextMeshProUGUI subtitleText;
 
@@ -48,7 +47,7 @@ public class StoryManager : MonoBehaviour
 
         if (storyCanvas != null) storyCanvas.SetActive(false);
         if (mainCanvasGroup != null) mainCanvasGroup.alpha = 0f;
-        if (textCanvasGroup != null) textCanvasGroup.alpha = 0f; // Mới: Chữ mặc định ẩn
+        if (textCanvasGroup != null) textCanvasGroup.alpha = 0f; 
     }
 
     public void PlayStory(List<StoryFrame> frames)
@@ -68,30 +67,23 @@ public class StoryManager : MonoBehaviour
         // VÒNG LẶP 1: Duyệt qua từng Khung hình (Ảnh)
         foreach (StoryFrame frame in frames)
         {
-            // Thay ảnh nền mới
             storyImage.sprite = frame.image;
 
-            // Đảm bảo lúc ảnh mới hiện lên thì chữ đang ở trạng thái ẩn để chuẩn bị hiệu ứng
             if (textCanvasGroup != null) textCanvasGroup.alpha = 0f;
 
-            // Fade In TOÀN BỘ hệ thống (Ảnh bắt đầu hiện lên)
             yield return StartCoroutine(FadeRoutine(mainCanvasGroup, 0f, 1f, fadeDuration));
 
-            // VÒNG LẶP 2: Duyệt qua từng dòng chữ của ẢNH HIỆN TẠI
             if (frame.textLines != null && frame.textLines.Length > 0)
             {
                 for (int i = 0; i < frame.textLines.Length; i++)
                 {
-                    // 1. Gán chữ của dòng hiện tại
                     subtitleText.text = frame.textLines[i];
 
-                    // 2. Chỉ Fade In riêng dòng chữ (Ảnh nền vẫn giữ nguyên)
                     if (textCanvasGroup != null)
                         yield return StartCoroutine(FadeRoutine(textCanvasGroup, 0f, 1f, textFadeDuration));
                     else
-                        subtitleText.alpha = 1f; // Phòng hờ nếu quên kéo CanvasGroup chữ
+                        subtitleText.alpha = 1f; 
 
-                    // 3. Đợi người chơi bấm phím để qua dòng tiếp theo
                     isWaitingForInput = true;
                     while (isWaitingForInput)
                     {
@@ -102,7 +94,6 @@ public class StoryManager : MonoBehaviour
                         yield return null;
                     }
 
-                    // 4. Nếu vẫn còn dòng chữ tiếp theo cho CÙNG 1 ẢNH này, Fade Out chữ cũ đi để chuẩn bị nạp chữ mới
                     if (i < frame.textLines.Length - 1 && textCanvasGroup != null)
                     {
                         yield return StartCoroutine(FadeRoutine(textCanvasGroup, 1f, 0f, textFadeDuration));
@@ -110,17 +101,14 @@ public class StoryManager : MonoBehaviour
                 }
             }
 
-            // Hết toàn bộ chữ của ảnh này -> Fade Out toàn bộ để đổi sang ảnh tiếp theo
             yield return StartCoroutine(FadeRoutine(mainCanvasGroup, 1f, 0f, fadeDuration / 2f));
         }
 
-        // Kết thúc kịch bản truyện
         Time.timeScale = 1f;
         storyCanvas.SetActive(false);
         isStoryActive = false;
     }
 
-    // Hàm Fade dùng chung tối ưu, nhận vào CanvasGroup bất kỳ
     private IEnumerator FadeRoutine(CanvasGroup targetGroup, float startAlpha, float endAlpha, float duration)
     {
         if (targetGroup == null) yield break;

@@ -5,7 +5,6 @@ public class ObjectPoolManager : MonoBehaviour
 {
     public static ObjectPoolManager Instance { get; private set; }
 
-    // Từ điển chứa nhiều hàng đợi (Mỗi hàng đợi là một "ngăn tủ" cho 1 loại Prefab)
     private Dictionary<string, Queue<GameObject>> poolDictionary = new Dictionary<string, Queue<GameObject>>();
 
     private void Awake()
@@ -14,10 +13,9 @@ public class ObjectPoolManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
-    // Hàm gọi vật thể ra khỏi tủ (Thay thế hoàn toàn cho Instantiate)
     public GameObject Spawn(GameObject prefab, Vector2 position, Quaternion rotation)
     {
-        string key = prefab.name; // Dùng tên Prefab làm chìa khóa tìm ngăn tủ
+        string key = prefab.name; 
 
         // Nếu tủ chưa có ngăn này, tạo một ngăn mới
         if (!poolDictionary.ContainsKey(key))

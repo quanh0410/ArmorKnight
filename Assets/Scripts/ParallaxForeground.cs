@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections; // BẮT BUỘC THÊM ĐỂ DÙNG COROUTINE
 
 public class ParallaxForeground : MonoBehaviour
 {
@@ -14,17 +15,25 @@ public class ParallaxForeground : MonoBehaviour
     private Vector3 startPosition;
     private Vector3 startCameraPosition;
 
-    void Start()
+    // --- MỚI: Cờ kiểm tra xem Camera đã ổn định chưa ---
+    private bool isReady = false;
+
+    private IEnumerator Start()
     {
         cameraTransform = Camera.main.transform;
 
-        // Chốt sổ vị trí gốc của cả Foreground và Camera ngay khi vừa mở Map
+        yield return null;
+        yield return null;
         startPosition = transform.position;
         startCameraPosition = cameraTransform.position;
+        isReady = true;
     }
 
     void LateUpdate()
     {
+
+        // --- MỚI: Nếu chưa khởi tạo xong thì không làm gì cả ---
+        if (!isReady || cameraTransform == null) return;
         // 1. Tính toán tổng quãng đường Camera đã đi xa khỏi ĐIỂM XUẤT PHÁT
         Vector3 travelDistance = cameraTransform.position - startCameraPosition;
 

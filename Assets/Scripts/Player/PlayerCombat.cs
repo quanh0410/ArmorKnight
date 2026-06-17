@@ -18,13 +18,13 @@ public class PlayerCombat : MonoBehaviour
 
     [Header("Ranged Slash Settings")]
     public GameObject rangedSlashPrefab;
-    public Vector2 rangedSlashOffset = new Vector2(0.5f, 0f); // --- MỚI: Vị trí sinh ra so với nhân vật ---
-    public float rangedSlashSpeed = 15f;                    // --- MỚI: Tốc độ bay có thể chỉnh ở đây ---
-    public float rangedSlashLifetime = 1f;                  // --- MỚI: Thời gian tồn tại ---
+    public Vector2 rangedSlashOffset = new Vector2(0.5f, 0f); 
+    public float rangedSlashSpeed = 15f;                    
+    public float rangedSlashLifetime = 1f;                 
     public int rangedSlashDamage = 20;
 
     [Header("Dive Kick Hitbox")]
-    public Transform diveKickHitPoint; // Vị trí dưới chân Player
+    public Transform diveKickHitPoint; 
     public float diveKickHitRadius = 0.8f;
     public int diveKickDamage = 15;
 
@@ -99,15 +99,11 @@ public class PlayerCombat : MonoBehaviour
         bool hasHit = false;
         bool hasGainedEnergy = false;
 
-        // ==========================================
-        // CÁCH SỬA CHUẨN: LẤY MECHANIC TỪ EQUIPMENT DATA
-        // ==========================================
         bool isStunWeapon = false;
         if (EquipmentManager.instance != null && EquipmentManager.instance.currentWeapon != null)
         {
             string currentWeaponID = EquipmentManager.instance.currentWeapon.itemID;
 
-            // Lục tìm món vũ khí đó trong túi đồ để đọc thông số Mechanic
             if (InventoryManager.instance != null)
             {
                 foreach (ItemData item in InventoryManager.instance.items)
@@ -142,16 +138,13 @@ public class PlayerCombat : MonoBehaviour
 
                 if (isStunWeapon)
                 {
-                    // SIÊU NGẮN GỌN: Chỉ việc chuyền cái Mẫu Effect (Prefab) sang cho quái tự lo liệu!
                     health.TakeStun(1.5f, transform, stunEffectPrefab);
                 }
                 else
                 {
                     if (enemy.GetComponent<KnightEnemy>() != null && enemy.GetComponent<KnightEnemy>().combatState == KnightEnemy.CombatState.Defending) return;
-                    // Vũ khí Kiếm -> Gây sát thương bình thường
                     health.TakeDamage(10, transform);
 
-                    // Chạy Effect Chém
                     if (hitEffectPrefab != null)
                         ObjectPoolManager.Instance.Spawn(hitEffectPrefab, spawnPos, Quaternion.identity);
                 }
@@ -223,7 +216,6 @@ public class PlayerCombat : MonoBehaviour
 
         if (rangedSlashPrefab != null && attackPoint != null)
         {
-            // --- TÍNH TOÁN VỊ TRÍ SINH RA DỰA TRÊN OFFSET VÀ HƯỚNG MẶT ---
             float facingDir = transform.localScale.x;
             Vector3 spawnPos = new Vector3(
                 transform.position.x + (rangedSlashOffset.x * facingDir),
@@ -236,7 +228,6 @@ public class PlayerCombat : MonoBehaviour
             RangedSlash projectile = slash.GetComponent<RangedSlash>();
             if (projectile != null)
             {
-                // CHUYỀN THÊM: Tốc độ và Thời gian tồn tại vào hàm Setup
                 projectile.Setup(facingDir, rangedSlashSpeed, rangedSlashDamage, rangedSlashLifetime);
             }
         }
@@ -245,7 +236,6 @@ public class PlayerCombat : MonoBehaviour
     public void SetInvincible(bool state)
     {
         isInvincible = state;
-        // Báo cho PlayerHealth biết để không nhận sát thương (Yêu cầu bạn phải vào script PlayerHealth chặn sát thương nếu biến này true)
         PlayerHealth health = GetComponent<PlayerHealth>();
         if (health != null)
         {

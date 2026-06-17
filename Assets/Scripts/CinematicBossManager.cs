@@ -16,7 +16,6 @@ public class CinematicBossManager : MonoBehaviour
     public NPCDialog dialogPhase2;
     public List<StoryFrame> fakeDeathStory;
 
-    // ĐÃ XÓA: sceneToLoad và spawnPointID (Đã chuyển cho KnightEnemy)
 
     private PlayerHealth playerHealth;
     private GameObject playerRef;
@@ -28,7 +27,6 @@ public class CinematicBossManager : MonoBehaviour
         if (dialogPhase2 != null) dialogPhase2.gameObject.SetActive(false);
         FindPlayerAutomatically();
 
-        // NẾU ĐÃ THẮNG TỪ TRƯỚC -> BIẾN BOSS THÀNH CỬA LUÔN
         if (SaveManager.instance != null && !string.IsNullOrEmpty(bossDefeatedSaveID))
         {
             if (SaveManager.instance.IsObjectInteracted(bossDefeatedSaveID))
@@ -36,7 +34,6 @@ public class CinematicBossManager : MonoBehaviour
                 isEncounterStarted = true;
                 UnlockDoors();
 
-                // Lệnh mới: Biến Boss thành cửa
                 if (bossLogic != null) bossLogic.TransformIntoDoor();
 
                 Collider2D trigger = GetComponent<Collider2D>();
@@ -129,7 +126,6 @@ public class CinematicBossManager : MonoBehaviour
     {
         UnlockDoors();
 
-        // HẾT CINEMATIC -> BIẾN BOSS THÀNH CỬA
         if (bossLogic != null) bossLogic.TransformIntoDoor();
 
         if (SaveManager.instance != null && !string.IsNullOrEmpty(bossDefeatedSaveID))

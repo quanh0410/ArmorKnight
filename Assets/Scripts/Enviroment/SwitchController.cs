@@ -6,7 +6,7 @@ using System.Collections;
 public class SwitchController : MonoBehaviour
 {
     [Header("--- LƯU TRỮ ---")]
-    public string switchID; // MỚI: ID để lưu trạng thái vĩnh viễn
+    public string switchID;
 
     [Header("--- TRẠNG THÁI ---")]
     public bool isOn = false;
@@ -29,7 +29,6 @@ public class SwitchController : MonoBehaviour
 
     private IEnumerator Start()
     {
-        // Đợi 1 khung hình để đảm bảo Animator và các cơ quan (Cửa, bệ đỡ) đã khởi động xong hoàn toàn
         yield return null;
 
         // 1. KIỂM TRA LƯU TRỮ: Nếu đã bật từ trước, ép trạng thái thành ON
@@ -45,10 +44,8 @@ public class SwitchController : MonoBehaviour
         // 2. KÍCH HOẠT LẠI NẾU ĐÃ LƯU LÀ ON
         if (isOn)
         {
-            // Bật hình ảnh công tắc
             if (anim != null) anim.SetTrigger("On");
 
-            // --- QUAN TRỌNG: Bắn sự kiện để mở luôn Cửa/Cơ quan đang nối với công tắc này ---
             onSwitchTurnedOn?.Invoke();
         }
     }

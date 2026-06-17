@@ -33,8 +33,8 @@ public class PlayerController : MonoBehaviour
     public float diveKickBounceAngle = 45f; // MỚI: Góc nảy ngược lên
     public float bounceLockDuration = 0.2f; // MỚI: Thời gian khóa phím để thấy lực nảy ngang
 
-    public GameObject diveKickEffectPrefab; // MỚI: Prefab hiệu ứng lao xuống
-    private GameObject currentDiveEffect;   // Lưu trữ hiệu ứng đang chạy
+    public GameObject diveKickEffectPrefab; 
+    private GameObject currentDiveEffect;  
 
     public bool isDiveKicking { get; private set; }
     private bool hasDiveKicked = false;
@@ -130,10 +130,8 @@ public class PlayerController : MonoBehaviour
         if (!isDashing && !isWallClimbing)
         {
             HandleAttackInput();
-            // --- MỚI: KỸ NĂNG CHÉM XA (Phím U) ---
             if (EquipmentManager.instance != null && EquipmentManager.instance.HasMechanic("RangedSlash") && Input.GetKeyDown(KeyCode.U) && Time.time >= lastAttackTime + attackCooldown && (!IsWalled() || IsGrounded()))
             {
-                // Kiểm tra và trừ 33 năng lượng
                 if (GetComponent<PlayerEnergy>().SpendEnergy(40))
                 {
                     AudioManager.instance.PlaySFX("RangedSlash");
@@ -161,8 +159,6 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(PlayerDash());
             }
 
-            // --- MỚI: KÍCH HOẠT DIVE KICK ---
-            // Kiểm tra: Đang trên không, chưa DiveKick lần nào, ấn S và J cùng lúc
             if (EquipmentManager.instance != null && EquipmentManager.instance.HasMechanic("Dive") && !IsGrounded() && !hasDiveKicked && (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) && Input.GetKeyDown(KeyCode.I))
             {
                 AudioManager.instance.PlaySFX("PlayerDive");
@@ -172,7 +168,6 @@ public class PlayerController : MonoBehaviour
 
         bool isGrounded = IsGrounded();
 
-        // --- MỚI: RESET DIVE KICK KHI CHẠM ĐẤT ---
         if (isGrounded)
         {
             hasDiveKicked = false;
@@ -191,9 +186,6 @@ public class PlayerController : MonoBehaviour
             if (jumpEffectPrefab != null) ObjectPoolManager.Instance.Spawn(jumpEffectPrefab, spawnPos, Quaternion.identity);
         }
 
-        // ========================================================
-        // --- MỚI: GIỚI HẠN TỐC ĐỘ RƠI (CHỐNG XUYÊN ĐẤT) ---
-        // ========================================================
         if (rb.linearVelocity.y < -maxFallSpeed)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, -maxFallSpeed);
@@ -252,9 +244,6 @@ public class PlayerController : MonoBehaviour
         {
             if (EquipmentManager.instance != null && EquipmentManager.instance.currentWeapon != null)
             {
-                // ====================================================
-                // --- MỚI: BỐC THĂM NGẪU NHIÊN 1 TRONG 2 ÂM THANH ---
-                // ====================================================
                 // Tạo một mảng chứa tên các âm thanh bạn đã khai báo trong AudioManager
                 string[] attackSounds = { "AttackGrunt_1", "AttackGrunt_2" };
 
@@ -294,14 +283,10 @@ public class PlayerController : MonoBehaviour
         isAttackLocked = false;
     }
 
-    // ==========================================
-    // HÀM ĐÃ ĐƯỢC NÂNG CẤP (TRUYỀN VẬN TỐC)
-    // ==========================================
     public void PlayerMovement()
     {
         float moveInput = Input.GetAxisRaw("Horizontal");
 
-        // --- MỚI: Logic phát âm thanh bước chân ---
         if (moveInput != 0 && IsGrounded())
         {
             footstepTimer -= Time.deltaTime;
@@ -316,7 +301,6 @@ public class PlayerController : MonoBehaviour
             footstepTimer = 0; // Reset ngay khi dừng lại để bước tiếp theo phát ngay lập tức
         }
 
-        // CỘNG DỒN VẬN TỐC: Lấy (Input * Tốc độ đi bộ) + Vận tốc của bệ đỡ (Nếu có)
         rb.linearVelocity = new Vector2((moveInput * moveSpeed) + platformVelocity.x, rb.linearVelocity.y);
 
         if (moveInput > 0 && transform.localScale.x < 0)
@@ -341,20 +325,17 @@ public class PlayerController : MonoBehaviour
 
     public void PlayerJump()
     {
-        // Chỉ phát âm thanh khi bắt đầu nhấn xuống (GetButtonDown)
         if (Input.GetButtonDown("Jump") && IsGrounded())
         {
-            AudioManager.instance.PlaySFX("PlayerJump"); // Phát 1 lần duy nhất tại đây
+            AudioManager.instance.PlaySFX("PlayerJump"); 
 
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             Vector2 spawnPos = new Vector2(groundCheckPoint.transform.position.x, groundCheckPoint.transform.position.y);
             if (jumpEffectPrefab != null) ObjectPoolManager.Instance.Spawn(jumpEffectPrefab, spawnPos, Quaternion.identity);
         }
 
-        // Khi thả nút (GetButtonUp), chỉ thực hiện giảm lực, KHÔNG phát âm thanh
         if (Input.GetButtonUp("Jump") && rb.linearVelocity.y > 0)
         {
-            // Đã xóa dòng phát âm thanh ở đây để tránh bị lặp
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
         }
     }
@@ -510,7 +491,6 @@ public class PlayerController : MonoBehaviour
 
         playerCombat.SetInvincible(true);
 
-        // --- FIX ANIMATION: ÉP RUN BLENDTREE VÀO ĐỂ TRÁNH LỖI ---
         Animator anim = GetComponent<Animator>();
         if (anim != null)
         {
@@ -565,8 +545,6 @@ public class PlayerController : MonoBehaviour
 
         rb.linearVelocity = new Vector2(bounceVelX, bounceVelY);
 
-        // --- FIX LỖI KHÔNG ĐI CHÉO LÊN: Khóa phím tạm thời ---
-        // Vẫn giữ nguyên isAttackLocked = true để hàm PlayerMovement() không đè mất lực bật ngang
         isAttackLocked = true;
         yield return new WaitForSeconds(bounceLockDuration);
         isAttackLocked = false; // Mở khóa cho người chơi tiếp tục điều khiển
@@ -579,7 +557,6 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.identity;
         playerCombat.SetInvincible(false);
 
-        // Dọn dẹp Effect nếu lỡ chạm đất mà không trúng quái
         if (currentDiveEffect != null)
         {
             currentDiveEffect.transform.SetParent(null);

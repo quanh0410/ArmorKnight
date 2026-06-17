@@ -3,7 +3,6 @@ using System;
 
 public class CoinManager : MonoBehaviour
 {
-    // Singleton để truy cập từ bất kỳ đâu
     public static CoinManager Instance { get; private set; }
 
     [field: SerializeField] public int totalCoins { get; private set; }
@@ -12,7 +11,6 @@ public class CoinManager : MonoBehaviour
 
     private void Awake()
     {
-        // Thiết lập Singleton
         if (Instance == null)
         {
             Instance = this;
@@ -26,17 +24,14 @@ public class CoinManager : MonoBehaviour
     public void AddCoins(int amount)
     {
         totalCoins += amount;
-        // Phát tín hiệu cho UI cập nhật
         OnCoinCollected?.Invoke(totalCoins);
 
         Debug.Log("Tổng tiền hiện tại: " + totalCoins);
     }
 
-    // Trong CoinManager.cs
     public void LoadData(int amount)
     {
         totalCoins = amount;
-        // Cần gọi Invoke để UI cập nhật lại con số từ file Save
         OnCoinCollected?.Invoke(totalCoins);
     }
 
@@ -45,15 +40,14 @@ public class CoinManager : MonoBehaviour
         if (totalCoins >= amount)
         {
             totalCoins -= amount;
-            // Phát tín hiệu để UI Tiền trên màn hình cập nhật lại con số
             OnCoinCollected?.Invoke(totalCoins);
             Debug.Log("Đã tiêu: " + amount + ". Còn lại: " + totalCoins);
-            return true; // Giao dịch thành công
+            return true;
         }
         else
         {
             Debug.Log("Không đủ tiền!");
-            return false; // Giao dịch thất bại
-        }
+            return false;
+        } 
     }
 }

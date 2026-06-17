@@ -64,10 +64,25 @@ public class KnightEnemy : EnemyBase
     private readonly int hashHitState = Animator.StringToHash("EKnightHit");
     #endregion
 
+    [Header("--- LƯU TRẠNG THÁI ---")]
+    public string enemyID = "KnightBoss_01"; // Đặt ID duy nhất trong Inspector
+
     protected override void Awake()
     {
         base.Awake();
         if (player != null) playerAnim = player.GetComponent<Animator>();
+        // KHÔNG kiểm tra Save ở đây
+    }
+
+    // THÊM HÀM NÀY — chạy sau tất cả Awake()
+    private void Start()
+    {
+        if (SaveManager.instance != null &&
+            SaveManager.instance.IsObjectInteracted(enemyID + "_doorMode"))
+        {
+            TransformIntoDoor();
+            Debug.Log($"<color=cyan>Knight [{enemyID}]: Khôi phục trạng thái Door từ Save.</color>");
+        }
     }
 
     protected override void Update()
@@ -383,8 +398,14 @@ public class KnightEnemy : EnemyBase
     // MỚI: Đạo diễn gọi hàm này để biến Boss thành cửa
     public void TransformIntoDoor()
     {
-        PacifyBoss(); // Đứng im
-        isDoorMode = true; // Kích hoạt Update tìm phím S
+        PacifyBoss();
+        isDoorMode = true;
+
+        // Lưu vĩnh viễn vào interactedObjectIDs
+        if (SaveManager.instance != null)
+        {
+            SaveManager.instance.SaveObjectState(enemyID + "_doorMode", true);
+        }
     }
 }
 #endregion

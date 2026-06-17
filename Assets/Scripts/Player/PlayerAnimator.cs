@@ -42,18 +42,12 @@ public class PlayerAnimator : MonoBehaviour
     {
         if (rb == null || playerController == null) return;
 
-        // Chỉ cần chặn khi đang bị khóa đòn chém (isAttackLocked - nếu bạn có thêm vào)
         if (!playerController.enabled) return;
 
-        // --- CẬP NHẬT MỚI: CHẶN ANIMATION KHI BỊ KHÓA ---
         if (playerController.isInputLocked)
         {
-            // Ép mọi thông số về tư thế Đứng yên (Idle)
             anim.SetFloat(SpeedParam, 0f);
-            // SỬA Ở ĐÂY: Vẫn đọc vận tốc Y thực tế để Animator biết là đang bay lên hay rơi xuống
             anim.SetFloat(YVelocityParam, rb.linearVelocity.y);
-
-            // SỬA Ở ĐÂY: Vẫn dùng hàm check đất thực tế để không bị kẹt cứng ở mặt đất
             anim.SetBool(IsGroundedParam, playerController.IsGrounded());
             anim.SetBool(IsDashingParam, false);
             anim.SetBool(IsWallSlidingParam, false);
@@ -108,7 +102,6 @@ public class PlayerAnimator : MonoBehaviour
         anim.SetFloat(YVelocityParam, 0f);
         anim.SetFloat(SpeedParam, 0f);
 
-        // 2. Kích hoạt lệnh chết một cách dứt khoát
         anim.SetTrigger(DieTrigger);
     }
 

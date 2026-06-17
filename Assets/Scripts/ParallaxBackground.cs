@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections; // BẮT BUỘC THÊM ĐỂ DÙNG COROUTINE
 
 // ĐÃ XÓA dòng RequireComponent để không bị xung đột với Tilemap nữa
 
@@ -19,9 +20,15 @@ public class ParallaxBackground : MonoBehaviour
     private float spriteLength;
     private float boundOffset = 0f;
 
-    void Start()
+    // --- MỚI: Cờ kiểm tra xem Camera đã ổn định chưa ---
+    private bool isReady = false;
+
+    private IEnumerator Start()
     {
         cameraTransform = Camera.main.transform;
+
+        yield return null;
+        yield return null;
 
         cameraStartPos = cameraTransform.position;
         startPosX = transform.position.x;
@@ -37,10 +44,14 @@ public class ParallaxBackground : MonoBehaviour
         {
             Debug.LogWarning("Không tìm thấy công cụ hiển thị (Renderer) nào trên đối tượng này!");
         }
+
+        isReady = true;
     }
 
     void LateUpdate()
     {
+        if (!isReady || cameraTransform == null) return;
+
         float travelX = cameraTransform.position.x - cameraStartPos.x;
         float travelY = cameraTransform.position.y - cameraStartPos.y;
 

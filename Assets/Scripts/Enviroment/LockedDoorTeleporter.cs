@@ -27,7 +27,6 @@ public class LockedDoorTeleporter : MonoBehaviour
 
     private void Start()
     {
-        // Kiểm tra dữ liệu SaveGame xem cửa này đã từng được mở khóa chưa
         if (SaveManager.instance != null && SaveManager.instance.IsObjectInteracted(doorID))
         {
             UnlockDoorSilently();
@@ -36,21 +35,19 @@ public class LockedDoorTeleporter : MonoBehaviour
 
     private void Update()
     {
-        // Khi người chơi đứng trong vùng cửa, chưa chuyển cảnh và nhấn phím S
         if (isPlayerInRange && !isTeleporting && Input.GetKeyDown(KeyCode.S))
         {
             if (isLocked)
             {
-                TryUnlockDoor(); // Thử dùng chìa khóa mở cửa
+                TryUnlockDoor();
             }
             else
             {
-                StartTeleport(playerRef); // Nếu đã mở, tiến hành chuyển cảnh
+                StartTeleport(playerRef); 
             }
         }
     }
 
-    // Hàm xử lý việc mở khóa
     private void TryUnlockDoor()
     {
         int keyCount = InventoryManager.instance.GetItemCount(requiredKey);
@@ -77,19 +74,16 @@ public class LockedDoorTeleporter : MonoBehaviour
         }
         else
         {
-            // Báo lỗi thiếu chìa
             InteractionUI.instance.Show(transform, "<color=red>Thiếu chìa khóa!</color>");
         }
     }
 
-    // Hàm mở khóa âm thầm ngay khi bắt đầu Game (dành cho tính năng Load Game)
     private void UnlockDoorSilently()
     {
         isLocked = false;
         UpdateDoorVisuals();
     }
 
-    // Hàm cập nhật hình ảnh cửa
     private void UpdateDoorVisuals()
     {
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
@@ -98,12 +92,10 @@ public class LockedDoorTeleporter : MonoBehaviour
             sr.sprite = unlockedDoorSprite;
         }
 
-        // Tắt Animator nếu bạn có Animation cửa đang đóng
         Animator anim = GetComponent<Animator>();
         if (anim != null) anim.enabled = false;
     }
 
-    // --- CÁC HÀM XỬ LÝ VA CHẠM VÀ CHUYỂN CẢNH ---
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -112,7 +104,7 @@ public class LockedDoorTeleporter : MonoBehaviour
             isPlayerInRange = true;
             playerRef = collision.gameObject;
 
-            UpdateUI(); // Cập nhật lại dòng chữ hướng dẫn
+            UpdateUI(); 
         }
     }
 

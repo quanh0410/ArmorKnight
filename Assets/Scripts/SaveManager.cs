@@ -11,10 +11,7 @@ public class GameSaveData
     public List<string> deadEnemyIDs = new List<string>(); // Đưa vào đây để lưu cùng file JSON
     public string respawnSceneName = "1";
     public string respawnBenchID = "";
-
-    // --- MỚI: DỮ LIỆU LƯU TRỮ TRANG BỊ & TIỀN ---
     public int totalCoins;
-    // --- ĐỔI TÊN THÀNH ID ---
     public List<string> inventoryItemIDs = new List<string>();
     public string equippedWeaponID;
     public List<string> socketedGemIDs = new List<string>();
@@ -24,7 +21,7 @@ public class SaveManager : MonoBehaviour
 {
     public static SaveManager instance;
     public GameSaveData currentSaveData = new GameSaveData();
-    public List<string> temporaryEnemyDeaths = new List<string>(); // Quái thường
+    public List<string> temporaryEnemyDeaths = new List<string>(); 
 
     private string saveFilePath;
 
@@ -36,14 +33,12 @@ public class SaveManager : MonoBehaviour
         saveFilePath = Application.persistentDataPath + "/gamesave.json";
         LoadGame();
 
-        // Thêm điều kiện: Không Load game tự động nếu GameObject có tên là "TestSaveManager"
         if (gameObject.name != "TestSaveManager")
         {
             LoadGame();
         }
     }
 
-    // Trong SaveManager.cs
     public void SaveObjectState(string objectID, bool isPermanent = true)
     {
         if (isPermanent)
@@ -65,7 +60,6 @@ public class SaveManager : MonoBehaviour
         return currentSaveData.interactedObjectIDs.Contains(objectID) || currentSaveData.deadEnemyIDs.Contains(objectID);
     }
 
-    // Đã đổi int benchID thành string benchID
     public void UpdateCheckpoint(string sceneName, string benchID)
     {
         currentSaveData.respawnSceneName = sceneName;
@@ -82,11 +76,9 @@ public class SaveManager : MonoBehaviour
 
     public void SaveGame()
     {
-        // Kiểm tra an toàn cho CoinManager
         if (CoinManager.Instance != null)
             currentSaveData.totalCoins = CoinManager.Instance.totalCoins;
 
-        // Kiểm tra an toàn cho InventoryManager
         if (InventoryManager.instance != null)
         {
             currentSaveData.inventoryItemIDs.Clear();
@@ -94,7 +86,6 @@ public class SaveManager : MonoBehaviour
                 currentSaveData.inventoryItemIDs.Add(item.itemID);
         }
 
-        // Kiểm tra an toàn cho EquipmentManager
         if (EquipmentManager.instance != null && EquipmentManager.instance.currentWeapon != null)
         {
             currentSaveData.equippedWeaponID = EquipmentManager.instance.currentWeapon.itemID;
@@ -126,14 +117,12 @@ public class SaveManager : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
 
-        // Kiểm tra an toàn trước khi Load
         if (CoinManager.Instance != null) CoinManager.Instance.LoadData(currentSaveData.totalCoins);
 
         if (InventoryManager.instance != null)
         {
             InventoryManager.instance.LoadData(currentSaveData.inventoryItemIDs);
 
-            // Di chuyển toàn bộ logic phục hồi vũ khí vào bên trong khối an toàn này
             string savedWeaponID = currentSaveData.equippedWeaponID;
             EquipmentData weaponInInventory = null;
 
@@ -169,7 +158,6 @@ public class SaveManager : MonoBehaviour
         }
     }
 
-    // --- GIAO NHIỆM VỤ RELOAD MAP VÀ HỒI SINH QUÁI ---
     public void ReloadMapFromBench(string sceneName, string targetBenchID, GameObject player)
     {
         StartCoroutine(ReloadRoutine(sceneName, targetBenchID, player));
@@ -237,25 +225,13 @@ public class SaveManager : MonoBehaviour
         return File.Exists(saveFilePath);
     }
 
-    // ==========================================
-    // CƠ CHẾ TỰ ĐỘNG LƯU KHI THOÁT GAME
-    // ==========================================
 
-    /// <summary>
-    /// Được gọi tự động khi người chơi nhấn nút X tắt cửa sổ (Windows/Mac)
-    /// hoặc khi gọi lệnh Application.Quit() từ Main Menu.
-    /// </summary>
     private void OnApplicationQuit()
     {
         Debug.Log("<color=cyan>Người chơi đang tắt game. Tiến hành Auto-Save...</color>");
         SaveGame();
     }
 
-    /// <summary>
-    /// Đặc biệt quan trọng cho Mobile (Android/iOS).
-    /// Trên điện thoại, người chơi ít khi "Quit" game mà thường vuốt thoát ra màn hình chính (Background).
-    /// Hàm này bắt được khoảnh khắc ứng dụng bị đẩy xuống chạy ngầm.
-    /// </summary>
     private void OnApplicationPause(bool isPaused)
     {
         if (isPaused)
@@ -279,7 +255,6 @@ public class SaveManager : MonoBehaviour
         currentSaveData = new GameSaveData();
         temporaryEnemyDeaths.Clear();
 
-        // --- 2. MỚI: BẮT BUỘC ÉP TÚI ĐỒ VÀ TRANG BỊ CẬP NHẬT LẠI TRẠNG THÁI TRẮNG NÀY ---
         StartCoroutine(ApplyLoadData());
         Debug.Log("<color=green><b>ĐÃ RESET TOÀN BỘ! Bấm Play để chơi như mới.</b></color>");
     }

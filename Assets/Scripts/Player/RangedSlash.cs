@@ -1,13 +1,12 @@
 ﻿using UnityEngine;
-using System.Collections.Generic; // BẮT BUỘC THÊM: Để sử dụng HashSet
-
+using System.Collections.Generic; 
 public class RangedSlash : MonoBehaviour
 {
     [Header("Cài đặt va chạm")]
     public float hitRadius = 1f;
     public LayerMask enemyLayer;
     public LayerMask groundLayer;
-    public LayerMask enviromentLayer; // --- THÊM: Layer của dây leo ---
+    public LayerMask enviromentLayer;
     public GameObject hitEffectPrefab;
 
     private float moveDirection;
@@ -29,7 +28,6 @@ public class RangedSlash : MonoBehaviour
         maxLifeTime = duration;
         currentTimer = 0f;
 
-        // QUAN TRỌNG: Phải xé bỏ cuốn sổ cũ mỗi khi kiếm khí được bắn ra lần mới
         damagedEnemies.Clear();
 
         transform.localScale = new Vector3(moveDirection * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);

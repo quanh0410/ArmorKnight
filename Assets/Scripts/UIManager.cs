@@ -5,7 +5,6 @@ using System.Collections;
 
 public class UIManager : MonoBehaviour
 {
-    // --- MỚI: Thêm Singleton để Shop gọi tới ---
     public static UIManager instance;
 
     [Header("Health UI Settings")]
@@ -24,7 +23,6 @@ public class UIManager : MonoBehaviour
 
     private Coroutine coinFadeCoroutine;
 
-    // --- MỚI: Công tắc giữ UI không bị mờ ---
     private bool keepCoinUIOpen = false;
 
     private void Awake()
@@ -73,26 +71,21 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    // ==========================================
-    // KHU VỰC XỬ LÝ UI TIỀN
-    // ==========================================
 
-    // --- MỚI: Hàm ép UI Tiền hiện lên do ShopUIManager gọi ---
+
     public void ForceShowCoinUI(bool show)
     {
-        keepCoinUIOpen = show; // Bật/tắt công tắc
+        keepCoinUIOpen = show; 
         if (coinUIGroup == null) return;
 
-        // Dừng tiến trình mờ đi (nếu đang chạy)
         if (coinFadeCoroutine != null) StopCoroutine(coinFadeCoroutine);
 
         if (show)
         {
-            coinUIGroup.alpha = 1f; // Hiện rõ 100% ngay lập tức
+            coinUIGroup.alpha = 1f; 
         }
         else
         {
-            // Khi đóng shop, mới cho phép mờ dần đi
             coinFadeCoroutine = StartCoroutine(ShowAndHideCoinUIRoutine());
         }
     }
@@ -105,14 +98,12 @@ public class UIManager : MonoBehaviour
         {
             if (coinFadeCoroutine != null) StopCoroutine(coinFadeCoroutine);
 
-            // TỐI ƯU: Nếu đang mở Shop (keepCoinUIOpen = true) thì giữ nguyên alpha = 1, KHÔNG chạy Coroutine
             if (keepCoinUIOpen)
             {
                 coinUIGroup.alpha = 1f;
             }
             else
             {
-                // Nếu không mở Shop (nhặt xu ngoài đường) thì chạy hiệu ứng bình thường
                 coinFadeCoroutine = StartCoroutine(ShowAndHideCoinUIRoutine());
             }
         }

@@ -36,7 +36,6 @@ public class ShopUIManager : MonoBehaviour
     {
         CloseShop(); // Đảm bảo UI luôn tắt khi mới vào game
 
-        // THÊM DÒNG NÀY: Lắng nghe sự kiện khi bấm nút X
         if (closeShopButton != null)
         {
             closeShopButton.onClick.AddListener(CloseShop);
@@ -47,7 +46,6 @@ public class ShopUIManager : MonoBehaviour
         confirmNoButton.onClick.AddListener(CancelPurchase);
     }
 
-    // ĐÃ XÓA hàm Update() bị lỗi ở đây
 
     public void OpenShop(List<ShopItem> items)
     {
@@ -59,16 +57,13 @@ public class ShopUIManager : MonoBehaviour
         if (InteractionUI.instance != null) InteractionUI.instance.Hide();
 
         if (UIManager.instance != null) UIManager.instance.ForceShowCoinUI(true);
-        // --- TỐI ƯU: TẠM DỪNG THỜI GIAN KHI MỞ SHOP ---
         Time.timeScale = 0f;
 
-        // Xóa sạch danh sách cũ
         foreach (Transform child in contentContainer)
         {
             Destroy(child.gameObject);
         }
 
-        // Sinh danh sách mới
         foreach (ShopItem shopItem in items)
         {
             GameObject newSlot = Instantiate(shopSlotPrefab, contentContainer);
@@ -86,7 +81,6 @@ public class ShopUIManager : MonoBehaviour
     {
         shopPanel.SetActive(false);
         confirmPopupPanel.SetActive(false);
-        // --- TỐI ƯU: TIẾP TỤC THỜI GIAN KHI ĐÓNG SHOP ---
         Time.timeScale = 1f;
 
         if (UIManager.instance != null) UIManager.instance.ForceShowCoinUI(false);
@@ -123,19 +117,15 @@ public class ShopUIManager : MonoBehaviour
     {
         if (currentSelectedItem == null) return;
 
-        // CHỈ KHI TRỪ TIỀN THÀNH CÔNG THÌ MỚI THÊM ĐỒ VÀO TÚI
         if (CoinManager.Instance.SpendCoins(currentSelectedItem.price))
         {
-            // 1. Thêm đúng số lượng vào túi đồ (Đã gom 2 lệnh thừa thành 1 lệnh chuẩn)
             InventoryManager.instance.AddItem(currentSelectedItem.itemData, currentSelectedItem.quantity);
 
-            // 2. Xóa khỏi danh sách tạm thời
             if (currentShopSource != null)
             {
                 currentShopSource.Remove(currentSelectedItem);
             }
 
-            // 3. Xóa ô UI trên màn hình ngay lập tức
             if (currentSelectedSlot != null)
             {
                 Destroy(currentSelectedSlot);
@@ -154,7 +144,6 @@ public class ShopUIManager : MonoBehaviour
         }
         else
         {
-            // XỬ LÝ KHI KHÔNG ĐỦ TIỀN (Chặn không cho mua)
             confirmMessageText.text = "<color=red>Giao dịch thất bại!</color>\nBạn không có đủ tiền.";
             confirmYesButton.gameObject.SetActive(false);
 
@@ -164,7 +153,6 @@ public class ShopUIManager : MonoBehaviour
 
     private System.Collections.IEnumerator ResetConfirmButtonRoutine()
     {
-        // Đợi 2 giây theo thời gian thực (bất chấp game đang bị Pause)
         yield return new WaitForSecondsRealtime(2f);
         confirmYesButton.gameObject.SetActive(true);
         confirmPopupPanel.SetActive(false);

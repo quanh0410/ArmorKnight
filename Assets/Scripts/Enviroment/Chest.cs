@@ -5,8 +5,7 @@ public class ChestController : MonoBehaviour
 {
 
     [Header("Định danh (Bắt buộc phải có)")]
-    public string chestID; // Căn cước công dân của rương
-
+    public string chestID; 
     [Header("Yêu cầu")]
     public ItemData requiredKey;
     public int keysNeeded = 1;
@@ -20,7 +19,6 @@ public class ChestController : MonoBehaviour
 
     private bool isPlayerInside = false;
     private bool isOpened = false;
-    // --- BỔ SUNG: Hình ảnh rương sau khi mở ---
     [Header("Hình ảnh")]
     public Sprite openedChestSprite;
 
@@ -31,11 +29,9 @@ public class ChestController : MonoBehaviour
             isOpened = true;
             GetComponent<Collider2D>().enabled = false;
 
-            // 1. Tắt Animator đi để nó không ép rương chạy hình ảnh đóng (Idle) nữa
             Animator anim = GetComponent<Animator>();
             if (anim != null) anim.enabled = false;
 
-            // 2. Thay hình ảnh rương đang đóng thành hình ảnh rương đã mở
             SpriteRenderer sr = GetComponent<SpriteRenderer>();
             if (sr != null && openedChestSprite != null)
             {
@@ -70,7 +66,7 @@ public class ChestController : MonoBehaviour
         isOpened = true;
         Animator anim = GetComponent<Animator>();
         GetComponent<Animator>().SetTrigger("Open");
-        AudioManager.instance.PlaySFX("ChestOpen"); // Phát 1 lần duy nhất tại đây
+        AudioManager.instance.PlaySFX("ChestOpen"); 
 
         // 1. Tiêu thụ chìa khóa
         InventoryManager.instance.RemoveItem(requiredKey, keysNeeded);
